@@ -1,4 +1,4 @@
-import { signInWithGithub, signUserIn } from "../utils/auth"
+import { signUserIn } from "../utils/auth"
 
 const Authenticate = () => {
     const signIn = async (method: string) => {

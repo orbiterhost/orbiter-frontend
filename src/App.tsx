@@ -74,6 +74,29 @@ export default function App() {
     handleLoadSites(organizations);
   };
 
+  const updateSite = async (files: any, siteId: string) => {
+    const accessToken = await getAccessToken();
+
+    //  Generate one-time use key
+    //  Upload site
+    const cid = await uploadSite(files);
+    console.log(cid);
+    //  Create subdomain and contract
+    await fetch(`${import.meta.env.VITE_BASE_URL}/sites/${siteId}`, {
+      method: "PUT",
+      //  @ts-ignore
+      headers: {
+        "Content-Type": "application/json",
+        "X-Orbiter-Token": accessToken,
+      },
+      body: JSON.stringify({
+        cid
+      })
+    });
+    
+    handleLoadSites(organizations);
+  };
+
   const handleLoadSites = async (membershipData: any[]) => {
     const sites = await loadSites(membershipData[0].organizations.id);
     setSites(sites?.data || []);
@@ -87,6 +110,7 @@ export default function App() {
         organizations={organizations}
         sites={sites}
         createSite={createSite}
+        updateSite={updateSite}
       />
     );
   }

@@ -5,6 +5,7 @@ type MainProps = {
     organizations: any[];
     sites: any[];
     createSite: any;
+    updateSite: any;
 }
 
 const Main = (props: MainProps) => {
@@ -20,7 +21,7 @@ const Main = (props: MainProps) => {
                 <p>Org switcher</p>
             </div> : 
             props.organizations.length > 0 &&
-            <Dashboard organization={props.organizations[0]} sites={props.sites} createSite={props.createSite} />
+            <Dashboard updateSite={props.updateSite} organization={props.organizations[0]} sites={props.sites} createSite={props.createSite} />
         }
     </div>
   )
