@@ -1,30 +1,28 @@
-import { signOut } from "../utils/auth"
 import Dashboard from "./Dashboard";
+import { Nav } from "./nav";
 
 type MainProps = {
-    organizations: any[];
-    sites: any[];
-    createSite: any;
-    updateSite: any;
-}
+	organizations: any[];
+	sites: any[];
+	createSite: any;
+	updateSite: any;
+};
 
 const Main = (props: MainProps) => {
-    console.log(props)
-  return (
-    <div>
-        <div>
-            <button onClick={signOut}>Sign out</button>
-        </div>
-        {
-            props.organizations.length > 1 ?
-            <div>
-                <p>Org switcher</p>
-            </div> : 
-            props.organizations.length > 0 &&
-            <Dashboard updateSite={props.updateSite} organization={props.organizations[0]} sites={props.sites} createSite={props.createSite} />
-        }
-    </div>
-  )
-}
+	console.log(props);
+	return (
+		<div className="min-h-screen w-full flex flex-col">
+			<Nav organizations={props.organizations} />
+			{props.organizations.length > 0 && (
+				<Dashboard
+					updateSite={props.updateSite}
+					organization={props.organizations[0]}
+					sites={props.sites}
+					createSite={props.createSite}
+				/>
+			)}
+		</div>
+	);
+};
 
-export default Main
+export default Main;
