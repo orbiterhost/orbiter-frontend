@@ -1,5 +1,6 @@
 import Dashboard from "./Dashboard";
 import { Nav } from "./nav";
+import { Separator } from "@/components/ui/separator";
 
 type MainProps = {
 	organizations: any[];
@@ -10,9 +11,9 @@ type MainProps = {
 
 const Main = (props: MainProps) => {
 	return (
-		<div className="min-h-screen w-full flex flex-col">
+		<div className="min-h-screen w-full flex flex-col gap-2">
 			<Nav organizations={props.organizations} />
-			<div className="w-full border-gray-400 border-b-2"></div>
+			<Separator />
 			{props.organizations.length > 0 && (
 				<Dashboard
 					updateSite={props.updateSite}

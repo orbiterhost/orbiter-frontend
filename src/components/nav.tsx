@@ -29,8 +29,6 @@ export function Nav({ organizations }: NavProps) {
 		label: org.organizations.name,
 	}));
 
-	console.log(organizations);
-
 	useEffect(() => {
 		async function fetchUser() {
 			const session = await getUserLocal();
@@ -42,9 +40,9 @@ export function Nav({ organizations }: NavProps) {
 	}, []);
 
 	return (
-		<div className="w-full flex gap-6 justify-end items-center py-4 px-6">
+		<div className="w-full flex gap-6 justify-end items-center py-4 px-8">
 			<Popover>
-				<Combobox organizations={orgsData} />
+				{organizations.length > 1 && <Combobox organizations={orgsData} />}
 				<PopoverTrigger>
 					<Avatar>
 						<AvatarImage src={user?.user_metadata.avatar_url} />
