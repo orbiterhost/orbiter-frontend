@@ -52,7 +52,7 @@ export default function App() {
 		}
 	}, [userSession]);
 
-	const createSite = async (files: any) => {
+	const createSite = async (files: any, subdomain: string) => {
 		const accessToken = await getAccessToken();
 
 		//  Generate one-time use key
@@ -69,7 +69,8 @@ export default function App() {
 			},
 			body: JSON.stringify({
 				orgId: organizations[0].organizations.id,
-				cid,
+				cid: cid,
+				subdomain: subdomain,
 			}),
 		});
 
@@ -134,13 +135,15 @@ export default function App() {
 	}
 
 	return (
-		<div className="min-h-screen max-w-screen-lg mx-auto">
-			<Main
-				organizations={organizations}
-				sites={sites}
-				createSite={createSite}
-				updateSite={updateSite}
-			/>
+		<div className="min-h-screen w-full mx-auto">
+			{organizations?.length > 0 && (
+				<Main
+					organizations={organizations}
+					sites={sites}
+					createSite={createSite}
+					updateSite={updateSite}
+				/>
+			)}
 		</div>
 	);
 }

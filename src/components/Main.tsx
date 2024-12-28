@@ -9,10 +9,10 @@ type MainProps = {
 };
 
 const Main = (props: MainProps) => {
-	console.log(props);
 	return (
 		<div className="min-h-screen w-full flex flex-col">
 			<Nav organizations={props.organizations} />
+			<div className="w-full border-gray-400 border-b-2"></div>
 			{props.organizations.length > 0 && (
 				<Dashboard
 					updateSite={props.updateSite}

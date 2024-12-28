@@ -4,28 +4,47 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Button } from "./ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import type { User } from "@supabase/supabase-js";
+import { Combobox } from "./ui/comobobox";
 
 type NavProps = {
-	organizations: any[];
+	organizations: {
+		id: number;
+		created_at: string;
+		role: string;
+		user_id: string;
+		organization_id: string;
+		organizations: {
+			id: string;
+			name: string;
+			created_at: string;
+		};
+	}[];
 };
 
 export function Nav({ organizations }: NavProps) {
 	const [user, setUser] = useState<User>();
+
+	const orgsData = organizations.map((org) => ({
+		value: org.organization_id,
+		label: org.organizations.name,
+	}));
+
+	console.log(organizations);
 
 	useEffect(() => {
 		async function fetchUser() {
 			const session = await getUserLocal();
 			if (session?.user) {
 				setUser(session?.user);
-				console.log(session?.user);
 			}
 		}
 		fetchUser();
 	}, []);
 
 	return (
-		<div className="w-full flex justify-end items-center p-4">
+		<div className="w-full flex gap-6 justify-end items-center py-4 px-6">
 			<Popover>
+				<Combobox organizations={orgsData} />
 				<PopoverTrigger>
 					<Avatar>
 						<AvatarImage src={user?.user_metadata.avatar_url} />
@@ -34,11 +53,6 @@ export function Nav({ organizations }: NavProps) {
 				</PopoverTrigger>
 				<PopoverContent className="max-w-[125px]">
 					<Button onClick={signOut}>Sign out</Button>
-					{organizations.length > 1 && (
-						<div>
-							<p>Org switcher</p>
-						</div>
-					)}
 				</PopoverContent>
 			</Popover>
 		</div>

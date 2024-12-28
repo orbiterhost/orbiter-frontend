@@ -1,5 +1,6 @@
 import { useRef } from "react";
 import { Button } from "./ui/button";
+import { CreateSiteForm } from "./create-site-form";
 
 type DashboardProps = {
 	organization: any;
@@ -9,24 +10,7 @@ type DashboardProps = {
 };
 
 const Dashboard = (props: DashboardProps) => {
-	const fileInputRef = useRef<HTMLInputElement>(null);
 	const updateFileInputRef = useRef<HTMLInputElement>(null);
-
-	const handleFileSelection = async (
-		event: React.ChangeEvent<HTMLInputElement>,
-	) => {
-		const files = event.target.files;
-		if (!files || files.length === 0) return;
-
-		if (files.length === 1) {
-			// Single file selected
-			const file = files[0];
-			props.createSite(file);
-		} else {
-			// Multiple files selected (directory)
-			props.createSite(files);
-		}
-	};
 
 	const handleUpdateFileSelection = async (
 		event: React.ChangeEvent<HTMLInputElement>,
@@ -45,30 +29,14 @@ const Dashboard = (props: DashboardProps) => {
 		}
 	};
 
-	const handleCreateClick = () => {
-		fileInputRef.current?.click();
-	};
-
 	const handleUpdateClick = () => {
 		updateFileInputRef.current?.click();
 	};
 	return (
-		<div>
-			<p>Org name: </p>
-			<p>{props.organization?.organizations?.name}</p>
+		<div className="max-w-screen-lg w-full mx-auto flex flex-col items-start justify-center">
 			<div>
 				<h1>Sites</h1>
-				<input
-					type="file"
-					ref={fileInputRef}
-					onChange={handleFileSelection}
-					style={{ visibility: "hidden" }}
-					//    @ts-ignore
-					webkitdirectory=""
-					directory=""
-					multiple
-				/>
-				<Button onClick={handleCreateClick}>Create new site</Button>
+				<CreateSiteForm {...props} />
 				{props.sites.map((s: any) => {
 					return (
 						<div key={s.id}>
