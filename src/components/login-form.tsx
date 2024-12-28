@@ -1,15 +1,14 @@
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { signUserIn } from "../utils/auth";
 
 export function LoginForm({
 	className,
 	...props
 }: React.ComponentPropsWithoutRef<"form">) {
-	const signIn = async (method: string) => {
+	const signIn = async (e: any, method: string) => {
 		try {
+			e.preventDefault();
 			const data = await signUserIn(method);
 			console.log(data);
 		} catch (error: any) {
@@ -28,7 +27,7 @@ export function LoginForm({
 			</div>
 			<div className="grid gap-6">
 				<Button
-					onClick={() => signIn("github")}
+					onClick={(e) => signIn(e, "github")}
 					variant="outline"
 					className="w-full"
 				>

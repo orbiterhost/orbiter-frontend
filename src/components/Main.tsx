@@ -7,6 +7,7 @@ type MainProps = {
 	sites: any[];
 	createSite: any;
 	updateSite: any;
+	loading: boolean;
 };
 
 const Main = (props: MainProps) => {
@@ -20,6 +21,7 @@ const Main = (props: MainProps) => {
 					organization={props.organizations[0]}
 					sites={props.sites}
 					createSite={props.createSite}
+					loading={props.loading}
 				/>
 			)}
 		</div>
