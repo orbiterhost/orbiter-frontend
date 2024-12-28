@@ -152,6 +152,7 @@ export function CustomFileDropzone({
           type="file"
           onChange={onFileInputChange}
           className="hidden"
+		  //	@ts-ignore
           webkitdirectory=""
           directory=""
         />

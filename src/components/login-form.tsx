@@ -40,7 +40,7 @@ export function LoginForm({
 					Login with GitHub
 				</Button>
 				<Button
-					onClick={() => signIn("google")}
+					onClick={(e) => signIn(e, "google")}
 					variant="outline"
 					className="w-full"
 				>
