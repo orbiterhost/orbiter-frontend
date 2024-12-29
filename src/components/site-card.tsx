@@ -7,7 +7,14 @@ import {
 	CardTitle,
 } from "./ui/card";
 import { UpdateSiteForm } from "./update-site-form";
-import { CircleCheck, Loader2 } from "lucide-react";
+import { CircleCheck, Loader2, Settings } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import { Button } from "./ui/button";
+import {
+	HoverCard,
+	HoverCardContent,
+	HoverCardTrigger,
+} from "@/components/ui/hover-card";
 
 type Site = {
 	id: string;
@@ -59,15 +66,10 @@ export const SiteCard = ({ site, loading, updateSite }: SiteCardProps) => {
 	}, [site.domain]);
 
 	return (
-		<Card className="min-w-[335px]">
-			<CardHeader className="flex flex-row items-center gap-2">
-				{isSiteReady ? (
-					<CircleCheck className="text-green-500" />
-				) : (
-					<Loader2 className="animate-spin text-yellow-400" />
-				)}
+		<Card className="min-w-[335px] flex flex-row">
+			<CardHeader className="flex items-center gap-2">
 				<div className="flex flex-col">
-					<CardTitle>
+					<CardTitle className="tracking-tighter">
 						<a
 							href={`http://${site.domain}`}
 							target="_blank"
@@ -99,12 +101,36 @@ export const SiteCard = ({ site, loading, updateSite }: SiteCardProps) => {
 					</CardDescription>
 				</div>
 			</CardHeader>
-			<CardContent>
-				<UpdateSiteForm
-					loading={loading}
-					updateSite={updateSite}
-					siteId={site.id}
-				/>
+			<CardContent className="flex items-center gap-2 justify-end">
+				<HoverCard>
+					<HoverCardTrigger>
+						{isSiteReady ? (
+							<CircleCheck className="text-green-500" />
+						) : (
+							<Loader2 className="animate-spin text-yellow-400" />
+						)}
+					</HoverCardTrigger>
+					<HoverCardContent className="w-full">
+						<p className="text-sm">
+							{isSiteReady ? "DNS Configured" : "DNS Pending"}
+						</p>
+					</HoverCardContent>
+				</HoverCard>
+				<Popover>
+					<PopoverTrigger>
+						<Settings />
+					</PopoverTrigger>
+					<PopoverContent className="w-full flex flex-col gap-2">
+						<UpdateSiteForm
+							loading={loading}
+							updateSite={updateSite}
+							siteId={site.id}
+						/>
+						<Button className="h-7" variant="destructive">
+							Delete
+						</Button>
+					</PopoverContent>
+				</Popover>
 			</CardContent>
 		</Card>
 	);

@@ -58,7 +58,9 @@ export function UpdateSiteForm({
 			open={open}
 		>
 			<DialogTrigger>
-				<Button>Update Site</Button>
+				<Button variant="secondary" className="h-7">
+					Update
+				</Button>
 			</DialogTrigger>
 			<DialogContent
 				onPointerDownOutside={(e) => {
