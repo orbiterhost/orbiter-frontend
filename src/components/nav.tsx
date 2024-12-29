@@ -49,7 +49,7 @@ export function Nav({ organizations }: NavProps) {
 						<AvatarFallback>{user?.email?.[0] || "U"}</AvatarFallback>
 					</Avatar>
 				</PopoverTrigger>
-				<PopoverContent className="max-w-[125px]">
+				<PopoverContent className="max-w-[125px] mr-8">
 					<Button onClick={signOut}>Sign out</Button>
 				</PopoverContent>
 			</Popover>
