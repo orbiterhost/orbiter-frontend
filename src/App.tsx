@@ -20,17 +20,20 @@ export default function App() {
 	const [organizations, setOrganizations] = useState<any[]>([]);
 	const [sites, setSites] = useState<any[]>([]);
 	const [loading, setLoading] = useState(false);
+	const [authLoading, setAuthLoading] = useState(true);
 	const { toast } = useToast();
 
 	useEffect(() => {
 		supabase.auth.getSession().then(({ data: { session } }) => {
 			setSession(session);
+			setAuthLoading(false);
 		});
 
 		const {
 			data: { subscription },
 		} = supabase.auth.onAuthStateChange((_event, session) => {
 			setSession(session);
+			setAuthLoading(false);
 		});
 
 		return () => subscription.unsubscribe();
@@ -137,6 +140,14 @@ export default function App() {
 		const sites = await loadSites(membershipData[0].organizations.id);
 		setSites(sites?.data || []);
 	};
+
+	if (authLoading) {
+		return (
+			<div className="h-screen w-full flex items-center justify-center">
+				<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+			</div>
+		);
+	}
 
 	if (!userSession) {
 		return (

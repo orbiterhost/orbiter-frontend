@@ -79,7 +79,7 @@ export function UpdateSiteForm({
 				/>
 				{loading ? (
 					<Button disabled>
-						<Loader2 className="animate-spin" /> Creating Site...
+						<Loader2 className="animate-spin" /> Updating Site...
 					</Button>
 				) : (
 					<Button onClick={submit}>Update</Button>
