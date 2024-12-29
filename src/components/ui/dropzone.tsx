@@ -1,7 +1,7 @@
 "use client";
 import type React from "react";
 import { useState, useRef, useCallback } from "react";
-import { Upload, X, Folder, File } from "lucide-react";
+import { Upload, X, Folder, File, CircleCheck } from "lucide-react";
 
 interface CustomFileDropzoneProps {
 	files: File[];
@@ -189,28 +189,13 @@ export function CustomFileDropzone({
 					Up to {maxFiles} files, {maxSize / (1024 * 1024)}MB each
 				</p>
 			</div>
-
 			{files.length > 0 && (
-				<ul className="mt-4 space-y-2">
-					{files.map((file, index) => (
-						<li
-							key={`${file.name}-${index}`}
-							className="flex items-center justify-between text-black bg-secondary rounded-md p-2"
-						>
-							<span className="text-sm truncate">{file.name}</span>
-							<button
-								type="button"
-								onClick={(e) => {
-									e.stopPropagation();
-									removeFile(index);
-								}}
-								className="text-red-500 hover:text-red-700"
-							>
-								<X className="h-4 w-4" />
-							</button>
-						</li>
-					))}
-				</ul>
+				<div className="w-full flex justify-center">
+					<p className="text-sm py-2 flex items-center gap-1">
+						<CircleCheck className="text-green-500 h-4 w-4" />
+						{files.length} Files Selected
+					</p>
+				</div>
 			)}
 		</div>
 	);
