@@ -39,7 +39,7 @@ export const SiteCard = ({ site, loading, updateSite }: SiteCardProps) => {
 	useEffect(() => {
 		const checkSiteStatus = async () => {
 			try {
-				const response = await fetch(`http://${site.domain}`, {
+				const response = await fetch(`https://${site.domain}`, {
 					method: "HEAD",
 				});
 				if (response.status === 200) {
@@ -71,7 +71,7 @@ export const SiteCard = ({ site, loading, updateSite }: SiteCardProps) => {
 				<div className="flex flex-col">
 					<CardTitle className="tracking-tighter">
 						<a
-							href={`http://${site.domain}`}
+							href={`https://${site.domain}`}
 							target="_blank"
 							rel="noopener noreferrer"
 							className="group flex items-center gap-2"
