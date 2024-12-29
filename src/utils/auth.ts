@@ -17,7 +17,7 @@ export async function getUserLocal(): Promise<Session | null> {
 
 const getURL = () => {
 	let url =
-		process?.env?.VITE_SITE_URL ?? // Set this to your site URL in production env.
+		import.meta.env.VITE_SITE_URL ?? // Set this to your site URL in production env.
 		"http://localhost:3000/";
 	// Make sure to include `https://` when not localhost.
 	url = url.startsWith("http") ? url : `https://${url}`;
