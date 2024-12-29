@@ -1,7 +1,7 @@
 "use client";
 import type React from "react";
 import { useState, useRef, useCallback } from "react";
-import { Upload, X, Folder, File, CircleCheck } from "lucide-react";
+import { Upload, Folder, File, CircleCheck } from "lucide-react";
 
 interface CustomFileDropzoneProps {
 	files: File[];
