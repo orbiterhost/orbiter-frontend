@@ -9,37 +9,62 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "./ui/button";
 import { CustomFileDropzone } from "./ui/dropzone";
+import { Loader2 } from "lucide-react";
 
 type UpdateSiteProps = {
 	updateSite: any;
 	siteId: string;
+	loading: boolean;
 };
 
-export function UpdateSiteForm({ updateSite, siteId }: UpdateSiteProps) {
+export function UpdateSiteForm({
+	updateSite,
+	siteId,
+	loading,
+}: UpdateSiteProps) {
 	const [files, setFiles] = useState<File[]>([]);
+	const [open, setOpen] = useState(false);
 
 	async function submit() {
-		if (!files.length) {
-			console.log("Select a file!");
-			return;
-		}
+		try {
+			if (!files.length) {
+				console.log("Select a file!");
+				return;
+			}
 
-		if (files.length === 1) {
-			// Single file selected
-			const file = files[0];
-			updateSite(file, siteId);
-		} else {
-			// Multiple files selected (directory)
-			updateSite(files, siteId);
+			if (files.length === 1) {
+				// Single file selected
+				const file = files[0];
+				await updateSite(file, siteId);
+			} else {
+				// Multiple files selected (directory)
+				await updateSite(files, siteId);
+			}
+			setOpen(false);
+			setFiles([]);
+		} catch (error) {
+			console.log(error);
 		}
 	}
 
 	return (
-		<Dialog>
+		<Dialog
+			onOpenChange={(open) => {
+				// Only allow closing via the close button
+				if (!loading) {
+					setOpen(open);
+				}
+			}}
+			open={open}
+		>
 			<DialogTrigger>
 				<Button>Update Site</Button>
 			</DialogTrigger>
-			<DialogContent>
+			<DialogContent
+				onPointerDownOutside={(e) => {
+					e.preventDefault();
+				}}
+			>
 				<DialogHeader>
 					<DialogTitle>Update Site</DialogTitle>
 					<DialogDescription>
@@ -47,8 +72,18 @@ export function UpdateSiteForm({ updateSite, siteId }: UpdateSiteProps) {
 						site
 					</DialogDescription>
 				</DialogHeader>
-				<CustomFileDropzone files={files} setFiles={setFiles} />
-				<Button onClick={submit}>Update</Button>
+				<CustomFileDropzone
+					disabled={loading}
+					files={files}
+					setFiles={setFiles}
+				/>
+				{loading ? (
+					<Button disabled>
+						<Loader2 className="animate-spin" /> Creating Site...
+					</Button>
+				) : (
+					<Button onClick={submit}>Update</Button>
+				)}
 			</DialogContent>
 		</Dialog>
 	);
