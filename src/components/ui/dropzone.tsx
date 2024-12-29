@@ -17,7 +17,7 @@ export function CustomFileDropzone({
 	const [isDragActive, setIsDragActive] = useState(false);
 	const fileInputRef = useRef<HTMLInputElement>(null);
 	const folderInputRef = useRef<HTMLInputElement>(null);
-	const maxFiles = 5;
+	const maxFiles = 15;
 	const maxSize = 5 * 1024 * 1024; // 5MB
 	const acceptedFileTypes = ["*/*"];
 
