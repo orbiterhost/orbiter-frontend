@@ -125,11 +125,11 @@ export function CustomFileDropzone({
 		}
 	};
 
-	const removeFile = (index: number) => {
-		const newFiles = [...files];
-		newFiles.splice(index, 1);
-		setFiles(newFiles);
-	};
+	// const removeFile = (index: number) => {
+	// 	const newFiles = [...files];
+	// 	newFiles.splice(index, 1);
+	// 	setFiles(newFiles);
+	// };
 
 	return (
 		<div>
