@@ -41,7 +41,7 @@ export function Nav({ organizations }: NavProps) {
 	}, []);
 
 	return (
-		<div className="w-full flex gap-6 justify-between items-center py-4 px-8">
+		<div className="w-full flex gap-6 justify-between items-center py-6 px-10">
 			<Popover>
 				<div className="flex items-center gap-4">
 					<a href="https://orbiter.host" target="_blank" rel="noreferrer">
