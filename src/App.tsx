@@ -10,7 +10,6 @@ import {
 } from "./utils/db";
 import { uploadSite } from "./utils/pinata";
 import { LoginForm } from "./components/login-form";
-import { GalleryVerticalEnd } from "lucide-react";
 import { Toaster } from "@/components/ui/toaster";
 import { useToast } from "@/hooks/use-toast";
 import authHero from "./assets/auth-hero.jpg";
