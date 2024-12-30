@@ -5,6 +5,7 @@ import { Button } from "./ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import type { User } from "@supabase/supabase-js";
 import { Combobox } from "./ui/comobobox";
+import logo from "../assets/black_logo.png";
 
 type NavProps = {
 	organizations: {
@@ -40,9 +41,14 @@ export function Nav({ organizations }: NavProps) {
 	}, []);
 
 	return (
-		<div className="w-full flex gap-6 justify-end items-center py-4 px-8">
+		<div className="w-full flex gap-6 justify-between items-center py-4 px-8">
 			<Popover>
-				{organizations.length > 1 && <Combobox organizations={orgsData} />}
+				<div className="flex items-center gap-4">
+					<a href="https://orbiter.host" target="_blank" rel="noreferrer">
+						<img className="w-24" src={logo} alt="logo" />
+					</a>
+					{organizations.length > 1 && <Combobox organizations={orgsData} />}
+				</div>
 				<PopoverTrigger>
 					<Avatar>
 						<AvatarImage src={user?.user_metadata.avatar_url} />
