@@ -25,16 +25,21 @@ type Site = {
 	site_contract: string;
 	updated_at: string;
 	deployed_by: string | null;
+	custom_domain?: string;
+	domain_ownership_verified?: boolean;
+	ssl_issued?: boolean;
 };
 
 type SiteCardProps = {
 	site: Site;
 	loading: boolean;
 	updateSite: (files: File[], siteId: string) => Promise<void>;
+	deleteSite: (siteId: string) => Promise<void>;
 };
 
-export const SiteCard = ({ site, loading, updateSite }: SiteCardProps) => {
+export const SiteCard = ({ site, loading, updateSite, deleteSite }: SiteCardProps) => {
 	const [isSiteReady, setIsSiteReady] = useState(false);
+	const [deleting, setDeleting] = useState(false);
 
 	useEffect(() => {
 		const checkSiteStatus = async () => {
@@ -65,19 +70,30 @@ export const SiteCard = ({ site, loading, updateSite }: SiteCardProps) => {
 		return () => clearInterval(interval);
 	}, [site.domain]);
 
+	const handleDelete = async (e: any, siteId: string) => {
+		try {
+			setDeleting(true);
+			await deleteSite(siteId);
+			setDeleting(false);
+		} catch (error) {
+			console.log(error);
+			setDeleting(false);			
+		}
+	}
+
 	return (
 		<Card className="min-w-[335px] flex flex-row">
 			<CardHeader className="flex items-center gap-2">
 				<div className="flex flex-col">
 					<CardTitle className="tracking-tighter">
 						<a
-							href={`https://${site.domain}`}
+							href={`https://${site.custom_domain ? site.custom_domain : site.domain}`}
 							target="_blank"
 							rel="noopener noreferrer"
 							className="group flex items-center gap-2"
 						>
 							<span className="group-hover:underline">
-								{site.domain}
+								{site.custom_domain ? site.custom_domain : site.domain}
 								<svg
 									xmlns="http://www.w3.org/2000/svg"
 									viewBox="0 0 24 24"
@@ -126,8 +142,8 @@ export const SiteCard = ({ site, loading, updateSite }: SiteCardProps) => {
 							updateSite={updateSite}
 							siteId={site.id}
 						/>
-						<Button className="h-7" variant="destructive">
-							Delete
+						<Button onClick={(e: any) => handleDelete(e, site.id)} className="h-7" variant="destructive">
+							{deleting ? "Deleting..." : "Delete"}
 						</Button>
 					</PopoverContent>
 				</Popover>

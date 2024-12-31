@@ -7,6 +7,7 @@ type DashboardProps = {
 	createSite: any;
 	updateSite: any;
 	loading: boolean;
+	deleteSite: (siteId: string) => Promise<void>;
 };
 
 type Site = {
@@ -17,7 +18,7 @@ type Site = {
 	domain: string;
 	site_contract: string;
 	updated_at: string;
-	deployed_by: string | null;
+	deployed_by: string | null;	
 };
 
 const Dashboard = (props: DashboardProps) => {
@@ -33,6 +34,7 @@ const Dashboard = (props: DashboardProps) => {
 						site={site}
 						loading={props.loading}
 						updateSite={props.updateSite}
+						deleteSite={props.deleteSite}
 					/>
 				))}
 			</div>
