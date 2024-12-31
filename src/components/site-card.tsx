@@ -71,6 +71,7 @@ export const SiteCard = ({ site, loading, updateSite, deleteSite }: SiteCardProp
 	}, [site.domain]);
 
 	const handleDelete = async (e: any, siteId: string) => {
+		e.preventDefault();
 		try {
 			setDeleting(true);
 			await deleteSite(siteId);
