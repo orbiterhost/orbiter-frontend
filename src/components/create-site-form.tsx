@@ -30,7 +30,7 @@ export function CreateSiteForm(props: DashboardProps) {
 
   useEffect(() => {
     const localCid = localStorage.getItem("orbiter-cid");
-	console.log(localCid)
+	
     if (localCid) {	
       setCid(localCid);
 	  setOpen(true);
@@ -41,9 +41,13 @@ export function CreateSiteForm(props: DashboardProps) {
     try {
       if (cid) {
         await props.createSiteFromCid(cid, domain!);
+		
         localStorage.removeItem("orbiter-cid");
 		setOpen(false);
 		setDomain("");
+		const url = new URL(window.location.href);
+  		url.searchParams.delete("cid");
+  		window.history.pushState({}, '', url);
       }
 
       if (!files.length) {
