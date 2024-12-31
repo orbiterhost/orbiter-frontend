@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
-	Dialog,
-	DialogContent,
-	DialogDescription,
-	DialogHeader,
-	DialogTitle,
-	DialogTrigger,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
@@ -14,84 +14,109 @@ import { Label } from "./ui/label";
 import { Loader2 } from "lucide-react";
 
 type DashboardProps = {
-	organization: any;
-	sites: any[];
-	createSite: any;
-	updateSite: any;
-	loading: boolean;
+  organization: any;
+  sites: any[];
+  createSite: any;
+  updateSite: any;
+  loading: boolean;
+  createSiteFromCid: (cid: string, subdomain: string) => Promise<void>;
 };
 
 export function CreateSiteForm(props: DashboardProps) {
-	const [files, setFiles] = useState<File[]>([]);
-	const [domain, setDomain] = useState<string>();
-	const [open, setOpen] = useState(false);
+  const [files, setFiles] = useState<File[]>([]);
+  const [domain, setDomain] = useState<string>();
+  const [open, setOpen] = useState(false);
+  const [cid, setCid] = useState("");
 
-	async function submit() {
-		try {
-			if (!files.length) {
-				console.log("Select a file!");
-				return;
-			}
+  useEffect(() => {
+    const localCid = localStorage.getItem("orbiter-cid");
+	console.log(localCid)
+    if (localCid) {	
+      setCid(localCid);
+	  setOpen(true);
+    }
+  }, []);
 
-			if (files.length === 1) {
-				await props.createSite(files[0], domain);
-			} else {
-				await props.createSite(files, domain);
-			}
-			setOpen(false);
-			setFiles([]);
-			setDomain("");
-		} catch (error) {
-			console.log(error);
-		}
-	}
+  async function submit() {
+    try {
+      if (cid) {
+        await props.createSiteFromCid(cid, domain!);
+        localStorage.removeItem("orbiter-cid");
+		setOpen(false);
+		setDomain("");
+      }
 
-	return (
-		<Dialog
-			onOpenChange={(open) => {
-				// Only allow closing via the close button
-				if (!props.loading) {
-					setOpen(open);
-				}
-			}}
-			open={open}
-		>
-			<DialogTrigger>
-				<Button>Create Site</Button>
-			</DialogTrigger>
-			<DialogContent
-				onPointerDownOutside={(e) => {
-					e.preventDefault();
-				}}
-			>
-				<DialogHeader>
-					<DialogTitle>Upload a Site</DialogTitle>
-					<DialogDescription>
-						Choose a file or a folder to upload, as well as a subdomain for the
-						site
-					</DialogDescription>
-				</DialogHeader>
-				<CustomFileDropzone
-					disabled={props.loading}
-					files={files}
-					setFiles={setFiles}
-				/>
-				<Label>Subdomain</Label>
-				<Input
-					disabled={props.loading}
-					value={domain}
-					onChange={(e) => setDomain(e.target.value)}
-					placeholder="*.orbiter.website"
-					type="text"
-				/>
-				{props.loading ? (
-					<Button disabled>
-						<Loader2 className="animate-spin" /> Creating Site...
-					</Button>
-				) : (
-					<Button onClick={submit}>Create</Button>
-				)}
-			</DialogContent>
-		</Dialog>
-	);
+      if (!files.length) {
+        console.log("Select a file!");
+        return;
+      }
+
+      if (files.length === 1) {
+        await props.createSite(files[0], domain);
+      } else {
+        await props.createSite(files, domain);
+      }
+      setOpen(false);
+      setFiles([]);
+      setDomain("");
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  return (
+    <Dialog
+      onOpenChange={(open) => {
+        // Only allow closing via the close button
+        if (!props.loading) {
+          setOpen(open);
+        }
+      }}
+      open={open}
+    >
+      <DialogTrigger>
+        <Button>Create Site</Button>
+      </DialogTrigger>
+      <DialogContent
+        onPointerDownOutside={(e) => {
+          e.preventDefault();
+        }}
+      >
+        <DialogHeader>
+          <DialogTitle>Upload a Site</DialogTitle>
+          <DialogDescription>
+            Choose a file or a folder to upload, as well as a subdomain for the
+            site
+          </DialogDescription>
+        </DialogHeader>
+        {cid ? (
+          <div>
+            <p>Complete your site creation</p>
+          </div>
+        ) : (
+          <CustomFileDropzone
+            disabled={props.loading}
+            files={files}
+            setFiles={setFiles}
+          />
+        )}
+
+        <Label>Subdomain</Label>
+        <Input
+          disabled={props.loading}
+          value={domain}
+          onChange={(e) => setDomain(e.target.value)}
+          placeholder="*.orbiter.website"
+          type="text"
+        />
+        {props.loading ? (
+          <Button disabled>
+            <Loader2 className="animate-spin" /> Creating Site...
+          </Button>
+        ) : (
+          <Button onClick={submit}>Create</Button>
+        )}
+      </DialogContent>
+    </Dialog>
+  );
 }

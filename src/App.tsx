@@ -40,6 +40,14 @@ export default function App() {
   }, []);
 
   useEffect(() => {
+    const currentUrlParams = new URLSearchParams(window.location.search);
+    const cid = currentUrlParams.get("cid");
+    if (cid) {
+      localStorage.setItem("orbiter-cid", cid as string);
+    }
+  }, []);
+
+  useEffect(() => {
     const loadOrgs = async () => {
       const memberships = await getOrgMemebershipsForUser();
       if (memberships && memberships?.length === 0) {
@@ -58,6 +66,39 @@ export default function App() {
       loadOrgs();
     }
   }, [userSession]);
+
+  const createSiteFromCid = async (cid: string, subdomain: string) => {
+    try {
+      setLoading(true);
+      const accessToken = await getAccessToken();
+      await fetch(`${import.meta.env.VITE_BASE_URL}/sites`, {
+        method: "POST",
+        //  @ts-ignore
+        headers: {
+          "Content-Type": "application/json",
+          "X-Orbiter-Token": accessToken,
+        },
+        body: JSON.stringify({
+          orgId: organizations[0].organizations.id,
+          cid: cid,
+          subdomain: subdomain,
+        }),
+      });
+
+      handleLoadSites(organizations);
+      setLoading(false);
+      toast({
+        title: "Site created!",
+      });
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+      toast({
+        title: "Problem creating site",
+        variant: "destructive",
+      });
+    }
+  };
 
   const createSite = async (files: any, subdomain: string) => {
     setLoading(true);
@@ -146,7 +187,7 @@ export default function App() {
       const accessToken = await getAccessToken();
       await fetch(`${import.meta.env.VITE_BASE_URL}/sites/${siteId}`, {
         method: "DELETE",
-		//	@ts-ignore
+        //	@ts-ignore
         headers: {
           "Content-Type": "application/json",
           "X-Orbiter-Token": accessToken,
@@ -154,7 +195,7 @@ export default function App() {
         body: "",
       });
 
-	  handleLoadSites(organizations);
+      handleLoadSites(organizations);
     } catch (error) {
       console.log(error);
       throw error;
@@ -207,8 +248,9 @@ export default function App() {
           organizations={organizations}
           sites={sites}
           createSite={createSite}
+		  createSiteFromCid={createSiteFromCid}
           updateSite={updateSite}
-		  deleteSite={deleteSite}
+          deleteSite={deleteSite}
           loading={loading}
         />
       )}

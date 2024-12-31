@@ -9,6 +9,7 @@ type MainProps = {
 	updateSite: any;
 	loading: boolean;
 	deleteSite: (siteId: string) => Promise<void>;
+	createSiteFromCid: (cid: string, subdomain: string) => Promise<void>;
 };
 
 const Main = (props: MainProps) => {
@@ -24,6 +25,7 @@ const Main = (props: MainProps) => {
 					createSite={props.createSite}
 					loading={props.loading}
 					deleteSite={props.deleteSite}
+					createSiteFromCid={props.createSiteFromCid}
 				/>
 			)}
 		</div>
