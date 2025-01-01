@@ -26,7 +26,8 @@ type Site = {
 const Dashboard = (props: DashboardProps) => {
   return (
     <div className="sm:max-w-screen-lg max-w-screen-sm w-full mx-auto flex flex-col items-start justify-center gap-2">
-      <div className="w-full flex justify-end px-6 lg:px-0">
+      <div className="w-full flex justify-end items-center gap-12 px-6 lg:px-0">
+        <p className="font-bold">Sites: {props.sites.length} / 2 </p>
         <CreateSiteForm {...props} />
       </div>
       {!props.initialLoading && props.sites.length === 0 && (
