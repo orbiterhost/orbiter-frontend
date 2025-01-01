@@ -21,6 +21,7 @@ export default function App() {
   const [sites, setSites] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [authLoading, setAuthLoading] = useState(true);
+  const [initialLoading, setInitialLoading] = useState(true); // Add this new state
   const { toast } = useToast();
 
   useEffect(() => {
@@ -178,8 +179,12 @@ export default function App() {
   };
 
   const handleLoadSites = async (membershipData: any[]) => {
-    const sites = await loadSites(membershipData[0].organizations.id);
-    setSites(sites?.data || []);
+    try {
+      const sites = await loadSites(membershipData[0].organizations.id);
+      setSites(sites?.data || []);
+    } finally {
+      setInitialLoading(false); // Set to false when data is loaded
+    }
   };
 
   const deleteSite = async (siteId: string) => {
@@ -248,10 +253,11 @@ export default function App() {
           organizations={organizations}
           sites={sites}
           createSite={createSite}
-		  createSiteFromCid={createSiteFromCid}
+          createSiteFromCid={createSiteFromCid}
           updateSite={updateSite}
           deleteSite={deleteSite}
           loading={loading}
+          initialLoading={initialLoading}
         />
       )}
       <Toaster />

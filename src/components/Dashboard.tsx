@@ -9,6 +9,7 @@ type DashboardProps = {
   loading: boolean;
   deleteSite: (siteId: string) => Promise<void>;
   createSiteFromCid: (cid: string, subdomain: string) => Promise<void>;
+  initialLoading: boolean;
 };
 
 type Site = {
@@ -28,7 +29,7 @@ const Dashboard = (props: DashboardProps) => {
       <div className="w-full flex justify-end px-6 lg:px-0">
         <CreateSiteForm {...props} />
       </div>
-      {props.sites.length === 0 && (
+      {!props.initialLoading && props.sites.length === 0 && (
         <div className="w-full flex justify-end px-24">
           <p>No sites 🥸 make one now!</p>
           <svg width="88" height="165" viewBox="0 0 88 165" fill="none" xmlns="http://www.w3.org/2000/svg">
