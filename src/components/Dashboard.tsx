@@ -1,4 +1,3 @@
-import { Divide } from "lucide-react";
 import { CreateSiteForm } from "./create-site-form";
 import { SiteCard } from "./site-card";
 
