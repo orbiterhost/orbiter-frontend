@@ -109,9 +109,14 @@ export default function App() {
       //  Generate one-time use key
       //  Upload site
       const cid = await uploadSite(files);
-      console.log(cid);
+      if (!cid) {
+        toast({
+          title: "Problem uploading files",
+          variant: "destructive"
+        })
+      }
       //  Create subdomain and contract
-      await fetch(`${import.meta.env.VITE_BASE_URL}/sites`, {
+      const createSiteRequest = await fetch(`${import.meta.env.VITE_BASE_URL}/sites`, {
         method: "POST",
         //  @ts-ignore
         headers: {
@@ -124,6 +129,10 @@ export default function App() {
           subdomain: subdomain,
         }),
       });
+      if (!createSiteRequest.ok) {
+        const data = await createSiteRequest.json()
+        throw Error(data.message)
+      }
 
       handleLoadSites(organizations);
       setLoading(false);
@@ -136,6 +145,7 @@ export default function App() {
       setLoading(false);
       toast({
         title: "Problem creating site",
+        description: `${error}`,
         variant: "destructive",
       });
     }
