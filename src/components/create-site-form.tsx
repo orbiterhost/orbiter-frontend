@@ -24,7 +24,7 @@ type DashboardProps = {
 
 export function CreateSiteForm(props: DashboardProps) {
   const [files, setFiles] = useState<File[]>([]);
-  const [domain, setDomain] = useState<string>("your-domain");
+  const [domain, setDomain] = useState<string>("");
   const [open, setOpen] = useState(false);
   const [cid, setCid] = useState("");
 
