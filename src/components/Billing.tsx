@@ -29,11 +29,11 @@ const PLANS: Plan[] = [
     displayName: "Free",
     price: 0,
     features: [
-      "Two projects",
-      "25mb file/folder upload limit",
-      "500mb storage",
-      "1 collaborator",
-      "Free orbiter.website subdomain",
+      "2 Projects",
+      "25MB File/Folder Upload Limit",
+      "500MB Storage",
+      "1 Collaborator",
+      "Free orbiter.website Subdomain",
     ],
     priceId: "",
   },
@@ -43,13 +43,13 @@ const PLANS: Plan[] = [
     displayName: "Launch",
     price: 9,
     features: [
-      "5 projects",
-      "50mb file/folder upload limit",
-      "1gb storage",
-      "2 collaborators",
-      "Custom domain",
-      "Remove Orbiter branding",
-      "Unlimited traffic",
+      "5 Projects",
+      "50MB File/Folder Upload Limit",
+      "1GB Storage",
+      "2 Collaborators",
+      "Custom Domains",
+      "Remove Orbiter Branding",
+      "Unlimited Traffic",
     ],
     priceId: "price_1QctpDIWMzuw7wjqbK42YN85",
   },
@@ -59,14 +59,14 @@ const PLANS: Plan[] = [
     displayName: "Orbit",
     price: 19,
     features: [
-      "Unlimited projects",
-      "100mb file/folder upload limit",
-      "10gb storage",
-      "Unlimited collaborators",
-      "Custom domain",
+      "Unlimited Projects",
+      "100MB File/Folder Upload Limit",
+      "10GB Storage",
+      "Unlimited Collaborators",
+      "Custom Domains",
       "Analytics",
-      "Remove Orbiter branding",
-      "Unlimited traffic",
+      "Remove Orbiter Branding",
+      "Unlimited Traffic",
     ],
     priceId: "price_1QctpbIWMzuw7wjqFHL2L4rl",
   },
@@ -95,7 +95,7 @@ const Billing = (props: BillingProps) => {
             </p>
           )}
           {props.planDetails.nextPlan && (
-            <p className="text-sm text-yellow-600 text-center">
+            <p className="text-sm text-gray-400 text-center">
               Changing to {getPlanDisplayName(props.planDetails.nextPlan)} next period
             </p>
           )}
@@ -107,10 +107,10 @@ const Billing = (props: BillingProps) => {
       return (
         <div className="flex flex-col gap-2">
           <Button disabled className="w-full bg-blue-500">
-            Starting next period
+            Next Billing Cycle
           </Button>
           <p className="text-sm text-blue-600 text-center">
-            Scheduled to start at end of current period
+            Scheduled to start at end of current billing period
           </p>
         </div>
       );
