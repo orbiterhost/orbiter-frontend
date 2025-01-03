@@ -64,7 +64,7 @@ const PLANS: Plan[] = [
       "10GB Storage",
       "Unlimited Collaborators",
       "Custom Domains",
-      "Analytics",
+      "Analytics (coming soon)",
       "Remove Orbiter Branding",
       "Unlimited Traffic",
     ],
