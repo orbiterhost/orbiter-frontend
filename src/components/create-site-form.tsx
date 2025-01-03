@@ -24,16 +24,16 @@ type DashboardProps = {
 
 export function CreateSiteForm(props: DashboardProps) {
   const [files, setFiles] = useState<File[]>([]);
-  const [domain, setDomain] = useState<string>();
+  const [domain, setDomain] = useState<string>("your-domain");
   const [open, setOpen] = useState(false);
   const [cid, setCid] = useState("");
 
   useEffect(() => {
     const localCid = localStorage.getItem("orbiter-cid");
-	
-    if (localCid) {	
+
+    if (localCid) {
       setCid(localCid);
-	  setOpen(true);
+      setOpen(true);
     }
   }, []);
 
@@ -41,13 +41,13 @@ export function CreateSiteForm(props: DashboardProps) {
     try {
       if (cid) {
         await props.createSiteFromCid(cid, domain!);
-		
+
         localStorage.removeItem("orbiter-cid");
-		setOpen(false);
-		setDomain("");
-		const url = new URL(window.location.href);
-  		url.searchParams.delete("cid");
-  		window.history.pushState({}, '', url);
+        setOpen(false);
+        setDomain("");
+        const url = new URL(window.location.href);
+        url.searchParams.delete("cid");
+        window.history.pushState({}, '', url);
       }
 
       if (!files.length) {
@@ -106,13 +106,24 @@ export function CreateSiteForm(props: DashboardProps) {
         )}
 
         <Label>Subdomain</Label>
-        <Input
-          disabled={props.loading}
-          value={domain}
-          onChange={(e) => setDomain(e.target.value)}
-          placeholder="*.orbiter.website"
-          type="text"
-        />
+        <div className="relative mb-5">
+          <Input
+            disabled={props.loading}
+            value={domain}
+            onChange={(e) => setDomain(e.target.value)}
+            type="text"
+            spellCheck={false}
+            className="w-full rounded pr-32 text-transparent bg-clip-text" // Make input text transparent
+          />
+          <div className="absolute inset-y-0 left-0 flex items-center px-3 text-black pointer-events-none">
+            {domain ? (
+              <span className="text-gray-950">{domain}</span>
+            ) : (
+              <span className="text-gray-400">subdomain</span>
+            )}
+            <span>.orbiter.host</span>
+          </div>
+        </div>
         {props.loading ? (
           <Button disabled>
             <Loader2 className="animate-spin" /> Creating Site...
