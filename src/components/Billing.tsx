@@ -6,14 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/card";
-
-type PlanDetails = {
-  planName: string;
-  currentPeriodStart: number;
-  currentPeriodEnd: number;
-  status: string;
-  nextPlan?: string;
-};
+import { PlanDetails } from "@/App"
 
 type BillingProps = {
   planDetails: PlanDetails;
@@ -136,17 +129,16 @@ const Billing = (props: BillingProps) => {
         <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
           Billing
         </h1>
-        <div className="flex sm:flex-row flex-col gap-8 justify-center items-center w-full">
+        <div className="flex lg:flex-row flex-col gap-8 justify-center items-center lg:items-start w-full">
           {PLANS.map((plan) => (
             <Card
               key={plan.id}
-              className={`w-[300px] ${
-                props.planDetails.planName === plan.name
-                  ? "border-2 border-gray-400"
-                  : props.planDetails.nextPlan === plan.name
+              className={`w-[300px] ${props.planDetails.planName === plan.name
+                ? "border-2 border-gray-400"
+                : props.planDetails.nextPlan === plan.name
                   ? "border-2 border-blue-400"
                   : ""
-              }`}
+                }`}
             >
               <CardHeader>
                 <CardTitle className="text-3xl">{plan.displayName}</CardTitle>

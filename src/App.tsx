@@ -16,11 +16,11 @@ import authHero from "./assets/auth-hero.jpg";
 import logo from "./assets/black_logo.png";
 
 export type PlanDetails = {
-	planName: string;
-	currentPeriodStart: number;
-	currentPeriodEnd: number;
-	status: string;
-	nextPlan: string | null;
+  planName: string;
+  currentPeriodStart: number;
+  currentPeriodEnd: number;
+  status: string;
+  nextPlan?: string | null;
 }
 
 export default function App() {
@@ -31,9 +31,10 @@ export default function App() {
   const [authLoading, setAuthLoading] = useState(true);
   const [initialLoading, setInitialLoading] = useState(true); // Add this new state
   const [planDetails, setPlanDetails] = useState<PlanDetails>({
-	planName: "free", 
-	currentPeriodStart: 0, 
-	currentPeriodEnd: 0
+    planName: "free",
+    currentPeriodStart: 0,
+    currentPeriodEnd: 0,
+    status: "active"
   })
   const { toast } = useToast();
 
@@ -63,21 +64,21 @@ export default function App() {
 
   useEffect(() => {
     const loadOrgs = async () => {
-		console.log("loading...")
+      console.log("loading...")
       const memberships = await getOrgMemebershipsForUser();
       if (memberships && memberships?.length === 0) {
-		console.log("Here")
+        console.log("Here")
         //  Create org and membership for user because this is a new user
         await createOrganizationAndMembership();
         const memberships = await getOrgMemebershipsForUser();
         setOrganizations(memberships || []);
         handleLoadSites(memberships || []);
-		memberships && memberships.length > 0 && fetchPlanDetails(memberships[0].organizations.id)
+        memberships && memberships.length > 0 && fetchPlanDetails(memberships[0].organizations.id)
       } else if (memberships) {
         setOrganizations(memberships);
         //  Load Sites
         handleLoadSites(memberships);
-		fetchPlanDetails(memberships[0].organizations.id)
+        fetchPlanDetails(memberships[0].organizations.id)
       }
     };
     if (userSession) {
@@ -86,21 +87,21 @@ export default function App() {
   }, [userSession]);
 
   const fetchPlanDetails = async (orgId: string) => {
-	const accessToken = await getAccessToken();
-	const res = await fetch(`${import.meta.env.VITE_BASE_URL}/billing/${orgId}/plan`, {
-		method: "GET",
-		//  @ts-ignore
-		headers: {
-		  "Content-Type": "application/json",
-		  "X-Orbiter-Token": accessToken,
-		}
-	  });
-	
-	const planInfo = await res.json();
-	if(planInfo && planInfo.data) {
-		setPlanDetails(planInfo?.data);
-	}		
-}
+    const accessToken = await getAccessToken();
+    const res = await fetch(`${import.meta.env.VITE_BASE_URL}/billing/${orgId}/plan`, {
+      method: "GET",
+      //  @ts-ignore
+      headers: {
+        "Content-Type": "application/json",
+        "X-Orbiter-Token": accessToken,
+      }
+    });
+
+    const planInfo = await res.json();
+    if (planInfo && planInfo.data) {
+      setPlanDetails(planInfo?.data);
+    }
+  }
 
   const createSiteFromCid = async (cid: string, subdomain: string) => {
     try {
@@ -252,27 +253,32 @@ export default function App() {
   };
 
   const selectPlan = async (priceId: string) => {
-	try {
-		const accessToken = await getAccessToken();
-		const res = await fetch(`${import.meta.env.VITE_BASE_URL}/billing/${organizations[0].organization_id}/plan`, {
-			method: "POST",
-			//  @ts-ignore
-			headers: {
-			  "Content-Type": "application/json",
-			  "X-Orbiter-Token": accessToken,
-			}, 
-			body: JSON.stringify({
-				priceId
-			})
-		  });
-		const sessionRes = await res.json();
-		const url = sessionRes?.data?.url
-		if(url) {
-			window.location.replace(url);
-		}
-	} catch (error) {
-		console.log(error);		
-	}
+    try {
+      const accessToken = await getAccessToken();
+      const res = await fetch(`${import.meta.env.VITE_BASE_URL}/billing/${organizations[0].organization_id}/plan`, {
+        method: "POST",
+        //  @ts-ignore
+        headers: {
+          "Content-Type": "application/json",
+          "X-Orbiter-Token": accessToken,
+        },
+        body: JSON.stringify({
+          priceId
+        })
+      });
+      const sessionRes = await res.json();
+      const url = sessionRes?.data?.url
+      if (url) {
+        window.location.replace(url);
+      }
+    } catch (error) {
+      toast({
+        title: "Problem Selecting Plan",
+        description: `${error}`,
+        variant: "destructive"
+      })
+      console.log(error);
+    }
   }
 
   if (authLoading) {
@@ -326,8 +332,8 @@ export default function App() {
           deleteSite={deleteSite}
           loading={loading}
           initialLoading={initialLoading}
-		  planDetails={planDetails}
-		  selectPlan={selectPlan}
+          planDetails={planDetails}
+          selectPlan={selectPlan}
         />
       )}
       <Toaster />

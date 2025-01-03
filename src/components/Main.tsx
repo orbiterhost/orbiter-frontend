@@ -38,6 +38,7 @@ const Main = (props: MainProps) => {
                   deleteSite={props.deleteSite}
                   createSiteFromCid={props.createSiteFromCid}
                   initialLoading={props.initialLoading}
+                  planDetails={props.planDetails}
                 />
               }
             />

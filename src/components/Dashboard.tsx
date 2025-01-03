@@ -1,5 +1,6 @@
 import { CreateSiteForm } from "./create-site-form";
 import { SiteCard } from "./site-card";
+import { PlanDetails } from "@/App"
 
 type DashboardProps = {
   organization: any;
@@ -10,6 +11,7 @@ type DashboardProps = {
   deleteSite: (siteId: string) => Promise<void>;
   createSiteFromCid: (cid: string, subdomain: string) => Promise<void>;
   initialLoading: boolean;
+  planDetails: PlanDetails;
 };
 
 type Site = {
@@ -24,10 +26,21 @@ type Site = {
 };
 
 const Dashboard = (props: DashboardProps) => {
+
+  let maxSites: any;
+
+  if (props.planDetails.planName === "launch") {
+    maxSites = "5"
+  } else if (props.planDetails.planName === "orbit") {
+    maxSites = <span className="text-xl">∞</span>
+  } else {
+    maxSites = "2"
+  }
+
   return (
     <div className="sm:max-w-screen-lg max-w-screen-sm w-full mx-auto flex flex-col items-start justify-center gap-2">
       <div className="w-full flex justify-end items-center gap-12 px-6 lg:px-0">
-        {props.sites.length > 0 && <p className="font-bold">Sites: {props.sites.length} / 2 </p>}
+        {props.sites.length > 0 && <p className="font-bold">Sites: {props.sites.length} / {maxSites}</p>}
         <CreateSiteForm {...props} />
       </div>
       {!props.initialLoading && props.sites.length === 0 && (

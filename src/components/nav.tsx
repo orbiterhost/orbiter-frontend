@@ -57,13 +57,15 @@ export function Nav({ organizations }: NavProps) {
           </Avatar>
         </PopoverTrigger>
         <PopoverContent className="max-w-[125px] mr-8">
-          <NavLink  
-            to="/billing"            
-			end
-          >
-			<Button className="bg-transparent text-black outline-none shadow-none hover:bg-transparent hover:underline">
-				Billing
-			</Button>            
+          <NavLink to="/" end>
+            <Button className="bg-transparent text-black outline-none shadow-none hover:bg-transparent hover:underline">
+              Dashboard
+            </Button>
+          </NavLink>
+          <NavLink to="/billing" end>
+            <Button className="bg-transparent text-black outline-none shadow-none hover:bg-transparent hover:underline">
+              Billing
+            </Button>
           </NavLink>
           <Button
             className="bg-transparent text-black outline-none shadow-none hover:bg-transparent hover:underline"
