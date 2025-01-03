@@ -15,6 +15,14 @@ import { useToast } from "@/hooks/use-toast";
 import authHero from "./assets/auth-hero.jpg";
 import logo from "./assets/black_logo.png";
 
+export type PlanDetails = {
+	planName: string;
+	currentPeriodStart: number;
+	currentPeriodEnd: number;
+	status: string;
+	nextPlan: string | null;
+}
+
 export default function App() {
   const [userSession, setSession] = useState<Session | null>(null);
   const [organizations, setOrganizations] = useState<any[]>([]);
@@ -22,6 +30,11 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [authLoading, setAuthLoading] = useState(true);
   const [initialLoading, setInitialLoading] = useState(true); // Add this new state
+  const [planDetails, setPlanDetails] = useState<PlanDetails>({
+	planName: "free", 
+	currentPeriodStart: 0, 
+	currentPeriodEnd: 0
+  })
   const { toast } = useToast();
 
   useEffect(() => {
@@ -50,23 +63,44 @@ export default function App() {
 
   useEffect(() => {
     const loadOrgs = async () => {
+		console.log("loading...")
       const memberships = await getOrgMemebershipsForUser();
       if (memberships && memberships?.length === 0) {
+		console.log("Here")
         //  Create org and membership for user because this is a new user
         await createOrganizationAndMembership();
         const memberships = await getOrgMemebershipsForUser();
         setOrganizations(memberships || []);
         handleLoadSites(memberships || []);
+		memberships && memberships.length > 0 && fetchPlanDetails(memberships[0].organizations.id)
       } else if (memberships) {
         setOrganizations(memberships);
         //  Load Sites
         handleLoadSites(memberships);
+		fetchPlanDetails(memberships[0].organizations.id)
       }
     };
     if (userSession) {
       loadOrgs();
     }
   }, [userSession]);
+
+  const fetchPlanDetails = async (orgId: string) => {
+	const accessToken = await getAccessToken();
+	const res = await fetch(`${import.meta.env.VITE_BASE_URL}/billing/${orgId}/plan`, {
+		method: "GET",
+		//  @ts-ignore
+		headers: {
+		  "Content-Type": "application/json",
+		  "X-Orbiter-Token": accessToken,
+		}
+	  });
+	
+	const planInfo = await res.json();
+	if(planInfo && planInfo.data) {
+		setPlanDetails(planInfo?.data);
+	}		
+}
 
   const createSiteFromCid = async (cid: string, subdomain: string) => {
     try {
@@ -217,6 +251,30 @@ export default function App() {
     }
   };
 
+  const selectPlan = async (priceId: string) => {
+	try {
+		const accessToken = await getAccessToken();
+		const res = await fetch(`${import.meta.env.VITE_BASE_URL}/billing/${organizations[0].organization_id}/plan`, {
+			method: "POST",
+			//  @ts-ignore
+			headers: {
+			  "Content-Type": "application/json",
+			  "X-Orbiter-Token": accessToken,
+			}, 
+			body: JSON.stringify({
+				priceId
+			})
+		  });
+		const sessionRes = await res.json();
+		const url = sessionRes?.data?.url
+		if(url) {
+			window.location.replace(url);
+		}
+	} catch (error) {
+		console.log(error);		
+	}
+  }
+
   if (authLoading) {
     return (
       <div className="h-screen w-full flex items-center justify-center">
@@ -268,6 +326,8 @@ export default function App() {
           deleteSite={deleteSite}
           loading={loading}
           initialLoading={initialLoading}
+		  planDetails={planDetails}
+		  selectPlan={selectPlan}
         />
       )}
       <Toaster />

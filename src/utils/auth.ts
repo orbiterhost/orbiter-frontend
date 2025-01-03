@@ -15,23 +15,11 @@ export async function getUserLocal(): Promise<Session | null> {
 	return data.session;
 }
 
-const getURL = () => {
-	let url =
-		import.meta.env.VITE_SITE_URL ?? // Set this to your site URL in production env.
-		"http://localhost:3000/";
-	// Make sure to include `https://` when not localhost.
-	url = url.startsWith("http") ? url : `https://${url}`;
-	// Make sure to include a trailing `/`.
-	url = url.endsWith("/") ? url : `${url}/`;
-	console.log(url);
-	return url;
-};
-
 export const signUserIn = async (provider: any) => {
 	const { data, error } = await supabase.auth.signInWithOAuth({
 		provider: provider,
 		options: {
-			redirectTo: getURL(),
+			redirectTo: import.meta.env.VITE_SITE_URL,
 		},
 	});
 
