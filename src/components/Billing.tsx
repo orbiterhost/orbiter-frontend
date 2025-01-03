@@ -51,7 +51,7 @@ const PLANS: Plan[] = [
       "Remove Orbiter Branding",
       "Unlimited Traffic",
     ],
-    priceId: "price_1QctpDIWMzuw7wjqbK42YN85",
+    priceId: "price_1QctmzIWMzuw7wjqDLmuiozo"//"price_1QctpDIWMzuw7wjqbK42YN85",
   },
   {
     id: "orbit",
@@ -68,7 +68,7 @@ const PLANS: Plan[] = [
       "Remove Orbiter Branding",
       "Unlimited Traffic",
     ],
-    priceId: "price_1QctpbIWMzuw7wjqFHL2L4rl",
+    priceId: "price_1QctoWIWMzuw7wjqTX35SSy2"//"price_1QctpbIWMzuw7wjqFHL2L4rl",
   },
 ];
 
