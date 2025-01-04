@@ -19,6 +19,7 @@ import { CustomDomainForm } from "./custom-domain-form";
 import { useToast } from "@/hooks/use-toast";
 import { Site } from "@/utils/types";
 import { getAccessToken } from "@/utils/auth";
+import { PlanDetails } from "@/App";
 
 type SiteCardProps = {
   site: Site;
@@ -30,6 +31,7 @@ type SiteCardProps = {
     siteId: string
   ) => Promise<void>;
   deleteCustomDomain: (customDomain: string, siteId: string) => Promise<void>;
+  planDetails: PlanDetails;
 };
 
 export const SiteCard = ({
@@ -39,6 +41,7 @@ export const SiteCard = ({
   deleteSite,
   handleAddCustomDomain,
   deleteCustomDomain,
+  planDetails,
 }: SiteCardProps) => {
   const [isSiteReady, setIsSiteReady] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -214,16 +217,18 @@ export const SiteCard = ({
             <Settings />
           </PopoverTrigger>
           <PopoverContent className="w-full flex flex-col gap-2">
-            <CustomDomainForm
-              loading={loading}
-              updateSite={updateSite}
-              siteId={site.id}
-              customDomain={customDomain}
-              setCustomDomain={setCustomDomain}
-              addCustomDomain={addCustomDomain}
-              siteInfo={site}
-              deleteCustomDomain={deleteCustomDomain}
-            />
+            {planDetails.planName !== "free" && (
+              <CustomDomainForm
+                loading={loading}
+                updateSite={updateSite}
+                siteId={site.id}
+                customDomain={customDomain}
+                setCustomDomain={setCustomDomain}
+                addCustomDomain={addCustomDomain}
+                siteInfo={site}
+                deleteCustomDomain={deleteCustomDomain}
+              />
+            )}
             <UpdateSiteForm
               loading={loading}
               updateSite={updateSite}

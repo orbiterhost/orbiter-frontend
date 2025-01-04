@@ -110,6 +110,7 @@ const Dashboard = (props: DashboardProps) => {
             deleteSite={props.deleteSite}    
             handleAddCustomDomain={handleAddCustomDomain}   
             deleteCustomDomain={deleteCustomDomain}     
+            planDetails={props.planDetails}
           />
         ))}
       </div>
