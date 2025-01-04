@@ -15,34 +15,40 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
-
-type Site = {
-  id: string;
-  created_at: string;
-  organization_id: string;
-  cid: string;
-  domain: string;
-  site_contract: string;
-  updated_at: string;
-  deployed_by: string | null;
-  custom_domain?: string;
-  domain_ownership_verified?: boolean;
-  ssl_issued?: boolean;
-};
+import { CustomDomainForm } from "./custom-domain-form";
+import { useToast } from "@/hooks/use-toast";
+import { Site } from "@/utils/types";
+import { getAccessToken } from "@/utils/auth";
 
 type SiteCardProps = {
   site: Site;
   loading: boolean;
   updateSite: (files: File[], siteId: string) => Promise<void>;
   deleteSite: (siteId: string) => Promise<void>;
+  handleAddCustomDomain: (
+    customDomain: string,
+    siteId: string
+  ) => Promise<void>;
+  deleteCustomDomain: (customDomain: string, siteId: string) => Promise<void>;
 };
 
-export const SiteCard = ({ site, loading, updateSite, deleteSite }: SiteCardProps) => {
+export const SiteCard = ({
+  site,
+  loading,
+  updateSite,
+  deleteSite,
+  handleAddCustomDomain,
+  deleteCustomDomain,
+}: SiteCardProps) => {
   const [isSiteReady, setIsSiteReady] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [customDomain, setCustomDomain] = useState("");
+
+  const { toast } = useToast();
 
   useEffect(() => {
     const checkSiteStatus = async () => {
+      console.log("Checking site status");
       try {
         const response = await fetch(`https://${site.domain}`, {
           method: "HEAD",
@@ -58,17 +64,58 @@ export const SiteCard = ({ site, loading, updateSite, deleteSite }: SiteCardProp
       }
     };
 
-    const interval = setInterval(async () => {
-      const isReady = await checkSiteStatus();
-      if (isReady) {
-        clearInterval(interval);
+    const checkCustomDomainStatus = async () => {
+      console.log("Checking custom domain status");
+      //  Check status of custom domain DNS
+      const accessToken = await getAccessToken();
+
+      const response = await fetch(
+        `${import.meta.env.VITE_BASE_URL}/sites/${site.id}/verify_domain`,
+        {
+          method: "POST",
+          //  @ts-ignore
+          headers: {
+            "X-Orbiter-Token": accessToken,
+            "Content-Type": "Application/json",
+          },
+          body: JSON.stringify({
+            customDomain: site.custom_domain,
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (data?.data?.isVerified && data?.data?.sslIssued) {
+        setIsSiteReady(true);
+        return true;
       }
-    }, 1000);
+      return false;
+    };
 
-    checkSiteStatus();
-
-    return () => clearInterval(interval);
-  }, [site.domain]);
+    if (
+      site.custom_domain &&
+      (!site.ssl_issued || !site.domain_ownership_verified)
+    ) {
+      const interval = setInterval(async () => {
+        const isReady = await checkCustomDomainStatus();
+        if (isReady) {
+          clearInterval(interval);
+        }
+      }, 30000);
+      checkCustomDomainStatus();
+      return () => clearInterval(interval);
+    } else {
+      const interval = setInterval(async () => {
+        const isReady = await checkSiteStatus();
+        if (isReady) {
+          clearInterval(interval);
+        }
+      }, 1000);
+      checkSiteStatus();
+      return () => clearInterval(interval);
+    }
+  }, [site.domain, site.custom_domain]);
 
   const handleDelete = async (e: any, siteId: string) => {
     e.preventDefault();
@@ -80,13 +127,31 @@ export const SiteCard = ({ site, loading, updateSite, deleteSite }: SiteCardProp
       console.log(error);
       setDeleting(false);
     }
-  }
+  };
 
   function truncate(text: string) {
     if (text.length > 24) {
       return text.slice(0, 24) + "...";
     }
     return text;
+  }
+
+  const addCustomDomain = async (domain?: string) => {
+    const domainToUse = domain ? domain : customDomain;
+    try {
+      const data = await handleAddCustomDomain(domainToUse, site.id);
+      toast({
+        title: "Custom domain ready",
+      });
+
+      return data;
+    } catch (error) {
+      console.log(error);
+      toast({
+        title: "Problem creating site",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -95,13 +160,17 @@ export const SiteCard = ({ site, loading, updateSite, deleteSite }: SiteCardProp
         <div className="flex flex-col">
           <CardTitle className="tracking-tighter">
             <a
-              href={`https://${site.custom_domain ? site.custom_domain : site.domain}`}
+              href={`https://${
+                site.custom_domain ? site.custom_domain : site.domain
+              }`}
               target="_blank"
               rel="noopener noreferrer"
               className="group flex items-center gap-2"
             >
               <span className="flex group-hover:underline">
-                {site.custom_domain ? site.custom_domain : truncate(site.domain)}
+                {site.custom_domain
+                  ? site.custom_domain
+                  : truncate(site.domain)}
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
@@ -145,12 +214,26 @@ export const SiteCard = ({ site, loading, updateSite, deleteSite }: SiteCardProp
             <Settings />
           </PopoverTrigger>
           <PopoverContent className="w-full flex flex-col gap-2">
+            <CustomDomainForm
+              loading={loading}
+              updateSite={updateSite}
+              siteId={site.id}
+              customDomain={customDomain}
+              setCustomDomain={setCustomDomain}
+              addCustomDomain={addCustomDomain}
+              siteInfo={site}
+              deleteCustomDomain={deleteCustomDomain}
+            />
             <UpdateSiteForm
               loading={loading}
               updateSite={updateSite}
               siteId={site.id}
             />
-            <Button onClick={(e: any) => handleDelete(e, site.id)} className="h-7" variant="destructive">
+            <Button
+              onClick={(e: any) => handleDelete(e, site.id)}
+              className="h-7"
+              variant="destructive"
+            >
               {deleting ? "Deleting..." : "Delete"}
             </Button>
           </PopoverContent>

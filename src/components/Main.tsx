@@ -16,6 +16,7 @@ type MainProps = {
   initialLoading: boolean;
   planDetails: PlanDetails
   selectPlan: (priceId: string) => Promise<void>;
+  loadSites: () => Promise<void>;
 };
 
 const Main = (props: MainProps) => {
@@ -39,6 +40,7 @@ const Main = (props: MainProps) => {
                   createSiteFromCid={props.createSiteFromCid}
                   initialLoading={props.initialLoading}
                   planDetails={props.planDetails}
+                  loadSites={props.loadSites}
                 />
               }
             />

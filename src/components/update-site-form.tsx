@@ -58,8 +58,8 @@ export function UpdateSiteForm({
 			open={open}
 		>
 			<DialogTrigger>
-				<Button variant="secondary" className="h-7">
-					Update
+				<Button variant="link" className="h-7">
+					Update Site
 				</Button>
 			</DialogTrigger>
 			<DialogContent

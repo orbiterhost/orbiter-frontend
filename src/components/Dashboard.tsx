@@ -1,6 +1,9 @@
 import { CreateSiteForm } from "./create-site-form";
 import { SiteCard } from "./site-card";
 import { PlanDetails } from "@/App"
+import { useToast } from "@/hooks/use-toast";
+import { getAccessToken } from "@/utils/auth";
+import { Site } from "@/utils/types";
 
 type DashboardProps = {
   organization: any;
@@ -12,22 +15,13 @@ type DashboardProps = {
   createSiteFromCid: (cid: string, subdomain: string) => Promise<void>;
   initialLoading: boolean;
   planDetails: PlanDetails;
+  loadSites: () => Promise<void>;
 };
 
-type Site = {
-  id: string;
-  created_at: string;
-  organization_id: string;
-  cid: string;
-  domain: string;
-  site_contract: string;
-  updated_at: string;
-  deployed_by: string | null;
-};
-
-const Dashboard = (props: DashboardProps) => {
-
+const Dashboard = (props: DashboardProps) => {  
   let maxSites: any;
+
+  const { toast } = useToast();
 
   if (props.planDetails.planName === "launch") {
     maxSites = "5"
@@ -35,6 +29,60 @@ const Dashboard = (props: DashboardProps) => {
     maxSites = <span className="text-xl">∞</span>
   } else {
     maxSites = "2"
+  }
+
+  const handleAddCustomDomain = async (customDomain: string, siteId: string) => {
+    try {
+      const accessToken = await getAccessToken();
+
+      const res = await fetch(`${import.meta.env.VITE_BASE_URL}/sites/${siteId}/custom_domain`, {
+        method: "POST", 
+        //  @ts-ignore
+        headers: {
+          "Content-Type": "application/json",
+          "X-Orbiter-Token": accessToken,
+        },
+        body: JSON.stringify({
+          customDomain
+        })
+      })
+
+      const data = await res.json();
+
+      props.loadSites();
+      return data.data;
+    } catch (error) {
+      console.log(error);  
+      throw error;    
+    }
+  }
+
+  const deleteCustomDomain = async (customDomain: string, siteId: string) => {
+    try {
+      const accessToken = await getAccessToken();
+
+      const res = await fetch(`${import.meta.env.VITE_BASE_URL}/sites/${siteId}/custom_domain`, {
+        method: "DELETE", 
+        //  @ts-ignore
+        headers: {
+          "Content-Type": "application/json",
+          "X-Orbiter-Token": accessToken,
+        },
+        body: JSON.stringify({
+          customDomain
+        })
+      })
+
+      console.log(await res.json());
+
+      props.loadSites();
+    } catch (error) {
+      console.log(error);
+      toast({
+        title: "Problem removing custom domain",
+        variant: "destructive",
+      });
+    }
   }
 
   return (
@@ -59,7 +107,9 @@ const Dashboard = (props: DashboardProps) => {
             site={site}
             loading={props.loading}
             updateSite={props.updateSite}
-            deleteSite={props.deleteSite}
+            deleteSite={props.deleteSite}    
+            handleAddCustomDomain={handleAddCustomDomain}   
+            deleteCustomDomain={deleteCustomDomain}     
           />
         ))}
       </div>

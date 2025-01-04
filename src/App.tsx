@@ -223,9 +223,10 @@ export default function App() {
     }
   };
 
-  const handleLoadSites = async (membershipData: any[]) => {
+  const handleLoadSites = async (membershipData?: any[]) => {
     try {
-      const sites = await loadSites(membershipData[0].organizations.id);
+      const orgId = membershipData && membershipData[0] ? membershipData[0].organizations.id : organizations[0].organizations.id;
+      const sites = await loadSites(orgId);
       setSites(sites?.data || []);
     } finally {
       setInitialLoading(false); // Set to false when data is loaded
@@ -334,6 +335,7 @@ export default function App() {
           initialLoading={initialLoading}
           planDetails={planDetails}
           selectPlan={selectPlan}
+          loadSites={handleLoadSites}
         />
       )}
       <Toaster />
