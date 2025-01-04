@@ -49,6 +49,8 @@ export const SiteCard = ({
 
   const { toast } = useToast();
 
+  console.log({plan: planDetails.planName})
+
   useEffect(() => {
     const checkSiteStatus = async () => {
       console.log("Checking site status");

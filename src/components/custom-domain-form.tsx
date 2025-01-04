@@ -76,7 +76,7 @@ export function CustomDomainForm({
   async function handleDelete() {
     setIsDeleting(true);
     try {
-        console.log("Delete");
+      console.log("Delete");
       await deleteCustomDomain(siteInfo?.custom_domain || "", siteInfo.id);
       setDomainRecordInfo(null);
       toast({
@@ -160,26 +160,24 @@ export function CustomDomainForm({
             >
               Close
             </Button>
-            {deleteCustomDomain && (
-              <Button
-                onClick={handleDelete}
-                variant="destructive"
-                disabled={isDeleting}
-                className="flex-1"
-              >
-                {isDeleting ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Deleting...
-                  </>
-                ) : (
-                  <>
-                    <Trash2 className="mr-2 h-4 w-4" />
-                    Delete Domain
-                  </>
-                )}
-              </Button>
-            )}
+            <Button
+              onClick={handleDelete}
+              variant="destructive"
+              disabled={isDeleting}
+              className="flex-1"
+            >
+              {isDeleting ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Deleting...
+                </>
+              ) : (
+                <>
+                  <Trash2 className="mr-2 h-4 w-4" />
+                  Delete Domain
+                </>
+              )}
+            </Button>
           </div>
         </DialogContent>
       ) : (
