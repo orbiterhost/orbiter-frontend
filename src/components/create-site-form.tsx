@@ -40,7 +40,7 @@ export function CreateSiteForm(props: DashboardProps) {
   async function submit() {
     try {
       if (cid) {
-        await props.createSiteFromCid(cid, domain!);
+        await props.createSiteFromCid(cid, domain.toLowerCase()!);
 
         localStorage.removeItem("orbiter-cid");
         setOpen(false);

@@ -8,7 +8,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "./ui/button";
-import { Loader2, CircleCheck, Trash2, Signature } from "lucide-react";
+import { Loader2, CircleCheck, Signature } from "lucide-react";
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import { useToast } from "@/hooks/use-toast";
