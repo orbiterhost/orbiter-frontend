@@ -8,11 +8,13 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "./ui/button";
-import { Loader2, CircleCheck, Trash2 } from "lucide-react";
+import { Loader2, CircleCheck, Trash2, Signature } from "lucide-react";
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { DomainRecordInfo, Site } from "@/utils/types";
+import { CancelDomain } from "./ui/cancel-domain";
+import { DeleteDomain } from "./ui/delete-domain";
 
 type CustomDomainFormProps = {
   updateSite: any;
@@ -40,7 +42,7 @@ export function CustomDomainForm({
   const { toast } = useToast();
 
   useEffect(() => {
-    if (siteInfo.custom_domain && !siteInfo.domain_ownership_verified) {
+    if (siteInfo.custom_domain) {
       getRecordInfo();
     }
   }, []);
@@ -83,11 +85,13 @@ export function CustomDomainForm({
         title: "Custom domain deleted",
         description: "Your custom domain has been removed successfully",
       });
+      setOpen(false)
     } catch (error) {
       toast({
         title: "Error deleting domain",
         variant: "destructive",
       });
+      setOpen(false)
     } finally {
       setIsDeleting(false);
     }
@@ -104,7 +108,8 @@ export function CustomDomainForm({
       open={open}
     >
       <DialogTrigger>
-        <Button variant="link" className="h-7">
+        <Button variant="ghost" className="h-7">
+          <Signature />
           Custom Domain
         </Button>
       </DialogTrigger>
@@ -160,24 +165,11 @@ export function CustomDomainForm({
             >
               Close
             </Button>
-            <Button
-              onClick={handleDelete}
-              variant="destructive"
-              disabled={isDeleting}
-              className="flex-1"
-            >
-              {isDeleting ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Deleting...
-                </>
-              ) : (
-                <>
-                  <Trash2 className="mr-2 h-4 w-4" />
-                  Delete Domain
-                </>
-              )}
-            </Button>
+            {siteInfo.domain_ownership_verified ? (
+              <DeleteDomain handleDelete={handleDelete} isDeleting={isDeleting} />
+            ) : (
+              <CancelDomain handleDelete={handleDelete} isDeleting={isDeleting} />
+            )}
           </div>
         </DialogContent>
       ) : (
