@@ -24,6 +24,7 @@ export function UpdateSiteForm({
 }: UpdateSiteProps) {
   const [files, setFiles] = useState<File[]>([]);
   const [open, setOpen] = useState(false);
+  const [isValid, setIsValid] = useState(false)
 
   async function submit() {
     try {
@@ -53,6 +54,11 @@ export function UpdateSiteForm({
         // Only allow closing via the close button
         if (!loading) {
           setOpen(open);
+
+          if (!open) {
+            setFiles([])
+            setIsValid(false)
+          }
         }
       }}
       open={open}
@@ -79,13 +85,14 @@ export function UpdateSiteForm({
           disabled={loading}
           files={files}
           setFiles={setFiles}
+          setIsValid={setIsValid}
         />
         {loading ? (
           <Button disabled>
             <Loader2 className="animate-spin" /> Updating Site...
           </Button>
         ) : (
-          <Button onClick={submit}>Update</Button>
+          <Button disabled={!isValid} onClick={submit}>Update</Button>
         )}
       </DialogContent>
     </Dialog>
