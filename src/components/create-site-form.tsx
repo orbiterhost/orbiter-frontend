@@ -11,7 +11,7 @@ import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { CustomFileDropzone } from "./ui/dropzone";
 import { Label } from "./ui/label";
-import { Loader2 } from "lucide-react";
+import { Loader2, Plus } from "lucide-react";
 
 type DashboardProps = {
   organization: any;
@@ -100,7 +100,10 @@ export function CreateSiteForm(props: DashboardProps) {
       open={open}
     >
       <DialogTrigger>
-        <Button>Create Site</Button>
+        <Button>
+          <Plus />
+          Create Site
+        </Button>
       </DialogTrigger>
       <DialogContent
         onPointerDownOutside={(e) => {

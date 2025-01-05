@@ -7,6 +7,7 @@ import type { User } from "@supabase/supabase-js";
 import { Combobox } from "./ui/comobobox";
 import logo from "../assets/black_logo.png";
 import { NavLink } from "react-router";
+import { DollarSign, LayoutGrid, LogOut } from "lucide-react";
 
 type NavProps = {
   organizations: {
@@ -56,21 +57,25 @@ export function Nav({ organizations }: NavProps) {
             <AvatarFallback>{user?.email?.[0] || "U"}</AvatarFallback>
           </Avatar>
         </PopoverTrigger>
-        <PopoverContent className="max-w-[125px] mr-8">
-          <NavLink to="/" end>
-            <Button className="bg-transparent text-black outline-none shadow-none hover:bg-transparent hover:underline">
+        <PopoverContent className="mr-8 flex flex-col w-48">
+          <NavLink to="/" end className="w-full">
+            <Button variant="ghost" className="w-full justify-start">
+              <LayoutGrid />
               Dashboard
             </Button>
           </NavLink>
-          <NavLink to="/billing" end>
-            <Button className="bg-transparent text-black outline-none shadow-none hover:bg-transparent hover:underline">
+          <NavLink to="/billing" end className="w-full">
+            <Button variant="ghost" className="w-full justify-start">
+              <DollarSign />
               Billing
             </Button>
           </NavLink>
           <Button
-            className="bg-transparent text-black outline-none shadow-none hover:bg-transparent hover:underline"
+            variant="ghost"
             onClick={signOut}
+            className="w-full justify-start"
           >
+            <LogOut />
             Sign out
           </Button>
         </PopoverContent>
