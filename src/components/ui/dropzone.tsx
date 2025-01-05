@@ -1,47 +1,53 @@
-"use client";
 import type React from "react";
 import { useState, useRef, useCallback } from "react";
-import { Upload, Folder, File, CircleCheck } from "lucide-react";
+import { Upload, Folder, File, CircleCheck, CircleX } from "lucide-react";
 
 interface CustomFileDropzoneProps {
   files: File[];
   setFiles: (files: File[]) => void;
   disabled: boolean;
+  setIsValid: (isValid: boolean) => void;
 }
 
 export function CustomFileDropzone({
   files,
   setFiles,
   disabled,
+  setIsValid
 }: CustomFileDropzoneProps) {
   const [isDragActive, setIsDragActive] = useState(false);
+  const [errorMesssage, setErrorMessage] = useState("")
   const fileInputRef = useRef<HTMLInputElement>(null);
   const folderInputRef = useRef<HTMLInputElement>(null);
-  const maxFiles = 100;
   const maxSize = 5 * 1024 * 1024; // 5MB
-  const acceptedFileTypes = ["*/*"];
 
   const handleFiles = useCallback(
     (newFiles: FileList | File[]) => {
+      setFiles([]);
+      setErrorMessage("");
+      setIsValid(false)
+
       const validFiles = Array.from(newFiles).filter((file) => {
         if (file.size > maxSize) {
           console.warn(`File ${file.name} is too large`);
           return false;
         }
-        if (
-          acceptedFileTypes.length > 0 &&
-          !acceptedFileTypes.some((type) =>
-            file.type.match(type.replace("*", ".*")),
-          )
-        ) {
-          console.warn(`File ${file.name} is not an accepted file type`);
-          return false;
-        }
         return true;
       });
 
-      const newValidFiles = [...files, ...validFiles].slice(0, maxFiles);
-      setFiles(newValidFiles);
+      // Check if index.html exists among new files or existing files
+      const hasIndexHTML = [...files, ...validFiles].some(
+        (file) => file.name === "index.html"
+      );
+
+      if (!hasIndexHTML) {
+        console.warn("No index.html file found");
+        setErrorMessage("Missing an index.html file, check your build folder!")
+        return;
+      }
+
+      setFiles(validFiles);
+      setIsValid(true)
     },
     [files, setFiles],
   );
@@ -125,12 +131,6 @@ export function CustomFileDropzone({
     }
   };
 
-  // const removeFile = (index: number) => {
-  // 	const newFiles = [...files];
-  // 	newFiles.splice(index, 1);
-  // 	setFiles(newFiles);
-  // };
-
   return (
     <div>
       <div
@@ -148,7 +148,6 @@ export function CustomFileDropzone({
           type="file"
           multiple
           onChange={onFileInputChange}
-          accept={acceptedFileTypes.join(",")}
           className="hidden"
           disabled={disabled}
         />
@@ -185,9 +184,19 @@ export function CustomFileDropzone({
           </button>
         </div>
         <p className="mt-1 text-xs text-gray-500">
-          Up to 25 files, {maxSize / (1024 * 1024)}MB each
+          Files up to {maxSize / (1024 * 1024)}MB each
         </p>
       </div>
+      {errorMesssage && (<p className="text-sm py-2 flex items-center gap-1">
+        <div className="w-full flex justify-center">
+          <p className="text-sm py-2 flex items-center gap-1">
+            <CircleX className="text-red-600 h-4 w-4" />
+            {errorMesssage}
+          </p>
+        </div>
+      </p>
+      )}
+
       {files.length > 0 && (
         <div className="w-full flex justify-center">
           <p className="text-sm py-2 flex items-center gap-1">

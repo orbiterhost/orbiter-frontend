@@ -27,12 +27,33 @@ export function CreateSiteForm(props: DashboardProps) {
   const [domain, setDomain] = useState<string>("");
   const [open, setOpen] = useState(false);
   const [cid, setCid] = useState("");
+  const [isValid, setIsValid] = useState(false)
+  const [hasValidFiles, setHasValidFiles] = useState(false);
+
+  const checkValidity = (newDomain: string, fileValid: boolean) => {
+    setIsValid(newDomain.trim().length > 0 && fileValid);
+  };
+
+  // Modify the domain onChange handler
+  const handleDomainChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newDomain = e.target.value;
+    setDomain(newDomain);
+    checkValidity(newDomain, hasValidFiles);
+  };
+
+  const handleFileValidityChange = (fileValid: boolean) => {
+    setHasValidFiles(fileValid);
+    checkValidity(domain, fileValid);
+  };
+
+
 
   useEffect(() => {
     const localCid = localStorage.getItem("orbiter-cid");
 
     if (localCid) {
       setCid(localCid);
+      setHasValidFiles(true);
       setOpen(true);
     }
   }, []);
@@ -102,6 +123,7 @@ export function CreateSiteForm(props: DashboardProps) {
             disabled={props.loading}
             files={files}
             setFiles={setFiles}
+            setIsValid={handleFileValidityChange}
           />
         )}
 
@@ -110,7 +132,7 @@ export function CreateSiteForm(props: DashboardProps) {
           <Input
             disabled={props.loading}
             value={domain}
-            onChange={(e) => setDomain(e.target.value)}
+            onChange={handleDomainChange}
             type="text"
             spellCheck={false}
             className="w-full rounded pr-32 text-transparent bg-clip-text" // Make input text transparent
@@ -129,7 +151,7 @@ export function CreateSiteForm(props: DashboardProps) {
             <Loader2 className="animate-spin" /> Creating Site...
           </Button>
         ) : (
-          <Button onClick={submit}>Create</Button>
+          <Button disabled={!isValid} onClick={submit}>Create</Button>
         )}
       </DialogContent>
     </Dialog>
