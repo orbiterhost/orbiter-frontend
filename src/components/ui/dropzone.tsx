@@ -61,11 +61,16 @@ export function CustomFileDropzone({
       const allFiles: File[] = [];
 
       // Function to recursively process directory entries
-      const processEntry = async (entry: FileSystemEntry) => {
+      const processEntry = async (entry: FileSystemEntry, path = '') => {
         if (entry.isFile) {
           const fileEntry = entry as FileSystemFileEntry;
           return new Promise<void>((resolve) => {
             fileEntry.file((file) => {
+              // Create a custom property to store the relative path
+              Object.defineProperty(file, 'webkitRelativePath', {
+                value: path + file.name,
+                writable: true
+              });
               allFiles.push(file);
               resolve();
             });
@@ -81,7 +86,11 @@ export function CustomFileDropzone({
                 if (entries.length === 0) {
                   resolve();
                 } else {
-                  await Promise.all(entries.map(processEntry));
+                  // Add trailing slash to directory names
+                  const newPath = path + entry.name + '/';
+                  await Promise.all(
+                    entries.map((entry) => processEntry(entry, newPath))
+                  );
                   readEntries(); // Continue reading if there are more entries
                 }
               });
@@ -97,14 +106,14 @@ export function CustomFileDropzone({
           .map((item) => item.webkitGetAsEntry())
           .filter((entry): entry is FileSystemEntry => entry !== null);
 
-        await Promise.all(entries.map(processEntry));
+        await Promise.all(entries.map((entry) => processEntry(entry)));
         handleFiles(allFiles);
       } else {
         // Fallback for browsers that don't support directory entries
         handleFiles(e.dataTransfer.files);
       }
     },
-    [handleFiles],
+    [handleFiles]
   );
 
   const onDragOver = useCallback((e: React.DragEvent<HTMLDivElement>) => {
