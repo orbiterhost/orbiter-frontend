@@ -186,16 +186,35 @@ export default function App() {
     }
   };
 
-  const updateSite = async (files: any, siteId: string) => {
+  const updateSite = async (files: any, siteId: string, cid?: string) => {
     setLoading(true);
     try {
       const accessToken = await getAccessToken();
 
       //  Generate one-time use key
       //  Upload site
-      const cid = await uploadSite(files);
-      console.log(cid);
-      //  Create subdomain and contract
+      if (!cid) {
+        const cid = await uploadSite(files);
+        console.log(cid);
+        //  Create subdomain and contract
+        await fetch(`${import.meta.env.VITE_BASE_URL}/sites/${siteId}`, {
+          method: "PUT",
+          //  @ts-ignore
+          headers: {
+            "Content-Type": "application/json",
+            "X-Orbiter-Token": accessToken,
+          },
+          body: JSON.stringify({
+            cid,
+          }),
+        });
+
+        handleLoadSites(organizations);
+        toast({
+          title: "Site updated!",
+        });
+        setLoading(false);
+      }
       await fetch(`${import.meta.env.VITE_BASE_URL}/sites/${siteId}`, {
         method: "PUT",
         //  @ts-ignore
@@ -213,6 +232,7 @@ export default function App() {
         title: "Site updated!",
       });
       setLoading(false);
+
     } catch (error) {
       console.log(error);
       toast({

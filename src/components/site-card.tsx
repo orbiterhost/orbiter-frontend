@@ -21,6 +21,7 @@ import { Site } from "@/utils/types";
 import { getAccessToken } from "@/utils/auth";
 import { PlanDetails } from "@/App";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
+import { UpdateVersionForm } from "./update-version-form";
 
 type SiteCardProps = {
   site: Site;
@@ -35,6 +36,19 @@ type SiteCardProps = {
   planDetails: PlanDetails;
 };
 
+type SiteVersion = {
+  id: string;
+  site_id: string;
+  created_at: string;
+  organization_id: string;
+  cid: string;
+  domain: string;
+  site_contract: string;
+  version_number: number;
+  deployed_by: string;
+};
+
+
 export const SiteCard = ({
   site,
   loading,
@@ -47,10 +61,32 @@ export const SiteCard = ({
   const [isSiteReady, setIsSiteReady] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [customDomain, setCustomDomain] = useState("");
+  const [versions, setVersions] = useState<SiteVersion[] | undefined>([])
 
   const { toast } = useToast();
 
   console.log({ plan: planDetails.planName })
+
+  useEffect(() => {
+    async function getVersions() {
+      const accessToken = await getAccessToken();
+      console.log("Getting versions");
+      try {
+        const request = await fetch(`${import.meta.env.VITE_BASE_URL}/sites/${site.domain}/versions`, {
+          method: "GET",
+          headers: {
+            "X-Orbiter-Token": `${accessToken}`,
+            "Content-Type": "Application/json",
+          }
+        });
+        const response = await request.json()
+        setVersions(response.data)
+      } catch (e) {
+        console.log(e)
+      }
+    }
+    getVersions()
+  }, [site.domain])
 
   useEffect(() => {
     const checkSiteStatus = async () => {
@@ -121,6 +157,7 @@ export const SiteCard = ({
       checkSiteStatus();
       return () => clearInterval(interval);
     }
+
   }, [site.domain, site.custom_domain]);
 
   const handleDelete = async (e: any, siteId: string) => {
@@ -230,6 +267,15 @@ export const SiteCard = ({
                   addCustomDomain={addCustomDomain}
                   siteInfo={site}
                   deleteCustomDomain={deleteCustomDomain}
+                />
+              )}
+              {planDetails.planName !== "free" && versions && (
+                <UpdateVersionForm
+                  loading={loading}
+                  updateSite={updateSite}
+                  siteId={site.id}
+                  versions={versions}
+                  siteDomain={site.domain}
                 />
               )}
               <UpdateSiteForm

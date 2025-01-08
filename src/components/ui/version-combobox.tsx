@@ -19,16 +19,36 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-type Organizations = {
-  value: string;
-  label: string;
+type SiteVersion = {
+  id: string;
+  site_id: string;
+  created_at: string;
+  organization_id: string;
+  cid: string;
+  domain: string;
+  site_contract: string;
+  version_number: number;
+  deployed_by: string;
 };
 
-export function Combobox({
-  organizations,
-}: { organizations: Organizations[] }) {
+
+type VersionOption = {
+  value: string;
+  label: string;
+  data: SiteVersion;
+};
+
+type VersionComboboxProps = {
+  versions: VersionOption[];
+  value: string;
+  onVersionSelect: (version: VersionOption | undefined) => void;
+};
+
+
+export function VersionCombobox({ versions, value, onVersionSelect }: VersionComboboxProps) {
   const [open, setOpen] = React.useState(false);
-  const [value, setValue] = React.useState("");
+
+  const selectedVersion = versions.find((v) => v.value === value);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -39,32 +59,32 @@ export function Combobox({
           aria-expanded={open}
           className="justify-between"
         >
-          {value
-            ? organizations.find((org) => org.value === value)?.label
-            : "Select organization..."}
+          {selectedVersion
+            ? `v.${selectedVersion.label}`
+            : "Select version..."}
           <ChevronsUpDown className="opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="p-0">
         <Command>
-          <CommandInput placeholder="Search organization..." className="h-9" />
+          <CommandInput placeholder="Search versions..." className="h-9" />
           <CommandList>
-            <CommandEmpty>No organization found.</CommandEmpty>
+            <CommandEmpty>No versions found.</CommandEmpty>
             <CommandGroup>
-              {organizations.map((org) => (
+              {versions.map((version) => (
                 <CommandItem
-                  key={org.value}
-                  value={org.value}
-                  onSelect={(currentValue) => {
-                    setValue(currentValue === value ? "" : currentValue);
+                  key={version.value}
+                  value={version.value}
+                  onSelect={() => {
+                    onVersionSelect(version);
                     setOpen(false);
                   }}
                 >
-                  {org.label}
+                  v.{version.label} - {new Date(version.data.created_at).toLocaleString()}
                   <Check
                     className={cn(
                       "ml-auto",
-                      value === org.value ? "opacity-100" : "opacity-0",
+                      value === version.value ? "opacity-100" : "opacity-0"
                     )}
                   />
                 </CommandItem>
