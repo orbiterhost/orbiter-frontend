@@ -22,6 +22,7 @@ import { getAccessToken } from "@/utils/auth";
 import { PlanDetails } from "@/App";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
 import { UpdateVersionForm } from "./update-version-form";
+import { SiteInfoModal } from "./site-info-modal";
 
 type SiteCardProps = {
   site: Site;
@@ -183,11 +184,11 @@ export const SiteCard = ({
     const domainToUse = domain ? domain : customDomain;
     try {
       const data = await handleAddCustomDomain(domainToUse, site.id);
-      if(!domain) {
+      if (!domain) {
         toast({
           title: "Custom domain ready",
         });
-      }      
+      }
 
       return data;
     } catch (error) {
@@ -285,8 +286,8 @@ export const SiteCard = ({
                 updateSite={updateSite}
                 siteId={site.id}
               />
+              <SiteInfoModal {...site} />
               <DialogTrigger asChild>
-
                 <Button
                   className="h-7 w-full justify-start"
                   variant="ghost"
