@@ -109,7 +109,7 @@ export function UpdateVersionForm({
         {selectedVersion?.value && (
           <a
             target="_blank"
-            href={`https://${siteDomain}?orbiterVersionCid=${selectedVersion.value}`}>
+            href={`https://${siteDomain}?orbiterVersionCid=${selectedVersion.data.cid}`}>
             <Button variant="outline" className="w-full">
               Preview
               <ExternalLink />
