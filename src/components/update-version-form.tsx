@@ -50,7 +50,7 @@ export function UpdateVersionForm({
   const [selectedVersion, setSelectedVersion] = useState<VersionOption | undefined>();
 
   const versionOptions: VersionOption[] = versions.map((version) => ({
-    value: version.cid,
+    value: version.id,
     label: version.version_number.toString(),
     data: version
   }));
@@ -61,7 +61,7 @@ export function UpdateVersionForm({
         console.log("Select a version!");
         return;
       }
-      await updateSite(files, siteId, selectedVersion.value);
+      await updateSite(files, siteId, selectedVersion.data.cid);
       setOpen(false);
       setFiles([]);
       setSelectedVersion(undefined);
