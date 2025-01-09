@@ -183,9 +183,11 @@ export const SiteCard = ({
     const domainToUse = domain ? domain : customDomain;
     try {
       const data = await handleAddCustomDomain(domainToUse, site.id);
-      toast({
-        title: "Custom domain ready",
-      });
+      if(!domain) {
+        toast({
+          title: "Custom domain ready",
+        });
+      }      
 
       return data;
     } catch (error) {
