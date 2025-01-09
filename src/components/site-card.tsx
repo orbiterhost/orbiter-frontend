@@ -20,8 +20,17 @@ import { useToast } from "@/hooks/use-toast";
 import { Site } from "@/utils/types";
 import { getAccessToken } from "@/utils/auth";
 import { PlanDetails } from "@/App";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "./ui/dialog";
 import { UpdateVersionForm } from "./update-version-form";
+import { UpsellModal } from "./upsell-modal";
 
 type SiteCardProps = {
   site: Site;
@@ -48,7 +57,6 @@ type SiteVersion = {
   deployed_by: string;
 };
 
-
 export const SiteCard = ({
   site,
   loading,
@@ -61,32 +69,35 @@ export const SiteCard = ({
   const [isSiteReady, setIsSiteReady] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [customDomain, setCustomDomain] = useState("");
-  const [versions, setVersions] = useState<SiteVersion[] | undefined>([])
+  const [versions, setVersions] = useState<SiteVersion[] | undefined>([]);
 
   const { toast } = useToast();
 
-  console.log({ plan: planDetails.planName })
+  console.log({ plan: planDetails.planName });
 
   useEffect(() => {
     async function getVersions() {
       const accessToken = await getAccessToken();
       console.log("Getting versions");
       try {
-        const request = await fetch(`${import.meta.env.VITE_BASE_URL}/sites/${site.domain}/versions`, {
-          method: "GET",
-          headers: {
-            "X-Orbiter-Token": `${accessToken}`,
-            "Content-Type": "Application/json",
+        const request = await fetch(
+          `${import.meta.env.VITE_BASE_URL}/sites/${site.domain}/versions`,
+          {
+            method: "GET",
+            headers: {
+              "X-Orbiter-Token": `${accessToken}`,
+              "Content-Type": "Application/json",
+            },
           }
-        });
-        const response = await request.json()
-        setVersions(response.data)
+        );
+        const response = await request.json();
+        setVersions(response.data);
       } catch (e) {
-        console.log(e)
+        console.log(e);
       }
     }
-    getVersions()
-  }, [site.domain])
+    getVersions();
+  }, [site.domain]);
 
   useEffect(() => {
     const checkSiteStatus = async () => {
@@ -157,7 +168,6 @@ export const SiteCard = ({
       checkSiteStatus();
       return () => clearInterval(interval);
     }
-
   }, [site.domain, site.custom_domain]);
 
   const handleDelete = async (e: any, siteId: string) => {
@@ -183,11 +193,11 @@ export const SiteCard = ({
     const domainToUse = domain ? domain : customDomain;
     try {
       const data = await handleAddCustomDomain(domainToUse, site.id);
-      if(!domain) {
+      if (!domain) {
         toast({
           title: "Custom domain ready",
         });
-      }      
+      }
 
       return data;
     } catch (error) {
@@ -206,8 +216,9 @@ export const SiteCard = ({
           <div className="flex flex-col">
             <CardTitle className="tracking-tighter">
               <a
-                href={`https://${site.custom_domain ? site.custom_domain : site.domain
-                  }`}
+                href={`https://${
+                  site.custom_domain ? site.custom_domain : site.domain
+                }`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group flex items-center gap-2"
@@ -259,7 +270,7 @@ export const SiteCard = ({
               <Settings />
             </PopoverTrigger>
             <PopoverContent className="w-full flex flex-col items-start gap-2">
-              {planDetails.planName !== "free" && (
+              {planDetails.planName !== "free" ? (
                 <CustomDomainForm
                   loading={loading}
                   updateSite={updateSite}
@@ -270,8 +281,10 @@ export const SiteCard = ({
                   siteInfo={site}
                   deleteCustomDomain={deleteCustomDomain}
                 />
+              ) : (
+                <UpsellModal feature="custom domain" />
               )}
-              {planDetails.planName !== "free" && versions && (
+              {planDetails.planName !== "free" && versions ? (
                 <UpdateVersionForm
                   loading={loading}
                   updateSite={updateSite}
@@ -279,6 +292,8 @@ export const SiteCard = ({
                   versions={versions}
                   siteDomain={site.domain}
                 />
+              ) : (
+                <UpsellModal feature="versions" />
               )}
               <UpdateSiteForm
                 loading={loading}
@@ -286,11 +301,7 @@ export const SiteCard = ({
                 siteId={site.id}
               />
               <DialogTrigger asChild>
-
-                <Button
-                  className="h-7 w-full justify-start"
-                  variant="ghost"
-                >
+                <Button className="h-7 w-full justify-start" variant="ghost">
                   <Trash /> {deleting ? "Deleting..." : "Delete"}
                 </Button>
               </DialogTrigger>
@@ -298,7 +309,8 @@ export const SiteCard = ({
                 <DialogHeader>
                   <DialogTitle>Are you sure you want to delete?</DialogTitle>
                   <DialogDescription>
-                    Websites cannot be restored after they are deleted. Make sure you have your content backed up!
+                    Websites cannot be restored after they are deleted. Make
+                    sure you have your content backed up!
                   </DialogDescription>
                 </DialogHeader>
                 <DialogFooter>
@@ -307,7 +319,9 @@ export const SiteCard = ({
                     type="submit"
                     variant="destructive"
                     className="w-full"
-                  >Delete</Button>
+                  >
+                    Delete
+                  </Button>
                 </DialogFooter>
               </DialogContent>
             </PopoverContent>
