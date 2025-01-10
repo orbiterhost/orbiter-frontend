@@ -6,6 +6,7 @@ import { Separator } from "@/components/ui/separator";
 import { BrowserRouter, Routes, Route, useNavigate } from "react-router";
 import Admin from "./admin";
 import { Session } from "@supabase/supabase-js";
+import { useEffect } from "react";
 
 export const AUTHORIZED_IDS = [
   "491404e0-0c90-43fe-a86e-4e11014a7e52",
@@ -28,22 +29,26 @@ type MainProps = {
   loadSites: () => Promise<void>;
 };
 
-const ProtectedRoute = ({ userSession, fallbackPath = "/" }: any) => {
+const ProtectedRoute = ({ userSession, children, fallbackPath = "/" }: any) => {
   let navigate = useNavigate();
-  console.log(userSession.user.id)
-  if (!userSession?.user) {
-    console.log("Unauthorized")
-    return navigate(fallbackPath);
-  }
 
-  const isAuthorized = AUTHORIZED_IDS.includes(userSession.user.id);
+  useEffect(() => {
+    if (!userSession?.user) {
+      console.log("Unauthorized");
+      navigate(fallbackPath);
+      return;
+    }
 
-  if (!isAuthorized) {
-    console.log("Unauthorized")
-    return navigate(fallbackPath);
-  }
+    const isAuthorized = AUTHORIZED_IDS.includes(userSession.user.id);
+    if (!isAuthorized) {
+      console.log("Unauthorized");
+      navigate(fallbackPath);
+      return;
+    }
+  }, [userSession, navigate, fallbackPath]);
 
-  return <Admin />;
+  // Return children if authorized
+  return children;
 };
 
 // Updated Main component with protected route
@@ -85,7 +90,10 @@ const Main = (props: MainProps) => {
             <Route
               path="/admin"
               element={
-                <ProtectedRoute userSession={props.userSession} fallbackPath="/">
+                <ProtectedRoute
+                  userSession={props.userSession}
+                  fallbackPath="/"
+                >
                   <Admin />
                 </ProtectedRoute>
               }
