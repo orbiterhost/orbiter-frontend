@@ -345,6 +345,7 @@ export default function App() {
     <div className="min-h-screen w-full mx-auto">
       {organizations?.length > 0 && (
         <Main
+          userSession={userSession}
           organizations={organizations}
           sites={sites}
           createSite={createSite}

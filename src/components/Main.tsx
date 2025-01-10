@@ -3,9 +3,18 @@ import Billing from "./Billing";
 import Dashboard from "./Dashboard";
 import { Nav } from "./nav";
 import { Separator } from "@/components/ui/separator";
-import { BrowserRouter, Routes, Route } from "react-router";
+import { BrowserRouter, Routes, Route, useNavigate } from "react-router";
+import Admin from "./admin";
+import { Session } from "@supabase/supabase-js";
+
+export const AUTHORIZED_IDS = [
+  "491404e0-0c90-43fe-a86e-4e11014a7e52",
+  "f5735334-738c-4d48-a324-226ac182a08b",
+  "e931bc05-6164-436b-8960-e31df696217d",
+];
 
 type MainProps = {
+  userSession: Session;
   organizations: any[];
   sites: any[];
   createSite: any;
@@ -14,16 +23,35 @@ type MainProps = {
   deleteSite: (siteId: string) => Promise<void>;
   createSiteFromCid: (cid: string, subdomain: string) => Promise<void>;
   initialLoading: boolean;
-  planDetails: PlanDetails
+  planDetails: PlanDetails;
   selectPlan: (priceId: string) => Promise<void>;
   loadSites: () => Promise<void>;
 };
 
+const ProtectedRoute = ({ userSession, fallbackPath = "/" }: any) => {
+  let navigate = useNavigate();
+  console.log(userSession.user.id)
+  if (!userSession?.user) {
+    console.log("Unauthorized")
+    return navigate(fallbackPath);
+  }
+
+  const isAuthorized = AUTHORIZED_IDS.includes(userSession.user.id);
+
+  if (!isAuthorized) {
+    console.log("Unauthorized")
+    return navigate(fallbackPath);
+  }
+
+  return <Admin />;
+};
+
+// Updated Main component with protected route
 const Main = (props: MainProps) => {
   return (
     <div className="min-h-screen w-full flex flex-col gap-2">
       <BrowserRouter>
-        <Nav organizations={props.organizations} />
+        <Nav organizations={props.organizations} session={props.userSession} />
         <Separator />
         {props.organizations.length > 0 && (
           <Routes>
@@ -44,7 +72,24 @@ const Main = (props: MainProps) => {
                 />
               }
             />
-            <Route path="/billing" element={<Billing selectPlan={props.selectPlan} planDetails={props.planDetails} />} />
+            <Route
+              path="/billing"
+              element={
+                <Billing
+                  selectPlan={props.selectPlan}
+                  planDetails={props.planDetails}
+                />
+              }
+            />
+            {/* Protected route example */}
+            <Route
+              path="/admin"
+              element={
+                <ProtectedRoute userSession={props.userSession} fallbackPath="/">
+                  <Admin />
+                </ProtectedRoute>
+              }
+            />
           </Routes>
         )}
       </BrowserRouter>

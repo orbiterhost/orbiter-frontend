@@ -3,13 +3,15 @@ import { signOut, getUserLocal } from "../utils/auth";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Button } from "./ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
-import type { User } from "@supabase/supabase-js";
+import type { Session, User } from "@supabase/supabase-js";
 import { Combobox } from "./ui/comobobox";
 import logo from "../assets/black_logo.png";
 import { NavLink } from "react-router";
-import { DollarSign, LayoutGrid, LogOut } from "lucide-react";
+import { ChartAreaIcon, DollarSign, LayoutGrid, LogOut } from "lucide-react";
+import { AUTHORIZED_IDS } from "./Main";
 
 type NavProps = {
+  session: Session;
   organizations: {
     id: number;
     created_at: string;
@@ -24,7 +26,7 @@ type NavProps = {
   }[];
 };
 
-export function Nav({ organizations }: NavProps) {
+export function Nav({ organizations, session }: NavProps) {
   const [user, setUser] = useState<User>();
 
   const orgsData = organizations.map((org) => ({
@@ -70,6 +72,14 @@ export function Nav({ organizations }: NavProps) {
               Billing
             </Button>
           </NavLink>
+          {AUTHORIZED_IDS.includes(session?.user?.id) && (
+            <NavLink to="/admin" end className="w-full">
+              <Button variant="ghost" className="w-full justify-start">
+                <ChartAreaIcon />
+                Admin
+              </Button>
+            </NavLink>
+          )}
           <Button
             variant="ghost"
             onClick={signOut}
