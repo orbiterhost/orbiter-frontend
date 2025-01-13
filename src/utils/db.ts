@@ -9,7 +9,8 @@ export const getOrgMemebershipsForUser = async () => {
       organizations (
         id,
         name,
-        created_at
+        created_at, 
+        owner_id
       )
     `
     )
@@ -49,7 +50,7 @@ export const createOrganizationAndMembership = async () => {
   });
 };
 
-export const loadSites = async (orgId: number) => {
+export const loadSites = async (orgId: string) => {
   const { data: sessionData, error: sessionError } =
     await supabase.auth.getSession();
 

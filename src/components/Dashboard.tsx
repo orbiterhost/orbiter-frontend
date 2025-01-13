@@ -15,7 +15,7 @@ type DashboardProps = {
   createSiteFromCid: (cid: string, subdomain: string) => Promise<void>;
   initialLoading: boolean;
   planDetails: PlanDetails;
-  loadSites: () => Promise<void>;
+  loadSites: (id: string) => Promise<void>;
 };
 
 const Dashboard = (props: DashboardProps) => {  

@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route, useNavigate } from "react-router";
 import Admin from "./admin";
 import { Session } from "@supabase/supabase-js";
 import { useEffect } from "react";
+import { Organization } from "@/utils/types";
 
 export const AUTHORIZED_IDS = [
   "491404e0-0c90-43fe-a86e-4e11014a7e52",
@@ -26,7 +27,9 @@ type MainProps = {
   initialLoading: boolean;
   planDetails: PlanDetails;
   selectPlan: (priceId: string) => Promise<void>;
-  loadSites: () => Promise<void>;
+  loadSites: (orgId: string) => Promise<void>;
+  selectedOrganization: Organization | null;
+  setSelectedOrganization: any;
 };
 
 const ProtectedRoute = ({ userSession, children, fallbackPath = "/" }: any) => {
@@ -56,7 +59,12 @@ const Main = (props: MainProps) => {
   return (
     <div className="min-h-screen w-full flex flex-col gap-2">
       <BrowserRouter>
-        <Nav organizations={props.organizations} session={props.userSession} />
+        <Nav
+          organizations={props.organizations}
+          session={props.userSession}
+          selectedOrganization={props.selectedOrganization}
+          setSelectedOrganization={props.setSelectedOrganization}
+        />
         <Separator />
         {props.organizations.length > 0 && (
           <Routes>

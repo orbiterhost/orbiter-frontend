@@ -14,6 +14,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { useToast } from "@/hooks/use-toast";
 import authHero from "./assets/auth-hero.jpg";
 import logo from "./assets/black_logo.png";
+import { Membership, Organization } from "./utils/types";
 
 export type PlanDetails = {
   planName: string;
@@ -21,11 +22,13 @@ export type PlanDetails = {
   currentPeriodEnd: number;
   status: string;
   nextPlan?: string | null;
-}
+};
 
 export default function App() {
   const [userSession, setSession] = useState<Session | null>(null);
-  const [organizations, setOrganizations] = useState<any[]>([]);
+  const [organizations, setOrganizations] = useState<Organization[]>([]);
+  const [selectedOrganization, setSelectedOrganization] =
+    useState<Organization | null>(null);
   const [sites, setSites] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [authLoading, setAuthLoading] = useState(true);
@@ -34,8 +37,8 @@ export default function App() {
     planName: "free",
     currentPeriodStart: 0,
     currentPeriodEnd: 0,
-    status: "active"
-  })
+    status: "active",
+  });
   const { toast } = useToast();
 
   useEffect(() => {
@@ -64,21 +67,51 @@ export default function App() {
 
   useEffect(() => {
     const loadOrgs = async () => {
-      console.log("loading...")
+      console.log("loading...");
       const memberships = await getOrgMemebershipsForUser();
       if (memberships && memberships?.length === 0) {
-        console.log("Here")
+        console.log("Here");
         //  Create org and membership for user because this is a new user
         await createOrganizationAndMembership();
         const memberships = await getOrgMemebershipsForUser();
         setOrganizations(memberships || []);
-        handleLoadSites(memberships || []);
-        memberships && memberships.length > 0 && fetchPlanDetails(memberships[0].organizations.id)
+
+        const orgs =
+          memberships && memberships.length > 0
+            ? memberships.map((m: Membership) => m.organizations)
+            : null;
+
+        const ownedOrg =
+          (orgs &&
+            orgs.find(
+              (o: Organization) => o.owner_id === userSession?.user?.id
+            )) ||
+          null;
+
+        setSelectedOrganization(ownedOrg);
       } else if (memberships) {
         setOrganizations(memberships);
-        //  Load Sites
-        handleLoadSites(memberships);
-        fetchPlanDetails(memberships[0].organizations.id)
+        //  Check if there's already a selected org in local storage
+        const localOrg = localStorage.getItem("orbiter-org");
+        const orgs =
+          memberships && memberships.length > 0
+            ? memberships.map((m: Membership) => m.organizations)
+            : null;
+        const foundLocalOrgMatch = orgs?.find(
+          (o: Organization) => o.id === localOrg
+        );
+        if (localOrg && foundLocalOrgMatch) {
+          setSelectedOrganization(foundLocalOrgMatch);
+        } else {
+          const ownedOrg =
+            (orgs &&
+              orgs.find(
+                (o: Organization) => o.owner_id === userSession?.user?.id
+              )) ||
+            null;
+
+          setSelectedOrganization(ownedOrg);
+        }
       }
     };
     if (userSession) {
@@ -86,22 +119,33 @@ export default function App() {
     }
   }, [userSession]);
 
+  useEffect(() => {
+    if (selectedOrganization) {
+      localStorage.setItem("orbiter-org", selectedOrganization.id);
+      handleLoadSites(selectedOrganization?.id);
+      fetchPlanDetails(selectedOrganization?.id);
+    }
+  }, [selectedOrganization]);
+
   const fetchPlanDetails = async (orgId: string) => {
     const accessToken = await getAccessToken();
-    const res = await fetch(`${import.meta.env.VITE_BASE_URL}/billing/${orgId}/plan`, {
-      method: "GET",
-      //  @ts-ignore
-      headers: {
-        "Content-Type": "application/json",
-        "X-Orbiter-Token": accessToken,
+    const res = await fetch(
+      `${import.meta.env.VITE_BASE_URL}/billing/${orgId}/plan`,
+      {
+        method: "GET",
+        //  @ts-ignore
+        headers: {
+          "Content-Type": "application/json",
+          "X-Orbiter-Token": accessToken,
+        },
       }
-    });
+    );
 
     const planInfo = await res.json();
     if (planInfo && planInfo.data) {
       setPlanDetails(planInfo?.data);
     }
-  }
+  };
 
   const createSiteFromCid = async (cid: string, subdomain: string) => {
     try {
@@ -115,13 +159,13 @@ export default function App() {
           "X-Orbiter-Token": accessToken,
         },
         body: JSON.stringify({
-          orgId: organizations[0].organizations.id,
+          orgId: selectedOrganization?.id,
           cid: cid,
           subdomain: subdomain,
         }),
       });
 
-      handleLoadSites(organizations);
+      handleLoadSites(selectedOrganization?.id || "");
       setLoading(false);
       toast({
         title: "Site created!",
@@ -147,29 +191,33 @@ export default function App() {
       if (!cid) {
         toast({
           title: "Problem uploading files",
-          variant: "destructive"
-        })
+          variant: "destructive",
+        });
       }
       //  Create subdomain and contract
-      const createSiteRequest = await fetch(`${import.meta.env.VITE_BASE_URL}/sites`, {
-        method: "POST",
-        //  @ts-ignore
-        headers: {
-          "Content-Type": "application/json",
-          "X-Orbiter-Token": accessToken,
-        },
-        body: JSON.stringify({
-          orgId: organizations[0].organizations.id,
-          cid: cid,
-          subdomain: subdomain,
-        }),
-      });
+      const createSiteRequest = await fetch(
+        `${import.meta.env.VITE_BASE_URL}/sites`,
+        {
+          method: "POST",
+          //  @ts-ignore
+          headers: {
+            "Content-Type": "application/json",
+            "X-Orbiter-Token": accessToken,
+          },
+          body: JSON.stringify({
+            orgId: selectedOrganization?.id,
+            cid: cid,
+            subdomain: subdomain,
+          }),
+        }
+      );
+
       if (!createSiteRequest.ok) {
-        const data = await createSiteRequest.json()
-        throw Error(data.message)
+        const data = await createSiteRequest.json();
+        throw Error(data.message);
       }
 
-      handleLoadSites(organizations);
+      handleLoadSites(selectedOrganization?.id || "");
       setLoading(false);
       toast({
         title: "Site created!",
@@ -209,7 +257,7 @@ export default function App() {
           }),
         });
 
-        handleLoadSites(organizations);
+        handleLoadSites(selectedOrganization?.id || "");
         toast({
           title: "Site updated!",
         });
@@ -227,12 +275,11 @@ export default function App() {
         }),
       });
 
-      handleLoadSites(organizations);
+      handleLoadSites(selectedOrganization?.id || "");
       toast({
         title: "Site updated!",
       });
       setLoading(false);
-
     } catch (error) {
       console.log(error);
       toast({
@@ -243,9 +290,8 @@ export default function App() {
     }
   };
 
-  const handleLoadSites = async (membershipData?: any[]) => {
+  const handleLoadSites = async (orgId: string) => {
     try {
-      const orgId = membershipData && membershipData[0] ? membershipData[0].organizations.id : organizations[0].organizations.id;
       const sites = await loadSites(orgId);
       setSites(sites?.data || []);
     } finally {
@@ -266,7 +312,7 @@ export default function App() {
         body: "",
       });
 
-      handleLoadSites(organizations);
+      handleLoadSites(selectedOrganization?.id || "");
     } catch (error) {
       console.log(error);
       throw error;
@@ -276,19 +322,24 @@ export default function App() {
   const selectPlan = async (priceId: string) => {
     try {
       const accessToken = await getAccessToken();
-      const res = await fetch(`${import.meta.env.VITE_BASE_URL}/billing/${organizations[0].organization_id}/plan`, {
-        method: "POST",
-        //  @ts-ignore
-        headers: {
-          "Content-Type": "application/json",
-          "X-Orbiter-Token": accessToken,
-        },
-        body: JSON.stringify({
-          priceId
-        })
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_BASE_URL}/billing/${
+          selectedOrganization?.id
+        }/plan`,
+        {
+          method: "POST",
+          //  @ts-ignore
+          headers: {
+            "Content-Type": "application/json",
+            "X-Orbiter-Token": accessToken,
+          },
+          body: JSON.stringify({
+            priceId,
+          }),
+        }
+      );
       const sessionRes = await res.json();
-      const url = sessionRes?.data?.url
+      const url = sessionRes?.data?.url;
       if (url) {
         window.location.replace(url);
       }
@@ -296,11 +347,13 @@ export default function App() {
       toast({
         title: "Problem Selecting Plan",
         description: `${error}`,
-        variant: "destructive"
-      })
+        variant: "destructive",
+      });
       console.log(error);
     }
-  }
+  };
+
+  console.log({ selectedOrganization });
 
   if (authLoading) {
     return (
@@ -357,6 +410,8 @@ export default function App() {
           planDetails={planDetails}
           selectPlan={selectPlan}
           loadSites={handleLoadSites}
+          selectedOrganization={selectedOrganization}
+          setSelectedOrganization={setSelectedOrganization}
         />
       )}
       <Toaster />

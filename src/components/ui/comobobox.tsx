@@ -18,15 +18,19 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { Organization } from "@/utils/types";
 
-type Organizations = {
-  value: string;
-  label: string;
-};
+type ComboboxProps = {
+  organizations: Organization[];
+  selectedOrganization: Organization | null;
+  setSelectedOrganization: (org: Organization) => Promise<void>;
+}
 
 export function Combobox({
   organizations,
-}: { organizations: Organizations[] }) {
+  selectedOrganization, 
+  setSelectedOrganization
+}: ComboboxProps) {
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState("");
 
@@ -39,9 +43,7 @@ export function Combobox({
           aria-expanded={open}
           className="justify-between"
         >
-          {value
-            ? organizations.find((org) => org.value === value)?.label
-            : "Select organization..."}
+          {selectedOrganization ? selectedOrganization.name: "Select organization..."}
           <ChevronsUpDown className="opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -53,18 +55,18 @@ export function Combobox({
             <CommandGroup>
               {organizations.map((org) => (
                 <CommandItem
-                  key={org.value}
-                  value={org.value}
+                  key={org.id}
+                  value={org.name}
                   onSelect={(currentValue) => {
-                    setValue(currentValue === value ? "" : currentValue);
+                    setSelectedOrganization(org)
                     setOpen(false);
                   }}
                 >
-                  {org.label}
+                  {org.name}
                   <Check
                     className={cn(
                       "ml-auto",
-                      value === org.value ? "opacity-100" : "opacity-0",
+                      value === org.name ? "opacity-100" : "opacity-0",
                     )}
                   />
                 </CommandItem>

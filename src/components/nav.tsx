@@ -9,30 +9,19 @@ import logo from "../assets/black_logo.png";
 import { NavLink } from "react-router";
 import { ChartAreaIcon, DollarSign, LayoutGrid, LogOut } from "lucide-react";
 import { AUTHORIZED_IDS } from "./Main";
+import { Membership, Organization } from "@/utils/types";
 
 type NavProps = {
   session: Session;
-  organizations: {
-    id: number;
-    created_at: string;
-    role: string;
-    user_id: string;
-    organization_id: string;
-    organizations: {
-      id: string;
-      name: string;
-      created_at: string;
-    };
-  }[];
+  organizations: Membership[];
+  selectedOrganization: Organization | null;
+  setSelectedOrganization: any;
 };
 
-export function Nav({ organizations, session }: NavProps) {
+export function Nav({ organizations, session, selectedOrganization, setSelectedOrganization }: NavProps) {
   const [user, setUser] = useState<User>();
 
-  const orgsData = organizations.map((org) => ({
-    value: org.organization_id,
-    label: org.organizations.name,
-  }));
+  const orgsData = organizations.map((org) => org.organizations);
 
   useEffect(() => {
     async function fetchUser() {
@@ -51,7 +40,7 @@ export function Nav({ organizations, session }: NavProps) {
           <NavLink to="/" end>
             <img className="w-24" src={logo} alt="logo" />
           </NavLink>
-          {organizations.length > 1 && <Combobox organizations={orgsData} />}
+          {organizations.length > 1 && <Combobox organizations={orgsData} selectedOrganization={selectedOrganization} setSelectedOrganization={setSelectedOrganization} />}
         </div>
         <PopoverTrigger>
           <Avatar>
