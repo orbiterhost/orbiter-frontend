@@ -34,20 +34,20 @@ export function Nav({ organizations, session, selectedOrganization, setSelectedO
   }, []);
 
   return (
-    <div className="w-full flex gap-6 justify-between items-center py-6 px-10">
+    <div className="w-full flex gap-6 justify-center sm:justify-between items-center py-6 sm:px-10">
       <Popover>
-        <div className="flex items-center gap-4">
-          <NavLink to="/" end>
-            <img className="w-24" src={logo} alt="logo" />
-          </NavLink>
+        <NavLink className="sm:block hidden" to="/" end>
+          <img className="w-24" src={logo} alt="logo" />
+        </NavLink>
+        <div className="flex items-center gap-4 px-0">
           {organizations.length > 1 && <Combobox organizations={orgsData} selectedOrganization={selectedOrganization} setSelectedOrganization={setSelectedOrganization} />}
+          <PopoverTrigger>
+            <Avatar>
+              <AvatarImage src={user?.user_metadata.avatar_url} />
+              <AvatarFallback>{user?.email?.[0] || "U"}</AvatarFallback>
+            </Avatar>
+          </PopoverTrigger>
         </div>
-        <PopoverTrigger>
-          <Avatar>
-            <AvatarImage src={user?.user_metadata.avatar_url} />
-            <AvatarFallback>{user?.email?.[0] || "U"}</AvatarFallback>
-          </Avatar>
-        </PopoverTrigger>
         <PopoverContent className="mr-8 flex flex-col w-48">
           <NavLink to="/" end className="w-full">
             <Button variant="ghost" className="w-full justify-start">

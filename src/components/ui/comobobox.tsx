@@ -28,7 +28,7 @@ type ComboboxProps = {
 
 export function Combobox({
   organizations,
-  selectedOrganization, 
+  selectedOrganization,
   setSelectedOrganization
 }: ComboboxProps) {
   const [open, setOpen] = React.useState(false);
@@ -42,7 +42,9 @@ export function Combobox({
           aria-expanded={open}
           className="justify-between"
         >
-          {selectedOrganization ? selectedOrganization.name: "Select organization..."}
+          <span className="truncate max-w-[300px]">
+            {selectedOrganization ? selectedOrganization.name : "Select organization..."}
+          </span>
           <ChevronsUpDown className="opacity-50" />
         </Button>
       </PopoverTrigger>
