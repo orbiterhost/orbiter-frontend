@@ -32,7 +32,6 @@ export function Combobox({
   setSelectedOrganization
 }: ComboboxProps) {
   const [open, setOpen] = React.useState(false);
-  const [value, setValue] = React.useState("");
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -57,7 +56,7 @@ export function Combobox({
                 <CommandItem
                   key={org.id}
                   value={org.name}
-                  onSelect={(currentValue) => {
+                  onSelect={() => {
                     setSelectedOrganization(org)
                     setOpen(false);
                   }}
@@ -66,7 +65,7 @@ export function Combobox({
                   <Check
                     className={cn(
                       "ml-auto",
-                      value === org.name ? "opacity-100" : "opacity-0",
+                      selectedOrganization?.name === org.name ? "opacity-100" : "opacity-0",
                     )}
                   />
                 </CommandItem>
