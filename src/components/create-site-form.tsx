@@ -38,15 +38,15 @@ export function CreateSiteForm(props: DashboardProps) {
   const handleDomainChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newDomain = e.target.value;
     setDomain(newDomain);
-    checkValidity(newDomain, hasValidFiles);
   };
 
   const handleFileValidityChange = (fileValid: boolean) => {
     setHasValidFiles(fileValid);
-    checkValidity(domain, fileValid);
   };
 
-
+  useEffect(() => {
+    setIsValid(domain.trim().length > 0 && hasValidFiles);
+  }, [domain, hasValidFiles]);
 
   useEffect(() => {
     const localCid = localStorage.getItem("orbiter-cid");
