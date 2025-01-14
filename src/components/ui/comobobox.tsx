@@ -42,7 +42,7 @@ export function Combobox({
           aria-expanded={open}
           className="justify-between"
         >
-          <span className="truncate max-w-[300px]">
+          <span className="truncate max-w-[200px] sm:max-w-[300px]">
             {selectedOrganization ? selectedOrganization.name : "Select organization..."}
           </span>
           <ChevronsUpDown className="opacity-50" />
