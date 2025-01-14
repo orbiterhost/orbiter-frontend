@@ -82,6 +82,7 @@ const Main = (props: MainProps) => {
                   initialLoading={props.initialLoading}
                   planDetails={props.planDetails}
                   loadSites={props.loadSites}
+                  selectedOrganization={props.selectedOrganization}
                 />
               }
             />

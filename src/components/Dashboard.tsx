@@ -3,7 +3,7 @@ import { SiteCard } from "./site-card";
 import { PlanDetails } from "@/App"
 import { useToast } from "@/hooks/use-toast";
 import { getAccessToken } from "@/utils/auth";
-import { Site } from "@/utils/types";
+import { Organization, Site } from "@/utils/types";
 
 type DashboardProps = {
   organization: any;
@@ -16,6 +16,7 @@ type DashboardProps = {
   initialLoading: boolean;
   planDetails: PlanDetails;
   loadSites: (id: string) => Promise<void>;
+  selectedOrganization: Organization;
 };
 
 const Dashboard = (props: DashboardProps) => {  
@@ -49,7 +50,7 @@ const Dashboard = (props: DashboardProps) => {
 
       const data = await res.json();
 
-      props.loadSites();
+      props.loadSites(props.selectedOrganization.id);
       return data.data;
     } catch (error) {
       console.log(error);  
@@ -75,7 +76,7 @@ const Dashboard = (props: DashboardProps) => {
 
       console.log(await res.json());
 
-      props.loadSites();
+      props.loadSites(props.selectedOrganization.id);
     } catch (error) {
       console.log(error);
       toast({
