@@ -30,10 +30,6 @@ export function CreateSiteForm(props: DashboardProps) {
   const [isValid, setIsValid] = useState(false)
   const [hasValidFiles, setHasValidFiles] = useState(false);
 
-  const checkValidity = (newDomain: string, fileValid: boolean) => {
-    setIsValid(newDomain.trim().length > 0 && fileValid);
-  };
-
   // Modify the domain onChange handler
   const handleDomainChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newDomain = e.target.value;
