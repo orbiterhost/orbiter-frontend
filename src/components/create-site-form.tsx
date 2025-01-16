@@ -142,7 +142,7 @@ export function CreateSiteForm(props: DashboardProps) {
             ) : (
               <span className="text-gray-400">subdomain</span>
             )}
-            <span>.orbiter.host</span>
+            <span>.orbiter.website</span>
           </div>
         </div>
         {props.loading ? (
