@@ -70,7 +70,6 @@ export default function App() {
       console.log("loading...");
       const memberships = await getOrgMemebershipsForUser();
       if (memberships && memberships?.length === 0) {
-        console.log("Here");
         //  Create org and membership for user because this is a new user
         await createOrganizationAndMembership();
         const memberships = await getOrgMemebershipsForUser();

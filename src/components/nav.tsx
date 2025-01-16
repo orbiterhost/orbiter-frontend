@@ -33,6 +33,11 @@ export function Nav({ organizations, session, selectedOrganization, setSelectedO
     fetchUser();
   }, []);
 
+  const logOut = () => {
+    localStorage.removeItem("orbiter-org")
+    signOut();
+  }
+
   return (
     <div className="w-full flex gap-6 justify-center sm:justify-between items-center py-6 sm:px-10">
       <Popover>
@@ -71,7 +76,7 @@ export function Nav({ organizations, session, selectedOrganization, setSelectedO
           )}
           <Button
             variant="ghost"
-            onClick={signOut}
+            onClick={logOut}
             className="w-full justify-start"
           >
             <LogOut />
