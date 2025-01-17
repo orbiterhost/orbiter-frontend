@@ -33,3 +33,10 @@ export type Membership = {
     organization_id: string;
     organizations: Organization;
 }
+
+export type Template = {
+  name: string;
+  cid: string;
+  previewImageUrl: string;
+  hostedUrl: string;
+}

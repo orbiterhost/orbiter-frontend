@@ -241,27 +241,10 @@ export default function App() {
       //  Generate one-time use key
       //  Upload site
       if (!cid) {
-        const cid = await uploadSite(files);
+        cid = await uploadSite(files);
         console.log(cid);
-        //  Create subdomain and contract
-        await fetch(`${import.meta.env.VITE_BASE_URL}/sites/${siteId}`, {
-          method: "PUT",
-          //  @ts-ignore
-          headers: {
-            "Content-Type": "application/json",
-            "X-Orbiter-Token": accessToken,
-          },
-          body: JSON.stringify({
-            cid,
-          }),
-        });
-
-        handleLoadSites(selectedOrganization?.id || "");
-        toast({
-          title: "Site updated!",
-        });
-        setLoading(false);
       }
+      
       await fetch(`${import.meta.env.VITE_BASE_URL}/sites/${siteId}`, {
         method: "PUT",
         //  @ts-ignore

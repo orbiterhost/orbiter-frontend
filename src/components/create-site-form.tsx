@@ -19,6 +19,8 @@ type DashboardProps = {
   createSite: any;
   updateSite: any;
   loading: boolean;
+  templateCid?: string;
+  setSelectedTemplateCid?: (cid: string) => void;
   createSiteFromCid: (cid: string, subdomain: string) => Promise<void>;
 };
 
@@ -27,8 +29,28 @@ export function CreateSiteForm(props: DashboardProps) {
   const [domain, setDomain] = useState<string>("");
   const [open, setOpen] = useState(false);
   const [cid, setCid] = useState("");
-  const [isValid, setIsValid] = useState(false)
+  const [isValid, setIsValid] = useState(false);
   const [hasValidFiles, setHasValidFiles] = useState(false);
+
+  useEffect(() => {
+    if(props.templateCid) {
+      setOpen(true);
+    } else {
+      setOpen(false);
+    }
+  }, [props.templateCid])
+
+  const handleClose = () => {
+    if (!props.loading) {
+      setOpen(false);
+      if (props.setSelectedTemplateCid) {
+        props.setSelectedTemplateCid("");
+      }
+      setFiles([]);
+      setDomain("");
+      setCid("");
+    }
+  };
 
   // Modify the domain onChange handler
   const handleDomainChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -52,6 +74,12 @@ export function CreateSiteForm(props: DashboardProps) {
       setHasValidFiles(true);
       setOpen(true);
     }
+
+    if (props.templateCid) {
+      setCid(props.templateCid);
+      setHasValidFiles(true);
+      setOpen(true);
+    }
   }, []);
 
   async function submit() {
@@ -64,7 +92,7 @@ export function CreateSiteForm(props: DashboardProps) {
         setDomain("");
         const url = new URL(window.location.href);
         url.searchParams.delete("cid");
-        window.history.pushState({}, '', url);
+        window.history.pushState({}, "", url);
       }
 
       if (!files.length) {
@@ -91,16 +119,22 @@ export function CreateSiteForm(props: DashboardProps) {
         // Only allow closing via the close button
         if (!props.loading) {
           setOpen(open);
+          if(!open && props.setSelectedTemplateCid) {
+            console.log("Removing selected template cid")
+            props.setSelectedTemplateCid("");
+          }
         }
       }}
       open={open}
     >
-      <DialogTrigger>
-        <Button>
-          <Plus />
-          Create Site
-        </Button>
-      </DialogTrigger>
+      {!props.templateCid && (
+        <DialogTrigger>
+          <Button>
+            <Plus />
+            Upload Site
+          </Button>
+        </DialogTrigger>
+      )}
       <DialogContent
         onPointerDownOutside={(e) => {
           e.preventDefault();
@@ -150,7 +184,9 @@ export function CreateSiteForm(props: DashboardProps) {
             <Loader2 className="animate-spin" /> Creating Site...
           </Button>
         ) : (
-          <Button disabled={!isValid} onClick={submit}>Create</Button>
+          <Button disabled={!isValid} onClick={submit}>
+            Create
+          </Button>
         )}
       </DialogContent>
     </Dialog>
