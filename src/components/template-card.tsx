@@ -10,7 +10,6 @@ import { Template } from "@/utils/types";
 import {
   Dialog,
 } from "./ui/dialog";
-import { CreateSiteForm } from "./create-site-form";
 
 type TemplateCardProps = {
   template: Template;

@@ -40,18 +40,6 @@ export function CreateSiteForm(props: DashboardProps) {
     }
   }, [props.templateCid])
 
-  const handleClose = () => {
-    if (!props.loading) {
-      setOpen(false);
-      if (props.setSelectedTemplateCid) {
-        props.setSelectedTemplateCid("");
-      }
-      setFiles([]);
-      setDomain("");
-      setCid("");
-    }
-  };
-
   // Modify the domain onChange handler
   const handleDomainChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newDomain = e.target.value;
