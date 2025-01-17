@@ -11,7 +11,7 @@ export default function UsersByDay() {
     const fetchData = async () => {
       try {
         const data = await getDailyUsers();
-        console.log(data)
+        console.log(data);
         // Reverse the data to show oldest to newest
         const reversedData = [...data.data].reverse();
 
@@ -20,7 +20,7 @@ export default function UsersByDay() {
           height: 240,
           series: [
             {
-              name: "Versions",
+              name: "Users",
               data: reversedData.map((item) => item.users),
             },
           ],
@@ -60,10 +60,11 @@ export default function UsersByDay() {
                 },
               },
               categories: reversedData.map((item) => {
-                const date = new Date(item.date);
+                const date = new Date(item.date + 'T00:00:00Z');
                 return date.toLocaleDateString("en-US", {
                   month: "short",
                   day: "numeric",
+                  timeZone: 'UTC'
                 });
               }),
             },
@@ -98,11 +99,12 @@ export default function UsersByDay() {
               theme: "dark",
               x: {
                 formatter: (val: any) => {
-                  const date = new Date(reversedData[val - 1].date);
+                  const date = new Date(reversedData[val - 1].date + 'T00:00:00Z');
                   return date.toLocaleDateString("en-US", {
                     month: "long",
                     day: "numeric",
                     year: "numeric",
+                    timeZone: 'UTC'
                   });
                 },
               },
@@ -115,25 +117,20 @@ export default function UsersByDay() {
         setIsLoading(false);
       }
     };
-
     fetchData();
   }, []);
 
   if (isLoading) {
-    return (
-      <div className="w-3/4 m-auto">Loading...</div>
-    );
+    return <div className="w-3/4 m-auto">Loading...</div>;
   }
 
   if (error) {
-    return (
-     <div className="w-3/4 m-auto">Error loading chart</div>
-    );
+    return <div className="w-3/4 m-auto">Error loading chart</div>;
   }
 
   return (
     <div className="w-3/4 m-auto">
-        <dt className="text-sm/6 font-medium text-gray-500">New Users By Day</dt>
+      <dt className="text-sm/6 font-medium text-gray-500">New Users By Day</dt>
       <Chart {...chartData} />
     </div>
   );

@@ -60,10 +60,11 @@ export default function SiteUpdates() {
                 },
               },
               categories: reversedData.map((item) => {
-                const date = new Date(item.date);
+                const date = new Date(item.date + 'T00:00:00Z');
                 return date.toLocaleDateString("en-US", {
                   month: "short",
                   day: "numeric",
+                  timeZone: 'UTC'
                 });
               }),
             },
@@ -98,7 +99,7 @@ export default function SiteUpdates() {
               theme: "dark",
               x: {
                 formatter: (val: any) => {
-                  const date = new Date(reversedData[val - 1].date);
+                  const date = new Date(reversedData[val - 1].date + 'T00:00:00Z');
                   return date.toLocaleDateString("en-US", {
                     month: "long",
                     day: "numeric",
