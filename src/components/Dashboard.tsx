@@ -143,17 +143,18 @@ const Dashboard = (props: DashboardProps) => {
             <div className="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {templates.map((t: Template) => {
                 return <TemplateCard template={t} useTemplate={useTemplate} />;
-              })}                
+              })}
             </div>
             {
-              selectedTemplateCid && 
+              selectedTemplateCid &&
               <CreateSiteForm {...props} templateCid={selectedTemplateCid} setSelectedTemplateCid={setSelectedTemplateCid} />
             }
           </div>
         </>
       )}
       <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 mx-auto lg:mx-0 gap-4">
-        {props.sites.map((site) => (
+        {[...props.sites].sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()).map((site) => (
+
           <SiteCard
             key={site.id}
             site={site}

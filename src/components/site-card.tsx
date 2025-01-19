@@ -2,9 +2,6 @@ import { useState, useEffect } from "react";
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
 } from "./ui/card";
 import { UpdateSiteForm } from "./update-site-form";
 import { CircleCheck, Loader2, Settings, Trash } from "lucide-react";
@@ -184,8 +181,8 @@ export const SiteCard = ({
   };
 
   function truncate(text: string) {
-    if (text.length > 24) {
-      return text.slice(0, 24) + "...";
+    if (text.length > 22) {
+      return text.slice(0, 22) + "...";
     }
     return text;
   }
@@ -212,125 +209,122 @@ export const SiteCard = ({
 
   return (
     <Dialog>
-      <Card className="min-w-[335px] flex flex-row">
-        <CardHeader className="flex items-center gap-2">
+      <Card className="min-w-[335px] flex flex-row items-center">
+        <CardContent className="flex items-start gap-1 justify-between w-full pt-6">
           <div className="flex flex-col">
-            <CardTitle className="tracking-tighter">
-              <a
-                href={`https://${
-                  site.custom_domain ? site.custom_domain : site.domain
+            <a
+              href={`https://${site.custom_domain ? site.custom_domain : site.domain
                 }`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group flex items-center gap-2"
-              >
-                <span className="flex group-hover:underline">
-                  {site.custom_domain
-                    ? site.custom_domain
-                    : truncate(site.domain)}
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    className="inline h-4 w-4 opacity-0 group-hover:opacity-100 ml-1"
-                  >
-                    <title>Link Out</title>
-                    <path
-                      fill="none"
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M13.5 10.5L21 3m-5 0h5v5m0 6v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5"
-                    />
-                  </svg>
-                </span>
-              </a>
-            </CardTitle>
-            <CardDescription>
-              Updated: {new Date(site.updated_at).toLocaleString()}
-            </CardDescription>
-          </div>
-        </CardHeader>
-        <CardContent className="flex items-center gap-1 justify-end">
-          <HoverCard>
-            <HoverCardTrigger>
-              {isSiteReady ? (
-                <CircleCheck className="text-green-500" />
-              ) : (
-                <Loader2 className="animate-spin text-yellow-400" />
-              )}
-            </HoverCardTrigger>
-            <HoverCardContent className="w-full">
-              <p className="text-sm">
-                {isSiteReady ? "DNS Configured" : "DNS Pending"}
-              </p>
-            </HoverCardContent>
-          </HoverCard>
-          <Popover>
-            <PopoverTrigger>
-              <Settings />
-            </PopoverTrigger>
-            <PopoverContent className="w-full flex flex-col items-start gap-2">
-              {planDetails.planName !== "free" ? (
-                <CustomDomainForm
-                  loading={loading}
-                  updateSite={updateSite}
-                  siteId={site.id}
-                  customDomain={customDomain}
-                  setCustomDomain={setCustomDomain}
-                  addCustomDomain={addCustomDomain}
-                  siteInfo={site}
-                  deleteCustomDomain={deleteCustomDomain}
-                />
-              ) : (
-                <UpsellModal feature="custom domain" />
-              )}
-              {planDetails.planName !== "free" && versions ? (
-                <UpdateVersionForm
-                  loading={loading}
-                  updateSite={updateSite}
-                  siteId={site.id}
-                  versions={versions}
-                  siteDomain={site.domain}
-                />
-              ) : (
-                <UpsellModal feature="versions" />
-              )}
-              <UpdateSiteForm
-                loading={loading}
-                updateSite={updateSite}
-                siteId={site.id}
-              />
-              <SiteInfoModal {...site} />
-              <DialogTrigger asChild>
-                <Button
-                  className="h-7 w-full justify-start"
-                  variant="ghost"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex items-center gap-2 font-bold"
+            >
+              <span className="flex group-hover:underline">
+                {site.custom_domain
+                  ? site.custom_domain
+                  : truncate(site.domain)}
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  className="inline h-4 w-4 opacity-0 group-hover:opacity-100 ml-1"
                 >
-                  <Trash /> {deleting ? "Deleting..." : "Delete"}
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-[425px]">
-                <DialogHeader>
-                  <DialogTitle>Are you sure you want to delete?</DialogTitle>
-                  <DialogDescription>
-                    Websites cannot be restored after they are deleted. Make
-                    sure you have your content backed up!
-                  </DialogDescription>
-                </DialogHeader>
-                <DialogFooter>
+                  <title>Link Out</title>
+                  <path
+                    fill="none"
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M13.5 10.5L21 3m-5 0h5v5m0 6v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5"
+                  />
+                </svg>
+              </span>
+            </a>
+            <p className="text-gray-500 text-sm">
+              Updated: {new Date(site.updated_at).toLocaleString()}
+            </p>
+          </div>
+          <div className="flex gap-1">
+            <HoverCard>
+              <HoverCardTrigger>
+                {isSiteReady ? (
+                  <CircleCheck className="text-green-500" />
+                ) : (
+                  <Loader2 className="animate-spin text-yellow-400" />
+                )}
+              </HoverCardTrigger>
+              <HoverCardContent className="w-full">
+                <p className="text-sm">
+                  {isSiteReady ? "DNS Configured" : "DNS Pending"}
+                </p>
+              </HoverCardContent>
+            </HoverCard>
+            <Popover>
+              <PopoverTrigger>
+                <Settings />
+              </PopoverTrigger>
+              <PopoverContent className="w-full flex flex-col items-start gap-2">
+                {planDetails.planName !== "free" ? (
+                  <CustomDomainForm
+                    loading={loading}
+                    updateSite={updateSite}
+                    siteId={site.id}
+                    customDomain={customDomain}
+                    setCustomDomain={setCustomDomain}
+                    addCustomDomain={addCustomDomain}
+                    siteInfo={site}
+                    deleteCustomDomain={deleteCustomDomain}
+                  />
+                ) : (
+                  <UpsellModal feature="custom domain" />
+                )}
+                {planDetails.planName !== "free" && versions ? (
+                  <UpdateVersionForm
+                    loading={loading}
+                    updateSite={updateSite}
+                    siteId={site.id}
+                    versions={versions}
+                    siteDomain={site.domain}
+                  />
+                ) : (
+                  <UpsellModal feature="versions" />
+                )}
+                <UpdateSiteForm
+                  loading={loading}
+                  updateSite={updateSite}
+                  siteId={site.id}
+                />
+                <SiteInfoModal {...site} />
+                <DialogTrigger asChild>
                   <Button
-                    onClick={(e: any) => handleDelete(e, site.id)}
-                    type="submit"
-                    variant="destructive"
-                    className="w-full"
+                    className="h-7 w-full justify-start"
+                    variant="ghost"
                   >
-                    Delete
+                    <Trash /> {deleting ? "Deleting..." : "Delete"}
                   </Button>
-                </DialogFooter>
-              </DialogContent>
-            </PopoverContent>
-          </Popover>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[425px]">
+                  <DialogHeader>
+                    <DialogTitle>Are you sure you want to delete?</DialogTitle>
+                    <DialogDescription>
+                      Websites cannot be restored after they are deleted. Make
+                      sure you have your content backed up!
+                    </DialogDescription>
+                  </DialogHeader>
+                  <DialogFooter>
+                    <Button
+                      onClick={(e: any) => handleDelete(e, site.id)}
+                      type="submit"
+                      variant="destructive"
+                      className="w-full"
+                    >
+                      Delete
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </PopoverContent>
+            </Popover>
+          </div>
         </CardContent>
       </Card>
     </Dialog>
