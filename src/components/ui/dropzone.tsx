@@ -193,7 +193,7 @@ export function CustomFileDropzone({
           </button>
         </div>
         <p className="mt-1 text-xs text-gray-500">
-          Files up to {maxSize / (1024 * 1024)}MB each
+          Make sure you have an index.html file
         </p>
       </div>
       {errorMesssage && (<p className="text-sm py-2 flex items-center gap-1">
