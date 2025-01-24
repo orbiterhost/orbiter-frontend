@@ -7,7 +7,9 @@ import { BrowserRouter, Routes, Route, useNavigate } from "react-router";
 import Admin from "./admin";
 import { Session } from "@supabase/supabase-js";
 import { useEffect } from "react";
-import { Organization } from "@/utils/types";
+import { Membership, Organization } from "@/utils/types";
+import Members from "./Members";
+import Invites from "./Invites";
 
 export const AUTHORIZED_IDS = [
   "491404e0-0c90-43fe-a86e-4e11014a7e52",
@@ -30,6 +32,8 @@ type MainProps = {
   loadSites: (orgId: string) => Promise<void>;
   selectedOrganization: Organization | null;
   setSelectedOrganization: any;
+  loadMembers: () => Promise<void>;
+  members: Membership[];
 };
 
 const ProtectedRoute = ({ userSession, children, fallbackPath = "/" }: any) => {
@@ -93,6 +97,24 @@ const Main = (props: MainProps) => {
                   selectPlan={props.selectPlan}
                   planDetails={props.planDetails}
                 />
+              }
+            />
+            <Route
+              path="/members"
+              element={
+                <Members
+                  planDetails={props.planDetails}
+                  organization={props.selectedOrganization}
+                  userSession={props.userSession}
+                  members={props.members}
+                  loadMembers={props.loadMembers}
+                />
+              }
+            />
+            <Route
+              path="/invite"
+              element={
+                <Invites />
               }
             />
             {/* Protected route example */}

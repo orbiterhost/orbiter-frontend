@@ -15,11 +15,11 @@ export async function getUserLocal(): Promise<Session | null> {
 	return data.session;
 }
 
-export const signUserIn = async (provider: any) => {
+export const signUserIn = async (provider: any, redirectUrl: string) => {
 	const { data, error } = await supabase.auth.signInWithOAuth({
 		provider: provider,
 		options: {
-			redirectTo: import.meta.env.VITE_SITE_URL,
+			redirectTo: redirectUrl,
 		},
 	});
 

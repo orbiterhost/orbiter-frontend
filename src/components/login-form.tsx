@@ -6,10 +6,11 @@ export function LoginForm({
 	className,
 	...props
 }: React.ComponentPropsWithoutRef<"form">) {
-	const signIn = async (e: any, method: string) => {
+	const signIn = async (e: any, method: string) => {		
 		try {
 			e.preventDefault();
-			const data = await signUserIn(method);
+			const url = window.location.href;
+			const data = await signUserIn(method, url);
 			console.log(data);
 		} catch (error: any) {
 			console.log(error);

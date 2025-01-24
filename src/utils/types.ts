@@ -32,6 +32,12 @@ export type Membership = {
     user_id: string;
     organization_id: string;
     organizations: Organization;
+    user?: {
+      id: string, 
+      name: string, 
+      email: string,
+      avatar: string
+    }
 }
 
 export type Template = {

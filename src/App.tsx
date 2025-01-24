@@ -39,6 +39,7 @@ export default function App() {
     currentPeriodEnd: 0,
     status: "active",
   });
+  const [members, setMembers] = useState<Membership[]>([]);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -109,14 +110,47 @@ export default function App() {
               )) ||
             null;
 
-          setSelectedOrganization(ownedOrg);
+          setSelectedOrganization(ownedOrg);          
         }
       }
     };
     if (userSession) {
-      loadOrgs();
+      loadOrgs();      
     }
   }, [userSession]);
+
+  useEffect(() => {
+    console.log("Selected org:")
+    console.log(selectedOrganization)
+    if(selectedOrganization) {
+      loadMembers();
+    }
+  }, [selectedOrganization]);
+
+  const loadMembers = async () => {
+    try {
+      const accessToken = await getAccessToken();
+
+      const res = await fetch(
+        `${import.meta.env.VITE_BASE_URL}/organizations/${
+         selectedOrganization?.id
+        }/members`,
+        {
+          //  @ts-ignore
+          headers: {
+            "X-Orbiter-Token": accessToken,
+          },
+        }
+      );
+
+      const data = await res.json();
+      setMembers(data.data);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     if (selectedOrganization) {
@@ -394,6 +428,8 @@ export default function App() {
           loadSites={handleLoadSites}
           selectedOrganization={selectedOrganization}
           setSelectedOrganization={setSelectedOrganization}
+          members={members}
+          loadMembers={loadMembers}
         />
       )}
       <Toaster />
