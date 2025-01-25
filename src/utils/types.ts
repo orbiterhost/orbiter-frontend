@@ -40,6 +40,19 @@ export type Membership = {
     }
 }
 
+export type Invite = {
+  id: string;
+  created_at: string;
+  updated_at: string;
+  organization_id: string;
+  email: string;
+  invite_email: string;
+  role: string;
+  status: string;
+  first_name: string;
+  last_name: string;
+}
+
 export type Template = {
   name: string;
   cid: string;

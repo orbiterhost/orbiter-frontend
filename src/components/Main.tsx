@@ -7,7 +7,7 @@ import { BrowserRouter, Routes, Route, useNavigate } from "react-router";
 import Admin from "./admin";
 import { Session } from "@supabase/supabase-js";
 import { useEffect } from "react";
-import { Membership, Organization } from "@/utils/types";
+import { Invite, Membership, Organization } from "@/utils/types";
 import Members from "./Members";
 import Invites from "./Invites";
 
@@ -34,6 +34,7 @@ type MainProps = {
   setSelectedOrganization: any;
   loadMembers: () => Promise<void>;
   members: Membership[];
+  invites: Invite[];
 };
 
 const ProtectedRoute = ({ userSession, children, fallbackPath = "/" }: any) => {
@@ -108,6 +109,7 @@ const Main = (props: MainProps) => {
                   userSession={props.userSession}
                   members={props.members}
                   loadMembers={props.loadMembers}
+                  invites={props.invites}
                 />
               }
             />

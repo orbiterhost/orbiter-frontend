@@ -14,7 +14,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { useToast } from "@/hooks/use-toast";
 import authHero from "./assets/auth-hero.jpg";
 import logo from "./assets/black_logo.png";
-import { Membership, Organization } from "./utils/types";
+import { Invite, Membership, Organization } from "./utils/types";
 
 export type PlanDetails = {
   planName: string;
@@ -40,6 +40,7 @@ export default function App() {
     status: "active",
   });
   const [members, setMembers] = useState<Membership[]>([]);
+  const [invites, setInvites] = useState<Invite[]>([]);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -110,19 +111,19 @@ export default function App() {
               )) ||
             null;
 
-          setSelectedOrganization(ownedOrg);          
+          setSelectedOrganization(ownedOrg);
         }
       }
     };
     if (userSession) {
-      loadOrgs();      
+      loadOrgs();
     }
   }, [userSession]);
 
   useEffect(() => {
-    console.log("Selected org:")
-    console.log(selectedOrganization)
-    if(selectedOrganization) {
+    console.log("Selected org:");
+    console.log(selectedOrganization);
+    if (selectedOrganization) {
       loadMembers();
     }
   }, [selectedOrganization]);
@@ -133,7 +134,7 @@ export default function App() {
 
       const res = await fetch(
         `${import.meta.env.VITE_BASE_URL}/organizations/${
-         selectedOrganization?.id
+          selectedOrganization?.id
         }/members`,
         {
           //  @ts-ignore
@@ -144,7 +145,8 @@ export default function App() {
       );
 
       const data = await res.json();
-      setMembers(data.data);
+      setMembers(data.data.members);
+      setInvites(data.data.invites);
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -278,7 +280,7 @@ export default function App() {
         cid = await uploadSite(files);
         console.log(cid);
       }
-      
+
       await fetch(`${import.meta.env.VITE_BASE_URL}/sites/${siteId}`, {
         method: "PUT",
         //  @ts-ignore
@@ -430,6 +432,7 @@ export default function App() {
           setSelectedOrganization={setSelectedOrganization}
           members={members}
           loadMembers={loadMembers}
+          invites={invites}
         />
       )}
       <Toaster />
