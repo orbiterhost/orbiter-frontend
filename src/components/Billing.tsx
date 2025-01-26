@@ -19,7 +19,7 @@ type BillingProps = {
   planDetails: PlanDetails;
   selectPlan: (priceId: string) => Promise<void>;
   userSession: Session;
-  selectedOrganization: Organization;
+  selectedOrganization: Organization | null;
 };
 
 type Plan = {
@@ -136,9 +136,9 @@ const Billing = (props: BillingProps) => {
   const buildLoopLink = (plan: Plan) => {
     const user = props.userSession.user;
     if(plan.name === "launch") {
-      return window.location.href = `https://checkout.loopcrypto.xyz/156ca739-2681-4bfe-a518-f092db09a6d4/15eb156f-0a34-44a5-b897-04b534d44f6a?email=${encodeURI(user?.email || "")}&refId=${props.selectedOrganization.id}`
+      return window.location.href = `https://checkout.loopcrypto.xyz/156ca739-2681-4bfe-a518-f092db09a6d4/15eb156f-0a34-44a5-b897-04b534d44f6a?email=${encodeURI(user?.email || "")}&refId=${props?.selectedOrganization?.id}`
     } else if(plan.name === "orbiter") {
-      return window.location.href = `https://checkout.loopcrypto.xyz/156ca739-2681-4bfe-a518-f092db09a6d4/eb640acc-664e-42f5-8708-66ef1201411e?email=${encodeURI(user?.email || "")}&refId=${props.selectedOrganization.id}`
+      return window.location.href = `https://checkout.loopcrypto.xyz/156ca739-2681-4bfe-a518-f092db09a6d4/eb640acc-664e-42f5-8708-66ef1201411e?email=${encodeURI(user?.email || "")}&refId=${props?.selectedOrganization?.id}`
     }
   }
 
