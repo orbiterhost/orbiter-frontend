@@ -97,6 +97,8 @@ const Main = (props: MainProps) => {
                 <Billing
                   selectPlan={props.selectPlan}
                   planDetails={props.planDetails}
+                  userSession={props.userSession}
+                  selectedOrganization={props.selectedOrganization}
                 />
               }
             />

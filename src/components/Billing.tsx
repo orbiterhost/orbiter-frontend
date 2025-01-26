@@ -6,11 +6,20 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/card";
-import { PlanDetails } from "@/App"
+import { PlanDetails } from "@/App";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "./ui/collapsible";
+import { Session } from "@supabase/supabase-js";
+import { Organization } from "@/utils/types";
 
 type BillingProps = {
   planDetails: PlanDetails;
   selectPlan: (priceId: string) => Promise<void>;
+  userSession: Session;
+  selectedOrganization: Organization;
 };
 
 type Plan = {
@@ -51,7 +60,7 @@ const PLANS: Plan[] = [
       "Remove Orbiter Branding",
       "Unlimited Traffic",
     ],
-    priceId: "price_1Qfs6PITCuQY0tuKiHEePgmP"//"price_1QctpDIWMzuw7wjqbK42YN85",
+    priceId: "price_1Qfs6PITCuQY0tuKiHEePgmP", //"price_1QctpDIWMzuw7wjqbK42YN85",
   },
   {
     id: "orbit",
@@ -68,14 +77,14 @@ const PLANS: Plan[] = [
       "Remove Orbiter Branding",
       "Unlimited Traffic",
     ],
-    priceId: "price_1Qfs5cITCuQY0tuK2Mx2OkPR"//"price_1QctpbIWMzuw7wjqFHL2L4rl",
+    priceId: "price_1Qfs5cITCuQY0tuK2Mx2OkPR", //"price_1QctpbIWMzuw7wjqFHL2L4rl",
   },
 ];
 
 const Billing = (props: BillingProps) => {
   // Helper to get the display name for a plan
   const getPlanDisplayName = (planName: string) => {
-    const plan = PLANS.find(p => p.name === planName);
+    const plan = PLANS.find((p) => p.name === planName);
     return plan?.displayName || planName;
   };
 
@@ -96,7 +105,8 @@ const Billing = (props: BillingProps) => {
           )}
           {props.planDetails.nextPlan && (
             <p className="text-sm text-gray-400 text-center">
-              Changing to {getPlanDisplayName(props.planDetails.nextPlan)} next period
+              Changing to {getPlanDisplayName(props.planDetails.nextPlan)} next
+              period
             </p>
           )}
         </div>
@@ -123,6 +133,15 @@ const Billing = (props: BillingProps) => {
     );
   };
 
+  const buildLoopLink = (plan: Plan) => {
+    const user = props.userSession.user;
+    if(plan.name === "launch") {
+      return window.location.href = `https://checkout.loopcrypto.xyz/156ca739-2681-4bfe-a518-f092db09a6d4/15eb156f-0a34-44a5-b897-04b534d44f6a?email=${encodeURI(user?.email || "")}&refId=${props.selectedOrganization.id}`
+    } else if(plan.name === "orbiter") {
+      return window.location.href = `https://checkout.loopcrypto.xyz/156ca739-2681-4bfe-a518-f092db09a6d4/eb640acc-664e-42f5-8708-66ef1201411e?email=${encodeURI(user?.email || "")}&refId=${props.selectedOrganization.id}`
+    }
+  }
+
   return (
     <div className="sm:max-w-screen-lg max-w-screen-sm w-full mx-auto flex flex-col items-start justify-center gap-2">
       <div className="flex flex-col gap-12 items-center justify-start min-h-screen w-full max-w-screen-lg mx-auto p-4">
@@ -133,12 +152,13 @@ const Billing = (props: BillingProps) => {
           {PLANS.map((plan) => (
             <Card
               key={plan.id}
-              className={`w-[300px] ${props.planDetails.planName === plan.name
-                ? "border-2 border-gray-400"
-                : props.planDetails.nextPlan === plan.name
+              className={`w-[300px] ${
+                props.planDetails.planName === plan.name
+                  ? "border-2 border-gray-400"
+                  : props.planDetails.nextPlan === plan.name
                   ? "border-2 border-blue-400"
                   : ""
-                }`}
+              }`}
             >
               <CardHeader>
                 <CardTitle className="text-3xl">{plan.displayName}</CardTitle>
@@ -151,6 +171,17 @@ const Billing = (props: BillingProps) => {
                   ))}
                 </ul>
                 {getPlanButton(plan)}
+                {
+                  plan.name !== "free" &&
+                  <Collapsible className="text-center">
+                  <CollapsibleTrigger>
+                    <p className="text-gray-500 text-sm text-center underline">More payment options</p>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent>
+                    <Button variant="link" onClick={() => buildLoopLink(plan)}>Pay with crypto</Button>
+                  </CollapsibleContent>
+                </Collapsible>
+                }
               </CardContent>
             </Card>
           ))}
