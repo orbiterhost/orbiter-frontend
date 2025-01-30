@@ -10,6 +10,7 @@ import { useEffect } from "react";
 import { Invite, Membership, Organization } from "@/utils/types";
 import Members from "./Members";
 import Invites from "./Invites";
+import APIKeys from "./api-keys"
 
 export const AUTHORIZED_IDS = [
   "491404e0-0c90-43fe-a86e-4e11014a7e52",
@@ -119,6 +120,14 @@ const Main = (props: MainProps) => {
               path="/invite"
               element={
                 <Invites />
+              }
+            />
+            <Route
+              path="/api-keys"
+              element={
+                <APIKeys
+                  organization={props.selectedOrganization}
+                />
               }
             />
             {/* Protected route example */}

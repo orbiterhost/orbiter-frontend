@@ -7,7 +7,7 @@ import type { Session, User } from "@supabase/supabase-js";
 import { Combobox } from "./ui/comobobox";
 import logo from "../assets/black_logo.png";
 import { NavLink } from "react-router";
-import { ChartAreaIcon, DollarSign, LayoutGrid, LogOut, UsersIcon } from "lucide-react";
+import { ChartAreaIcon, DollarSign, LayoutGrid, LogOut, UsersIcon, KeyIcon } from "lucide-react";
 import { AUTHORIZED_IDS } from "./Main";
 import { Membership, Organization } from "@/utils/types";
 
@@ -64,6 +64,12 @@ export function Nav({ organizations, session, selectedOrganization, setSelectedO
             <Button variant="ghost" className="w-full justify-start">
               <UsersIcon />
               Members
+            </Button>
+          </NavLink>
+          <NavLink to="/api-keys" end className="w-full">
+            <Button variant="ghost" className="w-full justify-start">
+              <KeyIcon />
+              API Keys
             </Button>
           </NavLink>
           <NavLink to="/billing" end className="w-full">

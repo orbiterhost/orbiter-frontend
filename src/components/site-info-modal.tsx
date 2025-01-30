@@ -45,7 +45,7 @@ export function SiteInfoModal({
             Under the hood details about your site. You don't need to know what they all mean in order to enjoy Orbiter!
           </DialogDescription>
           <div className="flex flex-col gap-2 mt-12 text-sm">
-            <Label>Side ID</Label>
+            <Label>Site ID</Label>
             <div className="flex items-center justify-between p-2 bg-gray-100 rounded">
               <code className="font-mono truncate max-w-[300px]">{id}</code>
               <Button variant="ghost" size="sm" onClick={() => handleCopy(id, 'id')}>
