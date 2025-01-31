@@ -1,5 +1,5 @@
 import "./index.css";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { getAccessToken, supabase } from "./utils/auth";
 import { Session } from "@supabase/supabase-js";
 import Main from "./components/Main";
@@ -15,7 +15,6 @@ import { useToast } from "@/hooks/use-toast";
 import authHero from "./assets/auth-hero.jpg";
 import logo from "./assets/black_logo.png";
 import { Invite, Membership, Organization } from "./utils/types";
-import { debounce } from "lodash";
 
 export type PlanDetails = {
   planName: string;
@@ -68,74 +67,94 @@ export default function App() {
     }
   }, []);
 
-  const prevOrgRef = useRef<string | null>(null);
-
   useEffect(() => {
     const loadOrgs = async () => {
       console.log("loading...");
       const memberships = await getOrgMemebershipsForUser();
-      if (!memberships) return;
+      if (memberships && memberships?.length === 0) {
+        //  Create org and membership for user because this is a new user
+        await createOrganizationAndMembership();
+        const memberships = await getOrgMemebershipsForUser();
+        setOrganizations(memberships || []);
 
-      // Prevent unnecessary state updates
-      if (JSON.stringify(organizations) !== JSON.stringify(memberships)) {
+        const orgs =
+          memberships && memberships.length > 0
+            ? memberships.map((m: Membership) => m.organizations)
+            : null;
+
+        const ownedOrg =
+          (orgs &&
+            orgs.find(
+              (o: Organization) => o.owner_id === userSession?.user?.id
+            )) ||
+          null;
+
+        if (ownedOrg !== JSON.parse(JSON.stringify(selectedOrganization))) {
+          setSelectedOrganization(ownedOrg);
+        }
+      } else if (memberships) {
         setOrganizations(memberships);
-      }
-
-      const orgs = memberships.length > 0 
-        ? memberships.map((m: Membership) => m.organizations)
-        : [];
-
-      const localOrg = localStorage.getItem("orbiter-org");
-      const foundLocalOrgMatch = orgs?.find((o) => o.id === localOrg);
-      const ownedOrg = orgs?.find((o) => o.owner_id === userSession?.user?.id) || null;
-
-      const newSelectedOrg = foundLocalOrgMatch || ownedOrg;
-
-      // Only update if selection actually changes
-      if (selectedOrganization?.id !== newSelectedOrg?.id) {
-        setSelectedOrganization(newSelectedOrg);
+        //  Check if there's already a selected org in local storage
+        const localOrg = localStorage.getItem("orbiter-org");
+        const orgs =
+          memberships && memberships.length > 0
+            ? memberships.map((m: Membership) => m.organizations)
+            : null;
+        const foundLocalOrgMatch = orgs?.find(
+          (o: Organization) => o.id === localOrg
+        );
+        if (localOrg && foundLocalOrgMatch) {
+          if (
+            foundLocalOrgMatch !== JSON.parse(JSON.stringify(selectedOrganization))
+          ) {
+            setSelectedOrganization(foundLocalOrgMatch);
+          }
+        } else {
+          const ownedOrg =
+            (orgs &&
+              orgs.find(
+                (o: Organization) => o.owner_id === userSession?.user?.id
+              )) ||
+            null;
+          if (ownedOrg !== JSON.parse(JSON.stringify(selectedOrganization))) {
+            setSelectedOrganization(ownedOrg);
+          }
+        }
       }
     };
-
     if (userSession) {
       loadOrgs();
     }
   }, [userSession]);
 
-  // Debounced function to update Supabase user metadata
-  const updateUserOrg = useRef(
-    debounce(async (orgId) => {
-      const { data, error } = await supabase.auth.updateUser({
-        data: { orgId },
-      });
-
-      if (error) {
-        console.error("Error updating org id in metadata:", error);
-      } else {
-        console.log("Org ID updated:", data);
-      }
-    }, 500) // Debounce by 500ms
-  ).current;
-
   useEffect(() => {
-    console.log("Selected org:", selectedOrganization);
-    if (selectedOrganization) {
+    console.log("Selected org:");
+    console.log(selectedOrganization);
+    if (selectedOrganization && selectedOrganization.id !== userSession?.user?.user_metadata?.orgId) {
       loadMembers();
-
-      // Only update Supabase if the orgId actually changes
-      if (prevOrgRef.current !== selectedOrganization.id) {
-        prevOrgRef.current = selectedOrganization.id;
-        updateUserOrg(selectedOrganization.id);
-      }
+      updateUser(selectedOrganization);
     }
   }, [selectedOrganization]);
+
+  const updateUser = async (org: Organization) => {
+    const orgId = org.id;
+    const { error } = await supabase.auth.updateUser({
+      data: { orgId },
+    });
+
+    if (error) {
+      console.log("Error updating user metadata: ", error);
+    }
+  };
 
   const loadMembers = async () => {
     try {
       const accessToken = await getAccessToken();
 
       const res = await fetch(
-        `${import.meta.env.VITE_BASE_URL}/members`,
+        `${import.meta.env.VITE_BASE_URL}/organizations/${
+          selectedOrganization?.id
+        }/members`,
         {
           //  @ts-ignore
           headers: {

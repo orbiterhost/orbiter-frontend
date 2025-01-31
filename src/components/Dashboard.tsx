@@ -142,7 +142,7 @@ const Dashboard = (props: DashboardProps) => {
             <p className="mt-2">Want to learn more about these templates and how to customize them to fit your own style and needs? <a className="underline" href="https://orbiter.host/blog/how-to-use-orbiter-static-site-templates" target="_blank" rel="noreferrer noopener">Read our guide here</a>.</p>
             <div className="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {templates.map((t: Template) => {
-                return <TemplateCard template={t} useTemplate={useTemplate} />;
+                return <div key={t.cid}><TemplateCard template={t} useTemplate={useTemplate} /></div>;
               })}
             </div>
             {
