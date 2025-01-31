@@ -176,7 +176,7 @@ export default function App() {
   useEffect(() => {
     if (selectedOrganization) {
       localStorage.setItem("orbiter-org", selectedOrganization.id);
-      handleLoadSites(selectedOrganization?.id);
+      handleLoadSites();
       fetchPlanDetails(selectedOrganization?.id);
     }
   }, [selectedOrganization]);
@@ -219,7 +219,7 @@ export default function App() {
         }),
       });
 
-      handleLoadSites(selectedOrganization?.id || "");
+      handleLoadSites();
       setLoading(false);
       toast({
         title: "Site created!",
@@ -271,7 +271,7 @@ export default function App() {
         throw Error(data.message);
       }
 
-      handleLoadSites(selectedOrganization?.id || "");
+      handleLoadSites();
       setLoading(false);
       toast({
         title: "Site created!",
@@ -312,7 +312,7 @@ export default function App() {
         }),
       });
 
-      handleLoadSites(selectedOrganization?.id || "");
+      handleLoadSites();
       toast({
         title: "Site updated!",
       });
@@ -327,9 +327,9 @@ export default function App() {
     }
   };
 
-  const handleLoadSites = async (orgId: string) => {
+  const handleLoadSites = async () => {
     try {
-      const sites = await loadSites(orgId);
+      const sites = await loadSites();
       setSites(sites?.data || []);
     } finally {
       setInitialLoading(false); // Set to false when data is loaded
@@ -349,7 +349,7 @@ export default function App() {
         body: "",
       });
 
-      handleLoadSites(selectedOrganization?.id || "");
+      handleLoadSites();
     } catch (error) {
       console.log(error);
       throw error;

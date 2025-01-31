@@ -30,7 +30,7 @@ type MainProps = {
   initialLoading: boolean;
   planDetails: PlanDetails;
   selectPlan: (priceId: string) => Promise<void>;
-  loadSites: (orgId: string) => Promise<void>;
+  loadSites: () => Promise<void>;
   selectedOrganization: Organization | null;
   setSelectedOrganization: any;
   loadMembers: () => Promise<void>;
@@ -125,9 +125,7 @@ const Main = (props: MainProps) => {
             <Route
               path="/api-keys"
               element={
-                <APIKeys
-                  organization={props.selectedOrganization}
-                />
+                <APIKeys />
               }
             />
             {/* Protected route example */}

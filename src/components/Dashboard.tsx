@@ -18,7 +18,7 @@ type DashboardProps = {
   createSiteFromCid: (cid: string, subdomain: string) => Promise<void>;
   initialLoading: boolean;
   planDetails: PlanDetails;
-  loadSites: (id: string) => Promise<void>;
+  loadSites: () => Promise<void>;
   selectedOrganization: Organization | null;
 };
 
@@ -64,7 +64,7 @@ const Dashboard = (props: DashboardProps) => {
 
       const data = await res.json();
 
-      props.loadSites(props.selectedOrganization?.id || "");
+      props.loadSites();
       return data.data;
     } catch (error) {
       console.log(error);
@@ -93,7 +93,7 @@ const Dashboard = (props: DashboardProps) => {
 
       console.log(await res.json());
 
-      props.loadSites(props.selectedOrganization?.id || "");
+      props.loadSites();
     } catch (error) {
       console.log(error);
       toast({

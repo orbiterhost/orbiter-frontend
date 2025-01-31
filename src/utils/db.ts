@@ -50,7 +50,7 @@ export const createOrganizationAndMembership = async () => {
   });
 };
 
-export const loadSites = async (orgId: string) => {
+export const loadSites = async () => {
   const { data: sessionData, error: sessionError } =
     await supabase.auth.getSession();
 

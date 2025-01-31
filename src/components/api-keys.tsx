@@ -2,7 +2,6 @@ import { getAccessToken } from "@/utils/auth";
 import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { Organization } from "@/utils/types";
 import {
   Table,
   TableBody,
@@ -23,10 +22,6 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 
-type APIKeysProps = {
-  organization: Organization | null;
-};
-
 type KeyData = {
   id: string;
   created_at: string;
@@ -42,7 +37,7 @@ type KeySecret = {
   apiKey: string;
 }
 
-const APIKeys = (props: APIKeysProps) => {
+const APIKeys = () => {
 
   const [loading, setLoading] = useState(false)
   const [keys, setKeys] = useState<KeyData[]>([])
