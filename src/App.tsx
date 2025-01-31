@@ -213,7 +213,6 @@ export default function App() {
           "X-Orbiter-Token": accessToken,
         },
         body: JSON.stringify({
-          orgId: selectedOrganization?.id,
           cid: cid,
           subdomain: subdomain,
         }),
