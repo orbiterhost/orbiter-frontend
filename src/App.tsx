@@ -1,5 +1,5 @@
 import "./index.css";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { getAccessToken, supabase } from "./utils/auth";
 import { Session } from "@supabase/supabase-js";
 import Main from "./components/Main";
@@ -15,6 +15,7 @@ import { useToast } from "@/hooks/use-toast";
 import authHero from "./assets/auth-hero.jpg";
 import logo from "./assets/black_logo.png";
 import { Invite, Membership, Organization } from "./utils/types";
+import { debounce } from "lodash";
 
 export type PlanDetails = {
   planName: string;
@@ -67,64 +68,65 @@ export default function App() {
     }
   }, []);
 
+  const prevOrgRef = useRef<string | null>(null);
+
   useEffect(() => {
     const loadOrgs = async () => {
       console.log("loading...");
       const memberships = await getOrgMemebershipsForUser();
-      if (memberships && memberships?.length === 0) {
-        //  Create org and membership for user because this is a new user
-        await createOrganizationAndMembership();
-        const memberships = await getOrgMemebershipsForUser();
-        setOrganizations(memberships || []);
+      if (!memberships) return;
 
-        const orgs =
-          memberships && memberships.length > 0
-            ? memberships.map((m: Membership) => m.organizations)
-            : null;
-
-        const ownedOrg =
-          (orgs &&
-            orgs.find(
-              (o: Organization) => o.owner_id === userSession?.user?.id
-            )) ||
-          null;
-
-        setSelectedOrganization(ownedOrg);
-      } else if (memberships) {
+      // Prevent unnecessary state updates
+      if (JSON.stringify(organizations) !== JSON.stringify(memberships)) {
         setOrganizations(memberships);
-        //  Check if there's already a selected org in local storage
-        const localOrg = localStorage.getItem("orbiter-org");
-        const orgs =
-          memberships && memberships.length > 0
-            ? memberships.map((m: Membership) => m.organizations)
-            : null;
-        const foundLocalOrgMatch = orgs?.find(
-          (o: Organization) => o.id === localOrg
-        );
-        if (localOrg && foundLocalOrgMatch) {
-          setSelectedOrganization(foundLocalOrgMatch);
-        } else {
-          const ownedOrg =
-            (orgs &&
-              orgs.find(
-                (o: Organization) => o.owner_id === userSession?.user?.id
-              )) ||
-            null;
+      }
 
-          setSelectedOrganization(ownedOrg);
-        }
+      const orgs = memberships.length > 0 
+        ? memberships.map((m: Membership) => m.organizations)
+        : [];
+
+      const localOrg = localStorage.getItem("orbiter-org");
+      const foundLocalOrgMatch = orgs?.find((o) => o.id === localOrg);
+      const ownedOrg = orgs?.find((o) => o.owner_id === userSession?.user?.id) || null;
+
+      const newSelectedOrg = foundLocalOrgMatch || ownedOrg;
+
+      // Only update if selection actually changes
+      if (selectedOrganization?.id !== newSelectedOrg?.id) {
+        setSelectedOrganization(newSelectedOrg);
       }
     };
+
     if (userSession) {
       loadOrgs();
     }
   }, [userSession]);
 
+  // Debounced function to update Supabase user metadata
+  const updateUserOrg = useRef(
+    debounce(async (orgId) => {
+      const { data, error } = await supabase.auth.updateUser({
+        data: { orgId },
+      });
+
+      if (error) {
+        console.error("Error updating org id in metadata:", error);
+      } else {
+        console.log("Org ID updated:", data);
+      }
+    }, 500) // Debounce by 500ms
+  ).current;
+
   useEffect(() => {
-    console.log("Selected org:");
-    console.log(selectedOrganization);
+    console.log("Selected org:", selectedOrganization);
     if (selectedOrganization) {
       loadMembers();
+
+      // Only update Supabase if the orgId actually changes
+      if (prevOrgRef.current !== selectedOrganization.id) {
+        prevOrgRef.current = selectedOrganization.id;
+        updateUserOrg(selectedOrganization.id);
+      }
     }
   }, [selectedOrganization]);
 
@@ -133,9 +135,7 @@ export default function App() {
       const accessToken = await getAccessToken();
 
       const res = await fetch(
-        `${import.meta.env.VITE_BASE_URL}/organizations/${
-          selectedOrganization?.id
-        }/members`,
+        `${import.meta.env.VITE_BASE_URL}/members`,
         {
           //  @ts-ignore
           headers: {

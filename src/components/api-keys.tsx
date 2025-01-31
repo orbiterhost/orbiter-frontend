@@ -68,7 +68,7 @@ const APIKeys = (props: APIKeysProps) => {
 
       const accessToken = await getAccessToken();
       const res = await fetch(
-        `${import.meta.env.VITE_BASE_URL}/organizations/${props.organization?.id}/api_keys`,
+        `${import.meta.env.VITE_BASE_URL}/keys`,
         {
           method: "GET",
           headers: {
@@ -106,7 +106,7 @@ const APIKeys = (props: APIKeysProps) => {
 
       const accessToken = await getAccessToken();
       const res = await fetch(
-        `${import.meta.env.VITE_BASE_URL}/organizations/${props.organization?.id}/api_keys`,
+        `${import.meta.env.VITE_BASE_URL}/keys`,
         {
           method: "POST",
           headers: {
@@ -152,7 +152,7 @@ const APIKeys = (props: APIKeysProps) => {
       setLoading(true)
       const accessToken = await getAccessToken();
       const res = await fetch(
-        `${import.meta.env.VITE_BASE_URL}/organizations/${props.organization?.id}/api_keys/${id}`,
+        `${import.meta.env.VITE_BASE_URL}/keys/${id}`,
         {
           method: "DELETE",
           headers: {

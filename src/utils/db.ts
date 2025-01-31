@@ -58,7 +58,7 @@ export const loadSites = async (orgId: string) => {
     throw sessionError;
   }
 
-  const result = await fetch(`${import.meta.env.VITE_BASE_URL}/organizations/${orgId}/sites`, {
+  const result = await fetch(`${import.meta.env.VITE_BASE_URL}/sites`, {
     method: "GET",
     //  @ts-ignore
     headers: {

@@ -21,7 +21,7 @@ const Invites = () => {
   const loadInviteData = async (id: string) => {
     const accessToken = await getAccessToken();
     const res = await fetch(
-      `${import.meta.env.VITE_BASE_URL}/organizations/invites/${id}`,
+      `${import.meta.env.VITE_BASE_URL}/members/invites/${id}`,
       {
         //  @ts-ignore
         headers: {
@@ -41,7 +41,7 @@ const Invites = () => {
       setLoading(true);
       const accessToken = await getAccessToken();
       const res = await fetch(
-        `${import.meta.env.VITE_BASE_URL}/organizations/invites/${inviteId}`,
+        `${import.meta.env.VITE_BASE_URL}/members/invites/${inviteId}`,
         {
           method: "POST",
           //  @ts-ignore

@@ -43,9 +43,7 @@ export function InviteUserForm(props: InviteUserFormProps) {
     try {
       const accessToken = await getAccessToken();
       const res = await fetch(
-        `${import.meta.env.VITE_BASE_URL}/organizations/${
-          props?.organization?.id
-        }/members/invite`,
+        `${import.meta.env.VITE_BASE_URL}/members/invite`,
         {
           method: "POST",
           //  @ts-ignore

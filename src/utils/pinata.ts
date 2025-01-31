@@ -14,7 +14,7 @@ export const getKey = async () => {
     throw sessionError;
   }
 
-  const result = await fetch(`${import.meta.env.VITE_BASE_URL}/keys`, {
+  const result = await fetch(`${import.meta.env.VITE_BASE_URL}/keys/upload_key`, {
     method: "POST",
     //  @ts-ignore
     headers: {

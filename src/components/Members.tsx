@@ -30,9 +30,7 @@ const Members = (props: MembersProps) => {
       const accessToken = await getAccessToken();
 
       const res = await fetch(
-        `${import.meta.env.VITE_BASE_URL}/organizations/${
-          props?.organization?.id
-        }/members/${member.user?.id}`,
+        `${import.meta.env.VITE_BASE_URL}/members/${member.user?.id}`,
         {
           method: "DELETE",
           //  @ts-ignore
@@ -73,7 +71,7 @@ const Members = (props: MembersProps) => {
     const accessToken = await getAccessToken();
 
     const res = await fetch(
-      `${import.meta.env.VITE_BASE_URL}/organizations/invites/${invite.id}`,
+      `${import.meta.env.VITE_BASE_URL}/members/invites/${invite.id}`,
       {
         method: "DELETE",
         //  @ts-ignore
@@ -101,9 +99,7 @@ const Members = (props: MembersProps) => {
     const accessToken = await getAccessToken();
 
     const res = await fetch(
-      `${import.meta.env.VITE_BASE_URL}/organizations/${
-        props?.organization?.id
-      }/resend_invite/${invite.id}`,
+      `${import.meta.env.VITE_BASE_URL}/members/resend_invite/${invite.id}`,
       {
         method: "POST",
         //  @ts-ignore
