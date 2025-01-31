@@ -130,9 +130,11 @@ export default function App() {
   useEffect(() => {
     console.log("Selected org:");
     console.log(selectedOrganization);
-    if (selectedOrganization && selectedOrganization.id !== userSession?.user?.user_metadata?.orgId) {
-      loadMembers();
+    if (selectedOrganization && selectedOrganization.id !== userSession?.user?.user_metadata?.orgId) {      
       updateUser(selectedOrganization);
+    }
+    if(selectedOrganization) {
+      loadMembers();
     }
   }, [selectedOrganization]);
 
@@ -152,9 +154,7 @@ export default function App() {
       const accessToken = await getAccessToken();
 
       const res = await fetch(
-        `${import.meta.env.VITE_BASE_URL}/organizations/${
-          selectedOrganization?.id
-        }/members`,
+        `${import.meta.env.VITE_BASE_URL}/members`,
         {
           //  @ts-ignore
           headers: {
