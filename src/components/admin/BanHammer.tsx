@@ -16,6 +16,7 @@ const BanHammer = () => {
       const accessToken = await getAccessToken();
       const res = await fetch(`${import.meta.env.BASE_URL}/admin/block_site`, {
         method: "POST",
+        //  @ts-ignore
         headers: {
           "Content-Type": "application/json",
           "X-Orbiter-Token": accessToken,
@@ -24,8 +25,8 @@ const BanHammer = () => {
       });
 
       if (!res.ok) {
-        const message = await res.json().message;
-        console.log(message);
+        const data = await res.json();
+        console.log(data);
         toast({
           title: "Trouble banning site",
           variant: "destructive",
@@ -50,6 +51,7 @@ const BanHammer = () => {
       const accessToken = await getAccessToken();
       const res = await fetch(`${import.meta.env.BASE_URL}/admin/block_user`, {
         method: "POST",
+        //  @ts-ignore
         headers: {
           "Content-Type": "application/json",
           "X-Orbiter-Token": accessToken,
@@ -109,7 +111,7 @@ const BanHammer = () => {
             placeholder="baduser@email.com"
           />
         </div>
-        <Button className="mt-4" onClick={banSite}>Block User</Button>
+        <Button className="mt-4" onClick={banUser}>Block User</Button>
       </div>
     </div>
     </div>
