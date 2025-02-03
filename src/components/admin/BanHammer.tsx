@@ -14,7 +14,7 @@ const BanHammer = () => {
   const banSite = async () => {
     try {
       const accessToken = await getAccessToken();
-      const res = await fetch(`${import.meta.env.BASE_URL}/admin/block_site`, {
+      const res = await fetch(`${import.meta.env.VITE_BASE_URL}/admin/block_site`, {
         method: "POST",
         //  @ts-ignore
         headers: {
@@ -49,7 +49,7 @@ const BanHammer = () => {
   const banUser = async () => {
     try {
       const accessToken = await getAccessToken();
-      const res = await fetch(`${import.meta.env.BASE_URL}/admin/block_user`, {
+      const res = await fetch(`${import.meta.env.VITE_BASE_URL}/admin/block_user`, {
         method: "POST",
         //  @ts-ignore
         headers: {
