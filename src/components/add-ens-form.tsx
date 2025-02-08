@@ -407,7 +407,7 @@ export function AddEnsForm({
         <DialogHeader>
           <DialogTitle>Link ENS</DialogTitle>
           <DialogDescription>
-            If you have an ENS you can link your Orbiter site so the contentHash is the same as your Orbiter site.
+            If you have an ENS you can link your Orbiter site so the contentHash is the same as your Orbiter site. Make sure the contentHash field on your ENS is blank before proceeding.
           </DialogDescription>
         </DialogHeader>
         {!ensVerified && (
