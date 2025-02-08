@@ -323,7 +323,7 @@ export function AddEnsForm({
       const nameHash = namehash(normalize(ensName))
 
       const owner = await publicClient.readContract({
-        address: REGISTRY_ADDRESS as Hex,
+        address: PUBLIC_RESOLVER as Hex,
         abi: publicResolverAbi,
         functionName: 'owner',
         args: [nameHash]
