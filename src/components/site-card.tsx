@@ -29,6 +29,8 @@ import {
 import { UpdateVersionForm } from "./update-version-form";
 import { SiteInfoModal } from "./site-info-modal";
 import { UpsellModal } from "./upsell-modal";
+import { AddEnsForm } from "./add-ens-form"
+import 'viem/window';
 
 type SiteCardProps = {
   site: Site;
@@ -294,6 +296,12 @@ export const SiteCard = ({
                   updateSite={updateSite}
                   siteId={site.id}
                 />
+                {window.ethereum &&
+                  <AddEnsForm
+                    loading={loading}
+                    siteId={site.id}
+                  />
+                }
                 <SiteInfoModal {...site} />
                 <DialogTrigger asChild>
                   <Button
