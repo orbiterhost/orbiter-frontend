@@ -178,14 +178,22 @@ const Billing = (props: BillingProps) => {
     );
   };
 
-  const buildLoopLink = (plan: Plan) => {
+  const buildLoopLink = (plan: Plan, type: string) => {
     const user = props.userSession.user;
-    if (plan.name === "launch") {
+    if (plan.name === "launch" && type === "monthly") {
       return (window.location.href = `https://checkout.loopcrypto.xyz/156ca739-2681-4bfe-a518-f092db09a6d4/15eb156f-0a34-44a5-b897-04b534d44f6a?email=${encodeURI(
         user?.email || ""
       )}&refId=${props?.selectedOrganization?.id}`);
-    } else if (plan.name === "orbiter") {
+    } else if (plan.name === "orbiter" && type === "monthly") {
       return (window.location.href = `https://checkout.loopcrypto.xyz/156ca739-2681-4bfe-a518-f092db09a6d4/eb640acc-664e-42f5-8708-66ef1201411e?email=${encodeURI(
+        user?.email || ""
+      )}&refId=${props?.selectedOrganization?.id}`);
+    } else if(plan.name === "launch") {
+      return (window.location.href = `https://checkout.loopcrypto.xyz/156ca739-2681-4bfe-a518-f092db09a6d4/f97b3697-a6cc-4c3e-b560-b9486d2800a7?email=${encodeURI(
+        user?.email || ""
+      )}&refId=${props?.selectedOrganization?.id}`);
+    } else if(plan.name === "orbiter") {
+      return (window.location.href = `https://checkout.loopcrypto.xyz/156ca739-2681-4bfe-a518-f092db09a6d4/a6422d1a-3528-4aeb-b916-ca2bfb19efe7?email=${encodeURI(
         user?.email || ""
       )}&refId=${props?.selectedOrganization?.id}`);
     }
@@ -238,7 +246,7 @@ const Billing = (props: BillingProps) => {
                         <CollapsibleContent>
                           <Button
                             variant="link"
-                            onClick={() => buildLoopLink(plan)}
+                            onClick={() => buildLoopLink(plan, "yearly")}
                           >
                             Pay with crypto
                           </Button>
@@ -286,7 +294,7 @@ const Billing = (props: BillingProps) => {
                         <CollapsibleContent>
                           <Button
                             variant="link"
-                            onClick={() => buildLoopLink(plan)}
+                            onClick={() => buildLoopLink(plan, "monthly")}
                           >
                             Pay with crypto
                           </Button>
