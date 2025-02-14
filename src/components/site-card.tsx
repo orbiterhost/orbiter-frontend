@@ -4,7 +4,7 @@ import {
   CardContent,
 } from "./ui/card";
 import { UpdateSiteForm } from "./update-site-form";
-import { CircleCheck, Loader2, Settings, Trash } from "lucide-react";
+import { ChartAreaIcon, CircleCheck, Loader2, Settings, Trash } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Button } from "./ui/button";
 import {
@@ -31,6 +31,7 @@ import { SiteInfoModal } from "./site-info-modal";
 import { UpsellModal } from "./upsell-modal";
 import { AddEnsForm } from "./add-ens-form"
 import 'viem/window';
+import { Link } from "react-router";
 
 type SiteCardProps = {
   site: Site;
@@ -266,6 +267,11 @@ export const SiteCard = ({
                 <Settings />
               </PopoverTrigger>
               <PopoverContent className="w-full flex flex-col items-start gap-2">
+              {planDetails.planName === "orbit" ? (
+                <Link to={`/analytics/${site.id}`}><Button variant="ghost" className="h-7 flex items-center"><ChartAreaIcon /> <span>Analytics</span></Button></Link>
+                ) : (
+                  <UpsellModal feature="analytics" />
+                )}
                 {planDetails.planName !== "free" ? (
                   <CustomDomainForm
                     loading={loading}

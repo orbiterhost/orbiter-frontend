@@ -11,6 +11,7 @@ import { Invite, Membership, Organization } from "@/utils/types";
 import Members from "./Members";
 import Invites from "./Invites";
 import APIKeys from "./api-keys"
+import Analytics from "./analytics";
 
 export const AUTHORIZED_IDS = [
   "491404e0-0c90-43fe-a86e-4e11014a7e52",
@@ -97,6 +98,16 @@ const Main = (props: MainProps) => {
               element={
                 <Billing
                   selectPlan={props.selectPlan}
+                  planDetails={props.planDetails}
+                  userSession={props.userSession}
+                  selectedOrganization={props.selectedOrganization}
+                />
+              }
+            />
+            <Route
+              path="/analytics/:id"
+              element={
+                <Analytics                  
                   planDetails={props.planDetails}
                   userSession={props.userSession}
                   selectedOrganization={props.selectedOrganization}
