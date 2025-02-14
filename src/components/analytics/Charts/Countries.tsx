@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 type CountryData = {
-  referrer: string;
+  country: string;
   count: number;
   percentage: number;
 };
@@ -19,6 +19,7 @@ const Countries = (props: CountriesProps) => {
 
   useEffect(() => {
     getPathData();
+    //  @ts-ignore
   }, [props.period]);
 
   const getPathData = async () => {
@@ -37,9 +38,10 @@ const Countries = (props: CountriesProps) => {
 
       const url = `${
         import.meta.env.VITE_BASE_URL
-      }/analytics/${id}/referrers?startDate=${startDate}&endDate=${endDate}`;
+      }/analytics/${id}/countries?startDate=${startDate}&endDate=${endDate}`;
 
       const res = await fetch(url, {
+        //  @ts-ignore
         headers: {
           "X-Orbiter-Token": token,
         },
@@ -55,17 +57,17 @@ const Countries = (props: CountriesProps) => {
   return (
     <div className="md:w-1/3 h-full mx-auto w-full justify-start">
       <div className="flex justify-between items-center w-full mb-4">
-        <h3 className="text-xl">Referrers</h3>
+        <h3 className="text-xl">Countries</h3>
         <h3 className="text-xl">Visitors</h3>
       </div>
       {loading ? (
         <p>Loading...</p>
       ) : (
-        pageData.map((p: ReferrerData) => {
+        pageData.map((p: CountryData) => {
           return (
             <div className="flex justify-between items-center w-full">
               <div className="w-1/3">
-                <p>{p.referrer}</p>
+                <p>{p.country}</p>
               </div>
               <div className="group relative w-1/2 h-8 bg-gray-200 rounded overflow-hidden">
                 <div
@@ -91,4 +93,4 @@ const Countries = (props: CountriesProps) => {
   );
 };
 
-export default Referrers;
+export default Countries;

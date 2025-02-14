@@ -37,6 +37,7 @@ const WorldMap = (props: WorldMapProps) => {
 
   useEffect(() => {
     getCountryData();
+    //  @ts-ignore
   }, [props.period]);
 
   const getCountryData = async () => {
@@ -57,6 +58,7 @@ const WorldMap = (props: WorldMapProps) => {
       }/analytics/${id}/countries?startDate=${startDate}&endDate=${endDate}`;
 
       const res = await fetch(url, {
+        //  @ts-ignore
         headers: {
           "X-Orbiter-Token": token,
         },

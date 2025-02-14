@@ -19,6 +19,7 @@ const Pages = (props: PagesProps) => {
 
   useEffect(() => {
     getPathData();
+    //  @ts-ignore
   }, [props.period]);
 
   const getPathData = async () => {
@@ -40,6 +41,7 @@ const Pages = (props: PagesProps) => {
       }/analytics/${id}/paths?startDate=${startDate}&endDate=${endDate}`;
 
       const res = await fetch(url, {
+        //  @ts-ignore
         headers: {
           "X-Orbiter-Token": token,
         },

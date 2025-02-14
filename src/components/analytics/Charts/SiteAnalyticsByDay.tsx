@@ -8,11 +8,6 @@ interface Stats {
   unique_visitors: number;
 }
 
-type DailyStats = {
-  date: string;
-  count: number;
-};
-
 type SiteAnalyticsProps = {
     period: string;
 }
@@ -25,7 +20,6 @@ export default function SiteAnalyticsByDay(props: SiteAnalyticsProps) {
     unique_visitors: 0
   });
 
-  const [dailyStats, setDailyStats] = useState<DailyStats[]>([]);
   const [error, setError] = useState(null);
   const { id } = useParams();
 
@@ -50,6 +44,7 @@ export default function SiteAnalyticsByDay(props: SiteAnalyticsProps) {
         const res = await fetch(
           url,
           {
+            //  @ts-ignore
             headers: {
               "X-Orbiter-Token": token,
             },
@@ -58,7 +53,6 @@ export default function SiteAnalyticsByDay(props: SiteAnalyticsProps) {
         const data = await res.json();
 
         setStats(data.data.stats);
-        setDailyStats(data.data.dailyStats);
 
         // Reverse the data to show oldest to newest
         const reversedData = [...data.data.dailyStats];
@@ -168,6 +162,7 @@ export default function SiteAnalyticsByDay(props: SiteAnalyticsProps) {
     };
 
     fetchData();
+    //  @ts-ignore
   }, [props.period]);
 
   if (isLoading) {
