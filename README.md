@@ -1,50 +1,62 @@
-# React + TypeScript + Vite
+## Orbiter Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+![cover](https://orbiter.host/og.png)
 
-Currently, two official plugins are available:
+Official repo for Orbiter's Front End App.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+This app acts as the main entrypoint for all users and featues:
+- Supabase Auth
+- Site creation and management
+- Analytics
+- Version History
+- Billing
+- API Keys
+- ENS Linking
+- Probably more I can't remember right now
 
-## Expanding the ESLint configuration
+## Development
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+Clone this repo and install dependencies
 
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+```bash
+git clone https://github.com/orbiterhost/orbiter-frontend
+cd orbiter-frontend
+npm install
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+Rename the `.env.example` file to `.env` and fill out the following variables:
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
 ```
+# General Site Info
+VITE_BASE_URL= # API Server URL https://github.com/orbiterhost/orbiter-backend
+VITE_GROUP_ID= # Pinata Group ID for file uploads
+VITE_SITE_URL= # Site URL e.g. http://localhost:5173
+# Supabase Auth
+VITE_SUPABASE_URL=
+VITE_SUPABASE_ANON_KEY=
+# ENS
+VITE_WRAPPER_ADDRESS= # ENS Name Wrapper Address
+VITE_REGISTRY_ADDRESS= # ENS Registry Address
+VITE_PUBLIC_RESOLVER= # ENS Public Resolver
+VITE_ORBITER_RESOLVER= # Orbiter Custom ENS Resolver https://github.com/orbiterhost/orbiter-resolver
+# Loop Subscription Product IDs
+VITE_LOOP_LAUNCH_MONTHLY=
+VITE_LOOP_LAUNCH_YEARLY=
+VITE_LOOP_ORBIT_MONTHLY=
+VITE_LOOP_ORBIT_YEARLY=
+# Stripe Product IDs
+VITE_STRIPE_LAUNCH_MONTHLY=
+VITE_STRIPE_ORBIT_MONTHLY=
+VITE_STRIPE_LAUNCH_YEARLY=
+VITE_STRIPLE_ORBIT_YEARLY=
+```
+
+Then start up the dev server and open up the host at http://localhost:5173
+
+```bash
+npm run dev
+```
+
+## Contact
+
+Questions? [Shoot us an email!](mailto:steve@orbiter.host,justin@orbiter.host)
