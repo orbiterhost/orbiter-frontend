@@ -12,6 +12,7 @@ import Members from "./Members";
 import Invites from "./Invites";
 import APIKeys from "./api-keys"
 import Analytics from "./analytics";
+import { MessageCircleIcon } from "lucide-react";
 
 export const AUTHORIZED_IDS = [
   "491404e0-0c90-43fe-a86e-4e11014a7e52",
@@ -154,6 +155,9 @@ const Main = (props: MainProps) => {
           </Routes>
         )}
       </BrowserRouter>
+      <a href="https://discord.gg/RWThJkbB4W" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center fixed left-10 bottom-10 h-12 w-12 rounded-full bg-gray-800 text-white">
+        <MessageCircleIcon />        
+      </a>
     </div>
   );
 };
