@@ -67,6 +67,28 @@ export const getSubscriptionData = async () => {
   }
 };
 
+export const getMrrData = async () => {
+  try {
+    const headers = await getHeaders();
+    const res = await fetch(
+      `${import.meta.env.VITE_BASE_URL}/admin/mrr`,
+      {
+        method: "GET",
+        //  @ts-ignore
+        headers: {
+          ...headers,
+        },
+      }
+    );
+
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
 export const getWalletBalance = async () => {
   try {
     const headers = await getHeaders();
