@@ -12,7 +12,7 @@ import { uploadSite } from "./utils/pinata";
 import { LoginForm } from "./components/login-form";
 import { Toaster } from "@/components/ui/toaster";
 import { useToast } from "@/hooks/use-toast";
-import authHero from "./assets/auth-hero.jpg";
+import authHero from "./assets/auth-hero.png";
 import logo from "./assets/black_logo.png";
 import { Invite, Membership, Organization } from "./utils/types";
 
@@ -130,10 +130,10 @@ export default function App() {
   useEffect(() => {
     console.log("Selected org:");
     console.log(selectedOrganization);
-    if (selectedOrganization && selectedOrganization.id !== userSession?.user?.user_metadata?.orgId) {      
+    if (selectedOrganization && selectedOrganization.id !== userSession?.user?.user_metadata?.orgId) {
       updateUser(selectedOrganization);
     }
-    if(selectedOrganization) {
+    if (selectedOrganization) {
       loadMembers();
     }
   }, [selectedOrganization]);
@@ -359,8 +359,7 @@ export default function App() {
     try {
       const accessToken = await getAccessToken();
       const res = await fetch(
-        `${import.meta.env.VITE_BASE_URL}/billing/${
-          selectedOrganization?.id
+        `${import.meta.env.VITE_BASE_URL}/billing/${selectedOrganization?.id
         }/plan`,
         {
           method: "POST",
