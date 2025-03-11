@@ -2,7 +2,15 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { signUserIn, supabase } from "../utils/auth";
 import { Input } from "./ui/input";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSeparator,
+  InputOTPSlot,
+} from "@/components/ui/input-otp"
+import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp"
 import { useState } from "react";
+import { Loader2 } from "lucide-react";
 
 export function LoginForm({
   className,
@@ -11,6 +19,7 @@ export function LoginForm({
   const [email, setEmail] = useState("");
   const [authCode, setAuthCode] = useState("");
   const [showAuthCode, setShowAuthCode] = useState(false);
+  const [loading, setLoading] = useState(false)
   const signIn = async (e: any, method: string) => {
     try {
       e.preventDefault();
@@ -26,6 +35,7 @@ export function LoginForm({
   const signInWithEmail = async (e: any) => {
     e.preventDefault();
     console.log(email);
+    setLoading(true)
     const { data, error } = await supabase.auth.signInWithOtp({
       email: email,
       options: {
@@ -38,30 +48,31 @@ export function LoginForm({
     }
 
     console.log(data);
-	setShowAuthCode(true);
+    setShowAuthCode(true);
+    setLoading(false)
   };
 
   const verifyToken = async (e: any) => {
-	e.preventDefault();
-	try {
-		console.log(email, authCode)
-		const {
-			data: { session },
-			error,
-		  } = await supabase.auth.verifyOtp({
-			email,
-			token: authCode,
-			type: 'email',
-		  })
-	
-		  if(error) {
-			console.log(error);
-		  }
-	
-		  console.log(session);	
-	} catch (error) {
-		console.log(error);
-	}	
+    e.preventDefault();
+    try {
+      console.log(email, authCode)
+      const {
+        data: { session },
+        error,
+      } = await supabase.auth.verifyOtp({
+        email,
+        token: authCode,
+        type: 'email',
+      })
+
+      if (error) {
+        console.log(error);
+      }
+
+      console.log(session);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   return (
@@ -70,15 +81,24 @@ export function LoginForm({
         <div>
           <div className="flex flex-col items-center gap-2 text-center">
             <h1 className="text-2xl font-bold">Enter the one-time code</h1>
-			<p className="text-balance text-sm text-muted-foreground">
+            <p className="text-balance text-sm text-muted-foreground">
               Code was emailed to you
             </p>
-			<div className="grid gap-6">
-				<Input placeholder="Authentication code" type="text" value={authCode} onChange={(e) => setAuthCode(e.target.value)} />
-				<div className="text-center">
+            <div className="grid gap-6">
+              <InputOTP value={authCode} onChange={(value) => setAuthCode(value)} maxLength={6} pattern={REGEXP_ONLY_DIGITS_AND_CHARS}>
+                <InputOTPGroup>
+                  <InputOTPSlot index={0} />
+                  <InputOTPSlot index={1} />
+                  <InputOTPSlot index={2} />
+                  <InputOTPSlot index={3} />
+                  <InputOTPSlot index={4} />
+                  <InputOTPSlot index={5} />
+                </InputOTPGroup>
+              </InputOTP>
+              <div className="text-center">
                 <Button onClick={verifyToken}>Submit code</Button>
               </div>
-			</div>
+            </div>
           </div>
         </div>
       ) : (
@@ -151,7 +171,13 @@ export function LoginForm({
                 placeholder="Email address"
               />
               <div className="text-center mt-4">
-                <Button onClick={signInWithEmail}>Sign in/up</Button>
+                {loading ? (
+                  <Button disabled>
+                    <Loader2 className="animate-spin" />
+                    Signing In...
+                  </Button>) : (
+                  <Button onClick={signInWithEmail}>Sign In</Button>
+                )}
               </div>
             </div>
           </div>
