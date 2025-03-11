@@ -50,7 +50,7 @@ export function UpsellModal({ feature }: UpsellModalProps) {
         <DialogHeader>
           <DialogTitle>Upgrade for access</DialogTitle>
           <DialogDescription>
-            This feature is only available on paid plans
+            {feature === "analytics" ? "This feature is only available on the Orbit plan" : "This feature is only available on paid plans"}
           </DialogDescription>
         </DialogHeader>
         <Button onClick={handleUpgrade} className="mt-4">
