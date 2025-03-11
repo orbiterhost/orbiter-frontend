@@ -1,0 +1,6 @@
+{
+  "siteId": "f3026b1f-b799-4273-8501-17597008075e",
+  "domain": "orbiter-app",
+  "buildCommand": "npm run build",
+  "buildDir": "dist"
+}
