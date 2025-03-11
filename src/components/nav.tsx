@@ -7,7 +7,7 @@ import type { Session, User } from "@supabase/supabase-js";
 import { Combobox } from "./ui/comobobox";
 import logo from "../assets/black_logo.png";
 import { NavLink } from "react-router";
-import { ChartAreaIcon, DollarSign, LayoutGrid, LogOut, UsersIcon, KeyIcon } from "lucide-react";
+import { ChartAreaIcon, DollarSign, LayoutGrid, LogOut, UsersIcon, KeyIcon, TerminalIcon } from "lucide-react";
 import { AUTHORIZED_IDS } from "./Main";
 import { Membership, Organization } from "@/utils/types";
 
@@ -39,7 +39,7 @@ export function Nav({ organizations, session, selectedOrganization, setSelectedO
   }
 
   return (
-    <div className="w-full flex gap-6 justify-center sm:justify-between items-center py-6 sm:px-10">
+    <div className="w-full flex gap-6 justify-end sm:justify-between items-center py-6 px-10">
       <Popover>
         <NavLink className="sm:block hidden" to="/" end>
           <img className="w-24" src={logo} alt="logo" />
@@ -70,6 +70,12 @@ export function Nav({ organizations, session, selectedOrganization, setSelectedO
             <Button variant="ghost" className="w-full justify-start">
               <KeyIcon />
               API Keys
+            </Button>
+          </NavLink>
+          <NavLink target="_blank" to="https://docs.orbiter.host/cli" end className="w-full">
+            <Button variant="ghost" className="w-full justify-start">
+              <TerminalIcon />
+              CLI
             </Button>
           </NavLink>
           <NavLink to="/billing" end className="w-full">

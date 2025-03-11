@@ -149,6 +149,18 @@ const Dashboard = (props: DashboardProps) => {
               selectedTemplateCid &&
               <CreateSiteForm {...props} templateCid={selectedTemplateCid} setSelectedTemplateCid={setSelectedTemplateCid} />
             }
+            <div className="mt-8">
+              <p>Alternatively deploy your site with our <a href="https://docs.orbiter.host/cli" className="underline" target="_blank">CLI</a>; be sure to get an <a href="/api-keys" className="underline">API Key!</a></p>
+              <pre className="font-mono my-2 p-4 bg-gray-100 rounded-md text-sm max-w-md">
+                <code>
+                  npm i -g orbiter-cli <br />
+
+                  orbiter auth <br />
+
+                  orbiter deploy
+                </code>
+              </pre>
+            </div>
           </div>
         </>
       )}
