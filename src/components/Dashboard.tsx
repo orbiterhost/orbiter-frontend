@@ -7,6 +7,9 @@ import { templates } from "@/utils/templates";
 import { Organization, Site, Template } from "@/utils/types";
 import { TemplateCard } from "./template-card";
 import { useEffect, useState } from "react";
+import { Card, CardContent } from "./ui/card";
+import { Button } from "./ui/button";
+import { RocketIcon } from "lucide-react";
 
 type DashboardProps = {
   organization: any;
@@ -109,13 +112,18 @@ const Dashboard = (props: DashboardProps) => {
 
   return (
     <div className="sm:max-w-screen-lg max-w-screen-sm w-full mx-auto flex flex-col items-start justify-center gap-2">
-      <div className="w-full flex justify-end items-center gap-12 px-6 lg:px-0">
+      <div className="sm:w-full w-[350px] mx-auto flex justify-end items-center sm:gap-4 gap-8 px-6 lg:px-0">
         {props.sites.length > 0 && (
           <p className="font-bold">
             Sites: {props.sites.length} / {maxSites}
           </p>
         )}
         <CreateSiteForm {...props} />
+        <Button className="hidden sm:flex" asChild>
+          <a href="https://voyager.orbiter.host" target="_blank">
+            <RocketIcon />
+            Voyager</a>
+        </Button>
       </div>
       {!props.initialLoading && props.sites.length === 0 && (
         <>
@@ -136,21 +144,22 @@ const Dashboard = (props: DashboardProps) => {
               />
             </svg>
           </div>
-          <div className="w-3/4 md:w-4/5 lg:w-full m-auto">
-            <h3 className="text-2xl">Need a jumpstart?</h3>
-            <p>Download or host one of our premade templates to get started.</p>
-            <p className="mt-2">Want to learn more about these templates and how to customize them to fit your own style and needs? <a className="underline" href="https://orbiter.host/blog/how-to-use-orbiter-static-site-templates" target="_blank" rel="noreferrer noopener">Read our guide here</a>.</p>
-            <div className="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {templates.map((t: Template) => {
-                return <div key={t.cid}><TemplateCard template={t} useTemplate={useTemplate} /></div>;
-              })}
-            </div>
+          <div className="w-3/4 md:w-4/5 lg:w-full m-auto flex flex-col items-center gap-4">
+            <h3 className="text-2xl">Need a jumpstart? Check out <span className="font-bold uppercase">Voyager</span></h3>
+            <a href="https://voyager.orbiter.host" target="_blank">
+              <Card className="overflow-hidden max-w-xl">
+                <img src="https://cdn.orbiter.host/ipfs/bafkreiajqerzvsfzjt4pumsqh3ntairipitvc7ozeqwrucrnaiqhyzaahu" alt="voyager cover" />
+              </Card>
+            </a>
+            <Button asChild>
+              <a href="https://voyager.orbiter.host" target="_blank">Launch</a>
+            </Button>
             {
               selectedTemplateCid &&
               <CreateSiteForm {...props} templateCid={selectedTemplateCid} setSelectedTemplateCid={setSelectedTemplateCid} />
             }
             <div className="mt-8">
-              <p>Alternatively deploy your site with our <a href="https://docs.orbiter.host/cli" className="underline" target="_blank">CLI</a>; be sure to get an <a href="/api-keys" className="underline">API Key!</a></p>
+              <p>Alternatively deploy your site with our <a href="https://docs.orbiter.host/cli" className="underline" target="_blank">CLI</a> + <a href="/api-keys" className="underline">API Key!</a></p>
               <pre className="font-mono my-2 p-4 bg-gray-100 rounded-md text-sm max-w-md">
                 <code>
                   npm i -g orbiter-cli <br />
