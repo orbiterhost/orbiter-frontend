@@ -3,11 +3,9 @@ import { SiteCard } from "./site-card";
 import { PlanDetails } from "@/App";
 import { useToast } from "@/hooks/use-toast";
 import { getAccessToken } from "@/utils/auth";
-import { templates } from "@/utils/templates";
-import { Organization, Site, Template } from "@/utils/types";
-import { TemplateCard } from "./template-card";
+import { Organization, Site } from "@/utils/types";
 import { useEffect, useState } from "react";
-import { Card, CardContent } from "./ui/card";
+import { Card } from "./ui/card";
 import { Button } from "./ui/button";
 import { RocketIcon } from "lucide-react";
 
@@ -106,9 +104,9 @@ const Dashboard = (props: DashboardProps) => {
     }
   };
 
-  const useTemplate = (t: Template) => {
-    setSelectedTemplateCid(t.cid);
-  }
+  // const useTemplate = (t: Template) => {
+  //   setSelectedTemplateCid(t.cid);
+  // }
 
   return (
     <div className="sm:max-w-screen-lg max-w-screen-sm w-full mx-auto flex flex-col items-start justify-center gap-2">
