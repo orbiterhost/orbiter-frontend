@@ -11,6 +11,7 @@ import { UnlinkEns } from "./ui/unlink-ens"
 import { ResetResolver } from "./ui/reset-resolver"
 import { Button } from "./ui/button";
 import { createWalletClient, custom, createPublicClient, http, isAddressEqual } from 'viem';
+import { createEnsPublicClient } from '@ensdomains/ensjs'
 import { namehash, normalize } from "viem/ens"
 import type { ContractFunctionExecutionError, Hex } from "viem"
 import { mainnet } from 'viem/chains';
@@ -118,14 +119,15 @@ export function AddEnsForm({
 
       await walletClient.switchChain({ id: mainnet.id })
 
-      const publicClient = createPublicClient({
+      const publicClient = createEnsPublicClient({
         chain: mainnet,
         transport: http()
       });
 
-      const resolvedAddress = await publicClient.getEnsAddress({
-        name: ensName,
-      });
+      // @ts-expect-error library does not return correct types
+      const { owner: resolvedAddress } = await publicClient.getOwner({
+        name: ensName
+      })
 
       if (!resolvedAddress) {
         toast({
@@ -137,6 +139,7 @@ export function AddEnsForm({
       }
 
       const match = isAddressEqual(resolvedAddress, address)
+
       if (!match) {
         toast({
           title: "Connected wallet does not own this ENS name",
