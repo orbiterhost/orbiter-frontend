@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { Card } from "./ui/card";
 import { Button } from "./ui/button";
 import { RocketIcon } from "lucide-react";
+import { UpsellModal } from "./upsell-modal";
 
 type DashboardProps = {
   organization: any;
@@ -29,7 +30,7 @@ const Dashboard = (props: DashboardProps) => {
 
   useEffect(() => {
     setSelectedTemplateCid("");
-  }, [])
+  }, []);
 
   const { toast } = useToast();
 
@@ -116,11 +117,16 @@ const Dashboard = (props: DashboardProps) => {
             Sites: {props.sites.length} / {maxSites}
           </p>
         )}
-        <CreateSiteForm {...props} />
+        {props.planDetails.planName === "free" && props.sites.length === 2 ? (
+          <UpsellModal feature="sites" />
+        ) : (
+          <CreateSiteForm {...props} />
+        )}
         <Button className="hidden sm:flex" asChild>
           <a href="https://voyager.orbiter.host" target="_blank">
             <RocketIcon />
-            Voyager</a>
+            Voyager
+          </a>
         </Button>
       </div>
       {!props.initialLoading && props.sites.length === 0 && (
@@ -143,27 +149,49 @@ const Dashboard = (props: DashboardProps) => {
             </svg>
           </div>
           <div className="w-3/4 md:w-4/5 lg:w-full m-auto flex flex-col items-center gap-4">
-            <h3 className="text-2xl">Need a jumpstart? Check out <span className="font-bold uppercase">Voyager</span></h3>
+            <h3 className="text-2xl">
+              Need a jumpstart? Check out{" "}
+              <span className="font-bold uppercase">Voyager</span>
+            </h3>
             <a href="https://voyager.orbiter.host" target="_blank">
               <Card className="overflow-hidden max-w-xl">
-                <img src="https://cdn.orbiter.host/ipfs/bafkreiajqerzvsfzjt4pumsqh3ntairipitvc7ozeqwrucrnaiqhyzaahu" alt="voyager cover" />
+                <img
+                  src="https://cdn.orbiter.host/ipfs/bafkreiajqerzvsfzjt4pumsqh3ntairipitvc7ozeqwrucrnaiqhyzaahu"
+                  alt="voyager cover"
+                />
               </Card>
             </a>
             <Button asChild>
-              <a href="https://voyager.orbiter.host" target="_blank">Launch</a>
+              <a href="https://voyager.orbiter.host" target="_blank">
+                Launch
+              </a>
             </Button>
-            {
-              selectedTemplateCid &&
-              <CreateSiteForm {...props} templateCid={selectedTemplateCid} setSelectedTemplateCid={setSelectedTemplateCid} />
-            }
+            {selectedTemplateCid && (
+              <CreateSiteForm
+                {...props}
+                templateCid={selectedTemplateCid}
+                setSelectedTemplateCid={setSelectedTemplateCid}
+              />
+            )}
             <div className="mt-8">
-              <p>Alternatively deploy your site with our <a href="https://docs.orbiter.host/cli" className="underline" target="_blank">CLI</a> + <a href="/api-keys" className="underline">API Key!</a></p>
+              <p>
+                Alternatively deploy your site with our{" "}
+                <a
+                  href="https://docs.orbiter.host/cli"
+                  className="underline"
+                  target="_blank"
+                >
+                  CLI
+                </a>{" "}
+                +{" "}
+                <a href="/api-keys" className="underline">
+                  API Key!
+                </a>
+              </p>
               <pre className="font-mono my-2 p-4 bg-gray-100 rounded-md text-sm max-w-md">
                 <code>
                   npm i -g orbiter-cli <br />
-
                   orbiter auth <br />
-
                   orbiter deploy
                 </code>
               </pre>
@@ -172,19 +200,24 @@ const Dashboard = (props: DashboardProps) => {
         </>
       )}
       <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 mx-auto lg:mx-0 gap-4">
-        {[...props.sites].sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()).map((site) => (
-
-          <SiteCard
-            key={site.id}
-            site={site}
-            loading={props.loading}
-            updateSite={props.updateSite}
-            deleteSite={props.deleteSite}
-            handleAddCustomDomain={handleAddCustomDomain}
-            deleteCustomDomain={deleteCustomDomain}
-            planDetails={props.planDetails}
-          />
-        ))}
+        {[...props.sites]
+          .sort(
+            (a, b) =>
+              new Date(b.updated_at).getTime() -
+              new Date(a.updated_at).getTime()
+          )
+          .map((site) => (
+            <SiteCard
+              key={site.id}
+              site={site}
+              loading={props.loading}
+              updateSite={props.updateSite}
+              deleteSite={props.deleteSite}
+              handleAddCustomDomain={handleAddCustomDomain}
+              deleteCustomDomain={deleteCustomDomain}
+              planDetails={props.planDetails}
+            />
+          ))}
       </div>
     </div>
   );

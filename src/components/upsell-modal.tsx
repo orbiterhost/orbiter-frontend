@@ -8,7 +8,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "./ui/button";
-import { ChartAreaIcon, History, Signature } from "lucide-react";
+import { ChartAreaIcon, History, Plus, Signature } from "lucide-react";
 
 type UpsellModalProps = {
   feature: string;
@@ -26,6 +26,17 @@ export function UpsellModal({ feature }: UpsellModalProps) {
     setOpen(false);
   };
 
+  const getText = () => {
+    switch(feature) {
+      case "sites":
+        return "You've reached your site limit and will need to upgrade to add another."
+      case "analytics": 
+        return "This feature is only available on the Orbit plan";
+      default:
+        return "This feature is only available on paid plans"; 
+    }
+  }
+
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
@@ -39,7 +50,12 @@ export function UpsellModal({ feature }: UpsellModalProps) {
             <ChartAreaIcon />
             Analytics
           </Button>
-        ) : (
+        ) : feature === "sites" ? (
+          <Button>
+            <Plus />
+            Upload Site
+          </Button>
+        ) :  (
           <Button variant="ghost" className="h-7">
             <History />
             Versions
@@ -50,7 +66,7 @@ export function UpsellModal({ feature }: UpsellModalProps) {
         <DialogHeader>
           <DialogTitle>Upgrade for access</DialogTitle>
           <DialogDescription>
-            {feature === "analytics" ? "This feature is only available on the Orbit plan" : "This feature is only available on paid plans"}
+            {getText()}            
           </DialogDescription>
         </DialogHeader>
         <Button onClick={handleUpgrade} className="mt-4">
