@@ -7,7 +7,7 @@ import type { Session, User } from "@supabase/supabase-js";
 import { Combobox } from "./ui/comobobox";
 import logo from "../assets/black_logo.png";
 import { NavLink } from "react-router";
-import { ChartAreaIcon, DollarSign, LayoutGrid, LogOut, UsersIcon, KeyIcon, TerminalIcon } from "lucide-react";
+import { ChartAreaIcon, BookIcon, DollarSign, LayoutGrid, LogOut, UsersIcon, KeyIcon, TerminalIcon } from "lucide-react";
 import { AUTHORIZED_IDS } from "./Main";
 import { Membership, Organization } from "@/utils/types";
 
@@ -92,6 +92,12 @@ export function Nav({ organizations, session, selectedOrganization, setSelectedO
               </Button>
             </NavLink>
           )}
+          <NavLink to="https://docs.orbiter.host" target="_blank" end className="w-full">
+            <Button variant="ghost" className="w-full justify-start">
+              <BookIcon />
+              Docs
+            </Button>
+          </NavLink>
           <Button
             variant="ghost"
             onClick={logOut}
