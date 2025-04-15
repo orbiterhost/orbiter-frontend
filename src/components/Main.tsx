@@ -6,13 +6,15 @@ import { Separator } from "@/components/ui/separator";
 import { BrowserRouter, Routes, Route, useNavigate } from "react-router";
 import Admin from "./admin";
 import { Session } from "@supabase/supabase-js";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Invite, Membership, Organization } from "@/utils/types";
 import Members from "./Members";
 import Invites from "./Invites";
 import APIKeys from "./api-keys"
 import Analytics from "./analytics";
 import { MessageCircleIcon } from "lucide-react";
+import { isOnboardingComplete } from "@/utils/db";
+import OnboardingSurveyModal from "./OnboardingModal";
 
 export const AUTHORIZED_IDS = [
   "491404e0-0c90-43fe-a86e-4e11014a7e52",
@@ -64,6 +66,16 @@ const ProtectedRoute = ({ userSession, children, fallbackPath = "/" }: any) => {
 
 // Updated Main component with protected route
 const Main = (props: MainProps) => {
+  const [onboardingComplete, setOnboardingComplete] = useState(true);
+  useEffect(() => {
+    const checkOnboarding = async () => {
+      const onboardingRes = await isOnboardingComplete();
+      setOnboardingComplete(onboardingRes);
+    }
+
+    checkOnboarding();
+  }, [props.userSession]);
+  
   return (
     <div className="min-h-screen w-full flex flex-col gap-2">
       <BrowserRouter>
@@ -73,7 +85,12 @@ const Main = (props: MainProps) => {
           selectedOrganization={props.selectedOrganization}
           setSelectedOrganization={props.setSelectedOrganization}
         />
+        {
+          !onboardingComplete && 
+          <OnboardingSurveyModal userSession={props.userSession} />
+        }
         <Separator />
+        
         {props.organizations.length > 0 && (
           <Routes>
             <Route

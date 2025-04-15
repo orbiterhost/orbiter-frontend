@@ -1,4 +1,5 @@
 import { supabase } from "./auth";
+import { OnboardingResponse } from "./types";
 
 export const getOrgMemebershipsForUser = async () => {
   const { data: memberships, error } = await supabase
@@ -64,9 +65,53 @@ export const loadSites = async () => {
     headers: {
       "Content-Type": "application/json",
       "X-Orbiter-Token": sessionData.session?.access_token,
-    }
+    },
   });
 
   const data = await result.json();
   return data;
+};
+
+export const isOnboardingComplete = async () => {
+  const { data: sessionData, error: sessionError } =
+    await supabase.auth.getSession();
+
+  if (sessionError) {
+    throw sessionError;
+  }
+
+  const { data: onboarding, error } = await supabase
+    .from("users")
+    .select("has_completed_onboarding")
+    .eq("id", sessionData.session?.user.id);
+
+  if (error) {
+    throw error;
+  }
+
+  console.log({ onboarding });
+
+  const onboardingComplete =
+    onboarding && onboarding[0]
+      ? onboarding[0].has_completed_onboarding
+      : false;
+  return onboardingComplete;
+};
+
+export const updateOnboardingResponses = async (dataToSubmit: any) => {
+  // Insert data into Supabase
+  console.log(dataToSubmit)
+  const { error } = await supabase
+    .from("onboarding_responses")
+    .insert(dataToSubmit);
+
+  if (error) throw error;
+
+  const { error: userError } = await supabase.from("users")
+  .update({ "has_completed_onboarding": true })
+  .eq("id", dataToSubmit.user_id);
+
+  if(userError) {
+    throw userError;
+  }
 };

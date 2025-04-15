@@ -59,3 +59,16 @@ export type Template = {
   previewImageUrl: string;
   hostedUrl: string;
 }
+
+export type OnboardingResponse = {
+  referral_source: string;
+  site_types: string;
+  technical_experience: string;
+  previous_platform: string;
+}
+
+export type OnboardingQuestion = {
+  id: string;
+  question: string;
+  options: string[];
+}
