@@ -11,7 +11,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { supabase } from "@/utils/auth";
 import { OnboardingQuestion, OnboardingResponse } from "@/utils/types";
 import { Session } from "@supabase/supabase-js";
 import { updateOnboardingResponses } from "@/utils/db";

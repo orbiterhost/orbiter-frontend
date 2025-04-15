@@ -1,5 +1,4 @@
 import { supabase } from "./auth";
-import { OnboardingResponse } from "./types";
 
 export const getOrgMemebershipsForUser = async () => {
   const { data: memberships, error } = await supabase
