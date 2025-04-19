@@ -54,9 +54,7 @@ const Dashboard = (props: DashboardProps) => {
 
   const { toast } = useToast();
 
-  if (props.planDetails.planName === "launch") {
-    maxSites = "5";
-  } else if (props.planDetails.planName === "orbit") {
+  if (props.planDetails.planName === "launch" || props.planDetails.planName === "orbit") {
     maxSites = <span className="text-xl">∞</span>;
   } else {
     maxSites = "2";
