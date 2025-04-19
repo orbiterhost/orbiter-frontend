@@ -44,6 +44,7 @@ const Referrers = (props: ReferrersProps) => {
         //  @ts-ignore
         headers: {
           "X-Orbiter-Token": token,
+          "Source": "web-app"
         },
       });
       const data = await res.json();

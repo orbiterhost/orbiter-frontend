@@ -20,6 +20,7 @@ const BanHammer = () => {
         headers: {
           "Content-Type": "application/json",
           "X-Orbiter-Token": accessToken,
+          "Source": "web-app"
         },
         body: JSON.stringify({ domain }),
       });
@@ -55,6 +56,7 @@ const BanHammer = () => {
         headers: {
           "Content-Type": "application/json",
           "X-Orbiter-Token": accessToken,
+          "Source": "web-app"
         },
         body: JSON.stringify({ email }),
       });

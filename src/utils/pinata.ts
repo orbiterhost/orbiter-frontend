@@ -20,6 +20,7 @@ export const getKey = async () => {
     headers: {
       "Content-Type": "application/json",
       "X-Orbiter-Token": sessionData.session?.access_token,
+      "Source": "web-app"
     },
     body: JSON.stringify({}),
   });

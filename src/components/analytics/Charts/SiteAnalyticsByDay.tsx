@@ -47,6 +47,7 @@ export default function SiteAnalyticsByDay(props: SiteAnalyticsProps) {
             //  @ts-ignore
             headers: {
               "X-Orbiter-Token": token,
+              "Source": "web-app"
             },
           }
         );

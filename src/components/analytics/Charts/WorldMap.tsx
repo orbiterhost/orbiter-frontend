@@ -61,6 +61,7 @@ const WorldMap = (props: WorldMapProps) => {
         //  @ts-ignore
         headers: {
           "X-Orbiter-Token": token,
+          "Source": "web-app"
         },
       });
 

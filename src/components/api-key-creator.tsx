@@ -69,6 +69,7 @@ const APIKeyCreator = () => {
           method: "POST",
           headers: {
             "X-Orbiter-Token": `${accessToken}`,
+            "Source": "web-app"
           },
           body: JSON.stringify({
             name: keyName,

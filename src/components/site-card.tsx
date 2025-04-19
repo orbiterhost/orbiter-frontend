@@ -88,6 +88,7 @@ export const SiteCard = ({
             headers: {
               "X-Orbiter-Token": `${accessToken}`,
               "Content-Type": "Application/json",
+              "Source": "web-app"
             },
           }
         );
@@ -131,6 +132,7 @@ export const SiteCard = ({
           headers: {
             "X-Orbiter-Token": accessToken,
             "Content-Type": "Application/json",
+            "Source": "web-app"
           },
           body: JSON.stringify({
             customDomain: site.custom_domain,

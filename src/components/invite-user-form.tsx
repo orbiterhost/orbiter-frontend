@@ -50,6 +50,7 @@ export function InviteUserForm(props: InviteUserFormProps) {
           headers: {
             "X-Orbiter-Token": accessToken,
             "content-Type": "application/json",
+            "Source": "web-app"
           },
           body: JSON.stringify({
             email,

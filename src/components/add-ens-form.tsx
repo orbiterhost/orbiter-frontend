@@ -55,6 +55,7 @@ export function AddEnsForm({
       const req = await fetch(`${import.meta.env.VITE_BASE_URL}/ens/resolver/${ensName}`, {
         headers: {
           "X-Orbiter-Token": `${accessToken}`,
+          "Source": "web-app"
         }
       })
       if (req.ok) {
@@ -74,6 +75,7 @@ export function AddEnsForm({
       const req = await fetch(`${import.meta.env.VITE_BASE_URL}/ens/verify/${siteId}`, {
         headers: {
           "X-Orbiter-Token": `${accessToken}`,
+          "Source": "web-app"
         }
       })
       if (req.ok) {
@@ -163,6 +165,7 @@ export function AddEnsForm({
         headers: {
           "X-Orbiter-Token": `${accessToken}`,
           'Content-Type': 'application/json',
+          "Source": "web-app"
         },
         body: JSON.stringify({
           ensName,
@@ -201,6 +204,7 @@ export function AddEnsForm({
         headers: {
           "X-Orbiter-Token": `${accessToken}`,
           'Content-Type': 'application/json',
+          "Source": "web-app"
         },
         body: JSON.stringify({
           ensName: null,

@@ -26,6 +26,7 @@ const Invites = () => {
         //  @ts-ignore
         headers: {
           "X-Orbiter-Token": accessToken,
+          "Source": "web-app"
         },
       }
     );
@@ -47,6 +48,7 @@ const Invites = () => {
           //  @ts-ignore
           headers: {
             "X-Orbiter-Token": accessToken,
+            "Source": "web-app"
           },
           body: null,
         }

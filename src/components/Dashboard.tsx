@@ -75,6 +75,7 @@ const Dashboard = (props: DashboardProps) => {
           headers: {
             "Content-Type": "application/json",
             "X-Orbiter-Token": accessToken,
+            "Source": "web-app"
           },
           body: JSON.stringify({
             customDomain,
@@ -104,6 +105,7 @@ const Dashboard = (props: DashboardProps) => {
           headers: {
             "Content-Type": "application/json",
             "X-Orbiter-Token": accessToken,
+            "Source": "web-app"
           },
           body: JSON.stringify({
             customDomain,
