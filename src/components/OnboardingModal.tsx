@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -15,6 +15,17 @@ import { OnboardingQuestion, OnboardingResponse } from "@/utils/types";
 import { Session } from "@supabase/supabase-js";
 import { updateOnboardingResponses } from "@/utils/db";
 
+const shuffleArray = (array: any[]) => {
+  const shuffled = [...array];
+  
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  
+  return shuffled;
+};
+
 const OnboardingSurveyModal = ({ userSession }: { userSession: Session }) => {
   const [open, setOpen] = useState(true);
   const [currentStep, setCurrentStep] = useState(0);
@@ -25,9 +36,9 @@ const OnboardingSurveyModal = ({ userSession }: { userSession: Session }) => {
     technical_experience: "",
     previous_platform: "",
   });
-
-  // Survey questions and options
-  const questions: OnboardingQuestion[] = [
+  
+  // Store the original questions
+  const originalQuestions: OnboardingQuestion[] = [
     {
       id: "referral_source",
       question: "How did you hear about us?",
@@ -61,9 +72,22 @@ const OnboardingSurveyModal = ({ userSession }: { userSession: Session }) => {
       options: ["Vercel", "Netlify", "AWS", "Google Cloud", "Heroku", "Other"],
     },
   ];
+  
+  // State to hold shuffled questions
+  const [shuffledQuestions, setShuffledQuestions] = useState<OnboardingQuestion[]>([]);
+  
+  // Shuffle options for each question on component mount
+  useEffect(() => {
+    const questionsWithShuffledOptions = originalQuestions.map(question => ({
+      ...question,
+      options: shuffleArray(question.options)
+    }));
+    
+    setShuffledQuestions(questionsWithShuffledOptions);
+  }, []);
 
   const handleOptionSelect = (value: string) => {
-    const currentQuestion = questions[currentStep];
+    const currentQuestion = shuffledQuestions[currentStep];
     setResponses({
       ...responses,
       [currentQuestion.id]: value,
@@ -71,7 +95,7 @@ const OnboardingSurveyModal = ({ userSession }: { userSession: Session }) => {
   };
 
   const goToNextStep = () => {
-    if (currentStep < questions.length - 1) {
+    if (currentStep < shuffledQuestions.length - 1) {
       setCurrentStep(currentStep + 1);
     } else {
       submitResponses();
@@ -104,8 +128,13 @@ const OnboardingSurveyModal = ({ userSession }: { userSession: Session }) => {
     }
   };
 
+  // Check if questions are loaded
+  if (shuffledQuestions.length === 0) {
+    return null; // Or render a loading state
+  }
+
   // Get current question data
-  const currentQuestion: OnboardingQuestion = questions[currentStep];
+  const currentQuestion: OnboardingQuestion = shuffledQuestions[currentStep];
   const currentResponse =
     responses[currentQuestion.id as keyof OnboardingResponse];
 
@@ -117,7 +146,7 @@ const OnboardingSurveyModal = ({ userSession }: { userSession: Session }) => {
             Welcome! Help us get to know you
           </DialogTitle>
           <DialogDescription>
-            Step {currentStep + 1} of {questions.length}
+            Step {currentStep + 1} of {shuffledQuestions.length}
           </DialogDescription>
         </DialogHeader>
 
@@ -159,7 +188,7 @@ const OnboardingSurveyModal = ({ userSession }: { userSession: Session }) => {
             onClick={goToNextStep}
             disabled={!currentResponse || isSubmitting}
           >
-            {currentStep < questions.length - 1 ? "Next" : "Submit"}
+            {currentStep < shuffledQuestions.length - 1 ? "Next" : "Submit"}
           </Button>
         </DialogFooter>
       </DialogContent>
