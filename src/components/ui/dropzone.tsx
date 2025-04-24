@@ -19,7 +19,7 @@ export function CustomFileDropzone({
   const [errorMesssage, setErrorMessage] = useState("")
   const fileInputRef = useRef<HTMLInputElement>(null);
   const folderInputRef = useRef<HTMLInputElement>(null);
-  const maxSize = 5 * 1024 * 1024; // 5MB
+  const maxSize = 15 * 1024 * 1024; // 5MB
 
   const handleFiles = useCallback(
     (newFiles: FileList | File[]) => {
