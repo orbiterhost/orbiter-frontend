@@ -72,3 +72,19 @@ export type OnboardingQuestion = {
   question: string;
   options: string[];
 }
+
+export interface DataPoint {
+  value: string;
+  count: number;
+}
+
+export interface OnboardingAnalyticsData {
+  referral_sources: DataPoint[];
+  site_types: DataPoint[];
+  technical_experience: DataPoint[];
+  previous_platform: DataPoint[];
+}
+
+export interface OnboardingAnalytics {
+  data: OnboardingAnalyticsData;
+}

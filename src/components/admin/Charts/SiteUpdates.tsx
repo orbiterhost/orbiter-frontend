@@ -36,7 +36,7 @@ export default function SiteUpdates() {
             dataLabels: {
               enabled: false,
             },
-            colors: ["#020617"],
+            colors: ["#008FFB"],
             stroke: {
               lineCap: "round",
               curve: "smooth",

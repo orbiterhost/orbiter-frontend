@@ -14,9 +14,9 @@ export default function UsersByDay() {
         console.log(data);
         // Reverse the data to show oldest to newest
         const reversedData = [...data.data].reverse();
-
+        
         setChartData({
-          type: "bar",
+          type: "line",
           height: 240,
           series: [
             {
@@ -36,7 +36,7 @@ export default function UsersByDay() {
             dataLabels: {
               enabled: false,
             },
-            colors: ["#020617"],
+            colors: ["#008FFB"],
             stroke: {
               lineCap: "round",
               curve: "smooth",
@@ -104,7 +104,7 @@ export default function UsersByDay() {
                     month: "long",
                     day: "numeric",
                     year: "numeric",
-                    timeZone: 'UTC'
+                  
                   });
                 },
               },
@@ -117,17 +117,18 @@ export default function UsersByDay() {
         setIsLoading(false);
       }
     };
+    
     fetchData();
   }, []);
 
   if (isLoading) {
     return <div className="w-3/4 m-auto">Loading...</div>;
   }
-
+  
   if (error) {
     return <div className="w-3/4 m-auto">Error loading chart</div>;
   }
-
+  
   return (
     <div className="w-3/4 m-auto">
       <dt className="text-sm/6 font-medium text-gray-500">New Users By Day</dt>
