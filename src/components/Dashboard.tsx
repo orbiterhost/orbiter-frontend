@@ -16,9 +16,8 @@ import {
   StepperSeparator,
   StepperTitle,
   StepperTrigger,
-} from "@/components/ui/stepper"
+} from "@/components/ui/stepper";
 import APIKeyCreator from "./api-key-creator";
-
 
 type DashboardProps = {
   organization: any;
@@ -60,28 +59,22 @@ const Dashboard = (props: DashboardProps) => {
     maxSites = "2";
   }
 
-  const handleAddCustomDomain = async (
-    customDomain: string,
-    siteId: string
-  ) => {
+  const handleAddCustomDomain = async (customDomain: string, siteId: string) => {
     try {
       const accessToken = await getAccessToken();
 
-      const res = await fetch(
-        `${import.meta.env.VITE_BASE_URL}/sites/${siteId}/custom_domain`,
-        {
-          method: "POST",
-          //  @ts-ignore
-          headers: {
-            "Content-Type": "application/json",
-            "X-Orbiter-Token": accessToken,
-            "Source": "web-app"
-          },
-          body: JSON.stringify({
-            customDomain,
-          }),
-        }
-      );
+      const res = await fetch(`${import.meta.env.VITE_BASE_URL}/sites/${siteId}/custom_domain`, {
+        method: "POST",
+        //  @ts-ignore
+        headers: {
+          "Content-Type": "application/json",
+          "X-Orbiter-Token": accessToken,
+          Source: "web-app",
+        },
+        body: JSON.stringify({
+          customDomain,
+        }),
+      });
 
       const data = await res.json();
 
@@ -97,21 +90,18 @@ const Dashboard = (props: DashboardProps) => {
     try {
       const accessToken = await getAccessToken();
 
-      const res = await fetch(
-        `${import.meta.env.VITE_BASE_URL}/sites/${siteId}/custom_domain`,
-        {
-          method: "DELETE",
-          //  @ts-ignore
-          headers: {
-            "Content-Type": "application/json",
-            "X-Orbiter-Token": accessToken,
-            "Source": "web-app"
-          },
-          body: JSON.stringify({
-            customDomain,
-          }),
-        }
-      );
+      const res = await fetch(`${import.meta.env.VITE_BASE_URL}/sites/${siteId}/custom_domain`, {
+        method: "DELETE",
+        //  @ts-ignore
+        headers: {
+          "Content-Type": "application/json",
+          "X-Orbiter-Token": accessToken,
+          Source: "web-app",
+        },
+        body: JSON.stringify({
+          customDomain,
+        }),
+      });
 
       console.log(await res.json());
 
@@ -131,7 +121,7 @@ const Dashboard = (props: DashboardProps) => {
 
   return (
     <div className="sm:max-w-screen-lg max-w-screen-sm w-full mx-auto flex flex-col items-start justify-center gap-2">
-      <div className="sm:w-full w-[350px] mx-auto flex justify-end items-center sm:gap-4 gap-8 px-6 lg:px-0">
+      <div className="sm:w-full w-[350px] mx-auto flex justify-end items-center sm:gap-4 gap-8 px-6 lg:px-0 pt-4">
         {props.sites.length > 0 && (
           <p className="font-bold">
             Sites: {props.sites.length} / {maxSites}
@@ -155,11 +145,7 @@ const Dashboard = (props: DashboardProps) => {
             )}
             <div className="mt-8 space-y-8">
               <Stepper defaultValue={2} orientation="vertical">
-                <StepperItem
-                  key={1}
-                  step={1}
-                  className="relative items-start not-last:flex-1"
-                >
+                <StepperItem key={1} step={1} className="relative items-start not-last:flex-1">
                   <StepperTrigger className="items-start rounded pb-12 last:pb-0">
                     <StepperIndicator />
                     <div className="mt-0.5 space-y-0.5 px-2 text-left">
@@ -172,11 +158,7 @@ const Dashboard = (props: DashboardProps) => {
                   </StepperTrigger>
                   <StepperSeparator className="absolute inset-y-0 top-[calc(1.5rem+0.125rem)] left-3 -order-1 m-0 -translate-x-1/2 group-data-[orientation=horizontal]/stepper:w-[calc(100%-1.5rem-0.25rem)] group-data-[orientation=horizontal]/stepper:flex-none group-data-[orientation=vertical]/stepper:h-[calc(100%-1.5rem-0.25rem)]" />
                 </StepperItem>
-                <StepperItem
-                  key={2}
-                  step={2}
-                  className="relative items-start not-last:flex-1"
-                >
+                <StepperItem key={2} step={2} className="relative items-start not-last:flex-1">
                   <StepperTrigger className="items-start rounded pb-12 last:pb-0">
                     <StepperIndicator />
                     <div className="mt-0.5 space-y-0.5 px-2 text-left">
@@ -184,9 +166,19 @@ const Dashboard = (props: DashboardProps) => {
                       <StepperDescription>
                         Run the following command in your terminal to install the Orbiter CLI
                         <div className="flex items-center justify-between p-2 mt-4 bg-gray-100 rounded">
-                          <code className="font-mono text-sm truncate max-w-[300px]">npm i -g orbiter-cli</code>
-                          <Button variant="ghost" size="sm" onClick={() => handleCopy('npm i -g orbiter-cli', 'key')}>
-                            {copiedField === 'key' ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                          <code className="font-mono text-sm truncate max-w-[300px]">
+                            npm i -g orbiter-cli
+                          </code>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleCopy("npm i -g orbiter-cli", "key")}
+                          >
+                            {copiedField === "key" ? (
+                              <Check className="h-4 w-4" />
+                            ) : (
+                              <Copy className="h-4 w-4" />
+                            )}
                           </Button>
                         </div>
                       </StepperDescription>
@@ -195,11 +187,7 @@ const Dashboard = (props: DashboardProps) => {
                   <StepperSeparator className="absolute inset-y-0 top-[calc(1.5rem+0.125rem)] left-3 -order-1 m-0 -translate-x-1/2 group-data-[orientation=horizontal]/stepper:w-[calc(100%-1.5rem-0.25rem)] group-data-[orientation=horizontal]/stepper:flex-none group-data-[orientation=vertical]/stepper:h-[calc(100%-1.5rem-0.25rem)]" />
                 </StepperItem>
 
-                <StepperItem
-                  key={3}
-                  step={3}
-                  className="relative items-start not-last:flex-1"
-                >
+                <StepperItem key={3} step={3} className="relative items-start not-last:flex-1">
                   <StepperTrigger className="items-start rounded pb-12 last:pb-0">
                     <StepperIndicator />
                     <div className="mt-0.5 space-y-0.5 px-2 text-left">
@@ -207,9 +195,19 @@ const Dashboard = (props: DashboardProps) => {
                       <StepperDescription>
                         Run the command below and paste in your API key when prompted
                         <div className="flex items-center justify-between p-2 mt-4 bg-gray-100 rounded">
-                          <code className="font-mono text-sm truncate max-w-[300px]">orbiter auth</code>
-                          <Button variant="ghost" size="sm" onClick={() => handleCopy('orbiter auth', 'auth')}>
-                            {copiedField === 'auth' ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                          <code className="font-mono text-sm truncate max-w-[300px]">
+                            orbiter auth
+                          </code>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleCopy("orbiter auth", "auth")}
+                          >
+                            {copiedField === "auth" ? (
+                              <Check className="h-4 w-4" />
+                            ) : (
+                              <Copy className="h-4 w-4" />
+                            )}
                           </Button>
                         </div>
                       </StepperDescription>
@@ -217,11 +215,7 @@ const Dashboard = (props: DashboardProps) => {
                   </StepperTrigger>
                   <StepperSeparator className="absolute inset-y-0 top-[calc(1.5rem+0.125rem)] left-3 -order-1 m-0 -translate-x-1/2 group-data-[orientation=horizontal]/stepper:w-[calc(100%-1.5rem-0.25rem)] group-data-[orientation=horizontal]/stepper:flex-none group-data-[orientation=vertical]/stepper:h-[calc(100%-1.5rem-0.25rem)]" />
                 </StepperItem>
-                <StepperItem
-                  key={4}
-                  step={4}
-                  className="relative items-start not-last:flex-1"
-                >
+                <StepperItem key={4} step={4} className="relative items-start not-last:flex-1">
                   <StepperTrigger className="items-start rounded pb-12 last:pb-0">
                     <StepperIndicator />
                     <div className="mt-0.5 space-y-0.5 px-2 text-left">
@@ -229,9 +223,19 @@ const Dashboard = (props: DashboardProps) => {
                       <StepperDescription>
                         Run the command below to start a new Orbiter app
                         <div className="flex items-center justify-between p-2 mt-4 bg-gray-100 rounded">
-                          <code className="font-mono text-sm truncate max-w-[300px]">orbiter new</code>
-                          <Button variant="ghost" size="sm" onClick={() => handleCopy('orbiter new', 'new')}>
-                            {copiedField === 'new' ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                          <code className="font-mono text-sm truncate max-w-[300px]">
+                            orbiter new
+                          </code>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleCopy("orbiter new", "new")}
+                          >
+                            {copiedField === "new" ? (
+                              <Check className="h-4 w-4" />
+                            ) : (
+                              <Copy className="h-4 w-4" />
+                            )}
                           </Button>
                         </div>
                       </StepperDescription>
@@ -239,20 +243,14 @@ const Dashboard = (props: DashboardProps) => {
                   </StepperTrigger>
                   <StepperSeparator className="absolute inset-y-0 top-[calc(1.5rem+0.125rem)] left-3 -order-1 m-0 -translate-x-1/2 group-data-[orientation=horizontal]/stepper:w-[calc(100%-1.5rem-0.25rem)] group-data-[orientation=horizontal]/stepper:flex-none group-data-[orientation=vertical]/stepper:h-[calc(100%-1.5rem-0.25rem)]" />
                 </StepperItem>
-
               </Stepper>
-
             </div>
           </div>
         </>
       )}
-      <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 mx-auto lg:mx-0 gap-4">
+      <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 mx-auto lg:mx-0 gap-4 my-4">
         {[...props.sites]
-          .sort(
-            (a, b) =>
-              new Date(b.updated_at).getTime() -
-              new Date(a.updated_at).getTime()
-          )
+          .sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime())
           .map((site) => (
             <SiteCard
               key={site.id}
