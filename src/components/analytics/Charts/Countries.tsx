@@ -70,9 +70,9 @@ const Countries = (props: CountriesProps) => {
               <div className="w-1/3">
                 <p>{p.country}</p>
               </div>
-              <div className="group relative w-1/2 h-8 bg-gray-200 rounded overflow-hidden">
+              <div className="group relative w-1/2 h-8 bg-muted rounded overflow-hidden">
                 <div
-                  className="absolute top-0 left-0 h-full bg-gray-700 transition-all duration-300"
+                  className="absolute top-0 left-0 h-full bg-primary transition-all duration-300"
                   style={{
                     width: `${Math.min(Math.max(0, p.percentage), 100)}%`,
                   }}

@@ -171,17 +171,17 @@ const Members = (props: MembersProps) => {
                           </AvatarFallback>
                         </Avatar>
                         <div className="min-w-0 flex-auto">
-                          <p className="text-sm/6 font-semibold text-gray-900">
+                          <p className="text-sm/6 font-semibold">
                             {person?.user?.name}
                           </p>
-                          <p className="mt-1 truncate text-xs/5 text-gray-500">
+                          <p className="mt-1 truncate text-xs/5 text-muted-foreground">
                             {person?.user?.email}
                           </p>
                         </div>
                       </div>
                       <div className="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
-                        <p className="text-sm/6 text-gray-900">{person.role}</p>
-                        <p className="mt-1 text-xs/5 text-gray-500">
+                        <p className="text-sm/6">{person.role}</p>
+                        <p className="mt-1 text-xs/5 text-muted-foreground">
                           Added{" "}
                           <time dateTime={person.created_at}>
                             {new Date(person.created_at).toLocaleString()}
@@ -232,17 +232,17 @@ const Members = (props: MembersProps) => {
                           </AvatarFallback>
                         </Avatar>
                         <div className="min-w-0 flex-auto">
-                          <p className="text-sm/6 font-semibold text-gray-900">
+                          <p className="text-sm/6 font-semibold">
                             {`${person?.first_name} ${person.last_name}`}
                           </p>
-                          <p className="mt-1 truncate text-xs/5 text-gray-500">
+                          <p className="mt-1 truncate text-xs/5 text-muted-foreground">
                             {person?.invite_email}
                           </p>
                         </div>
                       </div>
                       <div className="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
-                        <p className="text-sm/6 text-gray-900">{person.role}</p>
-                        <p className="mt-1 text-xs/5 text-gray-500">
+                        <p className="text-sm/6">{person.role}</p>
+                        <p className="mt-1 text-xs/5 text-muted-foreground">
                           Invited{" "}
                           <time dateTime={person.created_at}>
                             {new Date(person.created_at).toLocaleString()}

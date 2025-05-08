@@ -39,7 +39,7 @@ const ANNAUL_PLANS: Plan[] = [
     displayName: "Free",
     price: 0,
     features: [
-      "2 Projects",     
+      "2 Projects",
       "1 Team Member",
       "Free Subdomain",
       "20k Requests Per Month"
@@ -52,9 +52,9 @@ const ANNAUL_PLANS: Plan[] = [
     displayName: "Launch",
     price: 84,
     features: [
-      "Unlimited Projects",            
+      "Unlimited Projects",
       "3 Team Members",
-      "Custom Domains",      
+      "Custom Domains",
       "100k Requests Per Month",
     ],
     priceId: import.meta.env.VITE_STRIPE_LAUNCH_MONTHLY,
@@ -95,9 +95,9 @@ const PLANS: Plan[] = [
     displayName: "Launch",
     price: 9,
     features: [
-      "Unlimited Projects",            
+      "Unlimited Projects",
       "3 Team Members",
-      "Custom Domains",      
+      "Custom Domains",
       "100k Requests Per Month",
     ],
     priceId: import.meta.env.VITE_STRIPE_LAUNCH_YEARLY
@@ -209,9 +209,9 @@ const Billing = (props: BillingProps) => {
                   key={plan.id}
                   className={`w-[300px] ${
                     props.planDetails.planName === plan.name
-                      ? "border-2 border-gray-400"
+                      ? "border-2 border-muted-foreground"
                       : props.planDetails.nextPlan === plan.name
-                      ? "border-2 border-blue-400"
+                      ? "border-2 border-muted-foreground"
                       : ""
                   }`}
                 >

@@ -158,11 +158,11 @@ export function CreateSiteForm(props: DashboardProps) {
             spellCheck={false}
             className="w-full rounded pr-32 text-transparent bg-clip-text" // Make input text transparent
           />
-          <div className="absolute inset-y-0 left-0 flex items-center px-3 text-black pointer-events-none">
+          <div className="absolute inset-y-0 left-0 flex items-center px-3 pointer-events-none">
             {domain ? (
-              <span className="text-gray-950">{domain}</span>
+              <span className="text-secondary-foreground">{domain}</span>
             ) : (
-              <span className="text-gray-400">subdomain</span>
+              <span className="text-muted-foreground">subdomain</span>
             )}
             <span>.orbiter.website</span>
           </div>

@@ -75,7 +75,7 @@ const Main = (props: MainProps) => {
 
     checkOnboarding();
   }, [props.userSession]);
-  
+
   return (
     <div className="min-h-screen w-full flex flex-col gap-2">
       <BrowserRouter>
@@ -86,11 +86,11 @@ const Main = (props: MainProps) => {
           setSelectedOrganization={props.setSelectedOrganization}
         />
         {
-          !onboardingComplete && 
+          !onboardingComplete &&
           <OnboardingSurveyModal userSession={props.userSession} />
         }
         <Separator />
-        
+
         {props.organizations.length > 0 && (
           <Routes>
             <Route
@@ -125,7 +125,7 @@ const Main = (props: MainProps) => {
             <Route
               path="/analytics/:id"
               element={
-                <Analytics                  
+                <Analytics
                   planDetails={props.planDetails}
                   userSession={props.userSession}
                   selectedOrganization={props.selectedOrganization}
@@ -172,8 +172,8 @@ const Main = (props: MainProps) => {
           </Routes>
         )}
       </BrowserRouter>
-      <a href="https://discord.gg/RWThJkbB4W" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center fixed left-10 bottom-10 h-12 w-12 rounded-full bg-gray-800 text-white">
-        <MessageCircleIcon />        
+      <a href="https://discord.gg/RWThJkbB4W" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center fixed left-10 bottom-10 h-12 w-12 rounded-full bg-muted text-white">
+        <MessageCircleIcon />
       </a>
     </div>
   );

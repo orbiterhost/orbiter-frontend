@@ -27,7 +27,7 @@ export default function SiteAnalyticsByDay(props: SiteAnalyticsProps) {
     const fetchData = async () => {
       try {
         const token = await getAccessToken();
-        
+
         let startDate;
         if(props.period === "seven") {
             startDate = Date.now() - 7 * 24 * 60 * 60 * 1000
@@ -79,7 +79,7 @@ export default function SiteAnalyticsByDay(props: SiteAnalyticsProps) {
             dataLabels: {
               enabled: false,
             },
-            colors: ["#020617"],
+            colors: ["#FFB757"],
             stroke: {
               lineCap: "round",
               curve: "smooth",
@@ -123,7 +123,7 @@ export default function SiteAnalyticsByDay(props: SiteAnalyticsProps) {
             },
             grid: {
               show: true,
-              borderColor: "#dddddd",
+              borderColor: "#616161",
               strokeDashArray: 5,
               xaxis: {
                 lines: {
@@ -177,17 +177,17 @@ export default function SiteAnalyticsByDay(props: SiteAnalyticsProps) {
   return (
     <div className="w-3/4 m-auto">
       <dl className="mx-auto grid grid-cols-1 gap-px sm:grid-cols-2 lg:grid-cols-4">
-        <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2 bg-white px-4 py-10 sm:px-6 xl:px-8">
-          <dt className="text-sm/6 font-medium text-gray-500">Total Views</dt>
+        <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2 px-4 py-10 sm:px-6 xl:px-8">
+          <dt className="text-sm/6 font-medium text-muted-foreground">Total Views</dt>
           <dd></dd>
-          <dd className="w-full flex-none text-3xl/10 font-medium tracking-tight text-gray-900">
+          <dd className="w-full flex-none text-3xl/10 font-medium tracking-tight text">
             {stats.total_requests}
           </dd>
         </div>
-        <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2 bg-white px-4 py-10 sm:px-6 xl:px-8">
-          <dt className="text-sm/6 font-medium text-gray-500">Unique Visitors</dt>
+        <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2 px-4 py-10 sm:px-6 xl:px-8">
+          <dt className="text-sm/6 font-medium text-muted-foreground">Unique Visitors</dt>
           <dd></dd>
-          <dd className="w-full flex-none text-3xl/10 font-medium tracking-tight text-gray-900">
+          <dd className="w-full flex-none text-3xl/10 font-medium tracking-tight">
             {stats.unique_visitors}
           </dd>
         </div>

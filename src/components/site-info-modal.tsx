@@ -46,35 +46,35 @@ export function SiteInfoModal({
           </DialogDescription>
           <div className="flex flex-col gap-2 mt-12 text-sm">
             <Label>Site ID</Label>
-            <div className="flex items-center justify-between p-2 bg-gray-100 rounded">
+            <div className="flex items-center justify-between p-2 bg-muted rounded">
               <code className="font-mono truncate max-w-[300px]">{id}</code>
               <Button variant="ghost" size="sm" onClick={() => handleCopy(id, 'id')}>
                 {copiedField === 'id' ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
               </Button>
             </div>
             <Label>Domain</Label>
-            <div className="flex items-center justify-between p-2 bg-gray-100 rounded">
+            <div className="flex items-center justify-between p-2 bg-muted rounded">
               <code className="font-mono truncate max-w-[300px]">{domain}</code>
               <Button variant="ghost" size="sm" onClick={() => handleCopy(domain, 'domain')}>
                 {copiedField === 'domain' ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
               </Button>
             </div>
             <Label>CID</Label>
-            <div className="flex items-center justify-between p-2 bg-gray-100 rounded">
+            <div className="flex items-center justify-between p-2 bg-muted rounded">
               <code className="font-mono truncate max-w-[300px]">{cid}</code>
               <Button variant="ghost" size="sm" onClick={() => handleCopy(cid, 'cid')}>
                 {copiedField === 'cid' ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
               </Button>
             </div>
             <Label>Contract Address</Label>
-            <div className="flex items-center justify-between p-2 bg-gray-100 rounded">
+            <div className="flex items-center justify-between p-2 bg-muted rounded">
               <code className="font-mono truncate max-w-[300px]">{site_contract}</code>
               <Button variant="ghost" size="sm" onClick={() => handleCopy(site_contract, 'contract')}>
                 {copiedField === 'contract' ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
               </Button>
             </div>
             <Label>Created At</Label>
-            <div className="flex items-center justify-between p-2 bg-gray-100 rounded">
+            <div className="flex items-center justify-between p-2 bg-muted rounded">
               <code className="font-mono truncate max-w-[300px]">{created_at}</code>
               <Button variant="ghost" size="sm" onClick={() => handleCopy(created_at, 'created')}>
                 {copiedField === 'created' ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}

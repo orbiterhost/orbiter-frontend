@@ -192,7 +192,7 @@ export function CustomDomainForm({
               type="text"
               spellCheck={false}
               placeholder="mysite.com"
-              className="w-full rounded pr-32 text-black bg-clip-text"
+              className="w-full rounded pr-32 bg-clip-text"
             />
           </div>
           {loading ? (

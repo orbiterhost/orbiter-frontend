@@ -89,7 +89,7 @@ const WorldMap = (props: WorldMapProps) => {
 
     if (!country) {
       return {
-        color: "#1f2937",
+        color: "#2A2A2A",
         visitors: 0,
         name: countryName,
       };
@@ -97,7 +97,7 @@ const WorldMap = (props: WorldMapProps) => {
 
     const opacity = Math.max(0.2, Math.min(1, country.percentage / 100));
     return {
-      color: `rgba(59, 130, 246, ${opacity})`,
+      color: `rgba(255, 183, 87, ${opacity})`,
       visitors: country.count,
       name: countryName,
     };
@@ -119,9 +119,9 @@ const WorldMap = (props: WorldMapProps) => {
                 <div className="w-1/3">
                   <p>{p.country}</p>
                 </div>
-                <div className="group relative w-1/2 h-8 bg-gray-200 rounded overflow-hidden">
+                <div className="group relative w-1/2 h-8 bg-muted rounded overflow-hidden">
                   <div
-                    className="absolute top-0 left-0 h-full bg-gray-700 transition-all duration-300"
+                    className="absolute top-0 left-0 h-full bg-primary transition-all duration-300"
                     style={{
                       width: `${Math.min(Math.max(0, p.percentage), 100)}%`,
                     }}
@@ -157,9 +157,9 @@ const WorldMap = (props: WorldMapProps) => {
               style={{
                 width: "100%",
                 height: "100%",
-                backgroundColor: "#fff",
+                backgroundColor: "transparent",
               }}
-              className="border rounded-sm"
+              className="border border-muted-foreground rounded-sm"
             >
               <ZoomableGroup zoom={1}>
                 <Geographies geography={geoUrl}>
@@ -177,7 +177,7 @@ const WorldMap = (props: WorldMapProps) => {
                             <Geography
                               geography={geo}
                               fill={countryInfo.color}
-                              stroke="#374151"
+                              stroke="#616161"
                               strokeWidth={0.5}
                               style={{
                                 default: {

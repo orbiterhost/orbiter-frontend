@@ -159,7 +159,7 @@ export function LoginForm({
           </div>
           <div className="relative">
             <div className="relative flex justify-center text-sm/6 font-medium mt-4">
-              <span className="bg-white px-6 text-gray-900">
+              <span className="px-6">
                 Or continue with
               </span>
             </div>

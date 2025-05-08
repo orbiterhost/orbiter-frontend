@@ -36,7 +36,7 @@ export default function UsersByDay() {
             dataLabels: {
               enabled: false,
             },
-            colors: ["#020617"],
+            colors: ["#FFB757"],
             stroke: {
               lineCap: "round",
               curve: "smooth",
@@ -130,7 +130,7 @@ export default function UsersByDay() {
 
   return (
     <div className="w-3/4 m-auto">
-      <dt className="text-sm/6 font-medium text-gray-500">New Users By Day</dt>
+      <dt className="text-sm/6 font-medium text-muted-foreground">New Users By Day</dt>
       <Chart {...chartData} />
     </div>
   );

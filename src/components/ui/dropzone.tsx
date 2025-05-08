@@ -1,6 +1,7 @@
 import type React from "react";
 import { useState, useRef, useCallback } from "react";
 import { Upload, Folder, File, CircleCheck, CircleX } from "lucide-react";
+import { Button } from "./button";
 
 interface CustomFileDropzoneProps {
   files: File[];
@@ -173,24 +174,26 @@ export function CustomFileDropzone({
         <Upload className="mx-auto h-12 w-12 text-gray-400" />
         <p className="mt-2">Drop Files or Folders Here</p>
         <div className="mt-4 flex justify-center space-x-4">
-          <button
+          <Button
+            variant='secondary'
             type="button"
             onClick={() => openFileDialog(false)}
-            className="px-4 py-2 text-sm bg-white border rounded-md hover:bg-gray-50 flex items-center space-x-2"
+            className="px-4 py-2 text-sm flex items-center space-x-2"
             disabled={disabled}
           >
             <File className="h-4 w-4" />
             <span>Select Files</span>
-          </button>
-          <button
+          </Button>
+          <Button
+            variant='secondary'
             type="button"
             onClick={() => openFileDialog(true)}
-            className="px-4 py-2 text-sm bg-white border rounded-md hover:bg-gray-50 flex items-center space-x-2"
+            className="px-4 py-2 text-sm flex items-center space-x-2"
             disabled={disabled}
           >
             <Folder className="h-4 w-4" />
             <span>Select Folder</span>
-          </button>
+          </Button>
         </div>
         <p className="mt-1 text-xs text-gray-500">
           Make sure you have an index.html file
