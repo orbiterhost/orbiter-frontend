@@ -80,7 +80,7 @@ export default function SiteUpdates() {
             },
             grid: {
               show: true,
-              borderColor: "#dddddd",
+              borderColor: "#808080",
               strokeDashArray: 5,
               xaxis: {
                 lines: {
