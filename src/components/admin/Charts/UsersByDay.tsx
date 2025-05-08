@@ -16,7 +16,7 @@ export default function UsersByDay() {
         const reversedData = [...data.data].reverse();
 
         setChartData({
-          type: "bar",
+          type: "line",
           height: 240,
           series: [
             {
@@ -60,11 +60,11 @@ export default function UsersByDay() {
                 },
               },
               categories: reversedData.map((item) => {
-                const date = new Date(item.date + 'T00:00:00Z');
+                const date = new Date(item.date + "T00:00:00Z");
                 return date.toLocaleDateString("en-US", {
                   month: "short",
                   day: "numeric",
-                  timeZone: 'UTC'
+                  timeZone: "UTC",
                 });
               }),
             },
@@ -99,12 +99,11 @@ export default function UsersByDay() {
               theme: "dark",
               x: {
                 formatter: (val: any) => {
-                  const date = new Date(reversedData[val - 1].date + 'T00:00:00Z');
+                  const date = new Date(reversedData[val - 1].date + "T00:00:00Z");
                   return date.toLocaleDateString("en-US", {
                     month: "long",
                     day: "numeric",
                     year: "numeric",
-                    timeZone: 'UTC'
                   });
                 },
               },
@@ -117,6 +116,7 @@ export default function UsersByDay() {
         setIsLoading(false);
       }
     };
+
     fetchData();
   }, []);
 
