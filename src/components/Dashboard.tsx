@@ -165,8 +165,8 @@ const Dashboard = (props: DashboardProps) => {
                       <StepperTitle>Install the CLI</StepperTitle>
                       <StepperDescription>
                         Run the following command in your terminal to install the Orbiter CLI
-                        <div className="flex items-center justify-between p-2 mt-4 bg-gray-100 rounded">
-                          <code className="font-mono text-sm truncate max-w-[300px]">
+                        <div className="flex items-center justify-between p-2 mt-4 bg-muted rounded">
+                          <code className="font-mono text-sm text-muted-foreground truncate max-w-[300px]">
                             npm i -g orbiter-cli
                           </code>
                           <Button
@@ -194,8 +194,8 @@ const Dashboard = (props: DashboardProps) => {
                       <StepperTitle>Authorize the CLI</StepperTitle>
                       <StepperDescription>
                         Run the command below and paste in your API key when prompted
-                        <div className="flex items-center justify-between p-2 mt-4 bg-gray-100 rounded">
-                          <code className="font-mono text-sm truncate max-w-[300px]">
+                        <div className="flex items-center justify-between p-2 mt-4 bg-muted rounded">
+                          <code className="font-mono text-sm text-muted-foreground truncate max-w-[300px]">
                             orbiter auth
                           </code>
                           <Button
@@ -222,8 +222,8 @@ const Dashboard = (props: DashboardProps) => {
                       <StepperTitle>Creat a New App</StepperTitle>
                       <StepperDescription>
                         Run the command below to start a new Orbiter app
-                        <div className="flex items-center justify-between p-2 mt-4 bg-gray-100 rounded">
-                          <code className="font-mono text-sm truncate max-w-[300px]">
+                        <div className="flex items-center justify-between p-2 mt-4 bg-muted rounded">
+                          <code className="font-mono text-sm text-muted-foreground truncate max-w-[300px]">
                             orbiter new
                           </code>
                           <Button
