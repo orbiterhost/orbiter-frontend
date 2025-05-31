@@ -1,10 +1,13 @@
 import { useState, useEffect } from "react";
-import {
-  Card,
-  CardContent,
-} from "./ui/card";
+import { Card, CardContent } from "./ui/card";
 import { UpdateSiteForm } from "./update-site-form";
-import { ChartAreaIcon, CircleCheck, Loader2, Settings, Trash } from "lucide-react";
+import {
+  ChartAreaIcon,
+  CircleCheck,
+  Loader2,
+  Settings,
+  Trash,
+} from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Button } from "./ui/button";
 import {
@@ -29,8 +32,8 @@ import {
 import { UpdateVersionForm } from "./update-version-form";
 import { SiteInfoModal } from "./site-info-modal";
 import { UpsellModal } from "./upsell-modal";
-import { AddEnsForm } from "./add-ens-form"
-import 'viem/window';
+import { AddEnsForm } from "./add-ens-form";
+import "viem/window";
 import { Link } from "react-router";
 
 type SiteCardProps = {
@@ -88,7 +91,7 @@ export const SiteCard = ({
             headers: {
               "X-Orbiter-Token": `${accessToken}`,
               "Content-Type": "Application/json",
-              "Source": "web-app"
+              Source: "web-app",
             },
           }
         );
@@ -132,7 +135,7 @@ export const SiteCard = ({
           headers: {
             "X-Orbiter-Token": accessToken,
             "Content-Type": "Application/json",
-            "Source": "web-app"
+            Source: "web-app",
           },
           body: JSON.stringify({
             customDomain: site.custom_domain,
@@ -218,8 +221,9 @@ export const SiteCard = ({
         <CardContent className="flex items-start gap-1 justify-between w-full pt-6">
           <div className="flex flex-col">
             <a
-              href={`https://${site.custom_domain ? site.custom_domain : site.domain
-                }`}
+              href={`https://${
+                site.custom_domain ? site.custom_domain : site.domain
+              }`}
               target="_blank"
               rel="noopener noreferrer"
               className="group flex items-center gap-2 font-bold"
@@ -269,11 +273,11 @@ export const SiteCard = ({
                 <Settings />
               </PopoverTrigger>
               <PopoverContent className="w-full flex flex-col items-start gap-2">
-              {planDetails.planName === "orbit" ? (
-                <Link to={`/analytics/${site.id}`}><Button variant="ghost" className="h-7 flex items-center"><ChartAreaIcon /> <span>Analytics</span></Button></Link>
-                ) : (
-                  <UpsellModal feature="analytics" />
-                )}
+                <UpdateSiteForm
+                  loading={loading}
+                  updateSite={updateSite}
+                  siteId={site.id}
+                />                
                 {planDetails.planName !== "free" ? (
                   <CustomDomainForm
                     loading={loading}
@@ -299,23 +303,21 @@ export const SiteCard = ({
                 ) : (
                   <UpsellModal feature="versions" />
                 )}
-                <UpdateSiteForm
-                  loading={loading}
-                  updateSite={updateSite}
-                  siteId={site.id}
-                />
-                {window.ethereum &&
-                  <AddEnsForm
-                    loading={loading}
-                    siteId={site.id}
-                  />
-                }
+                {planDetails.planName === "orbit" ? (
+                  <Link to={`/analytics/${site.id}`}>
+                    <Button variant="ghost" className="h-7 flex items-center">
+                      <ChartAreaIcon /> <span>Analytics</span>
+                    </Button>
+                  </Link>
+                ) : (
+                  <UpsellModal feature="analytics" />
+                )}
+                {window.ethereum && (
+                  <AddEnsForm loading={loading} siteId={site.id} />
+                )}
                 <SiteInfoModal {...site} />
                 <DialogTrigger asChild>
-                  <Button
-                    className="h-7 w-full justify-start"
-                    variant="ghost"
-                  >
+                  <Button className="h-7 w-full justify-start" variant="ghost">
                     <Trash /> {deleting ? "Deleting..." : "Delete"}
                   </Button>
                 </DialogTrigger>
