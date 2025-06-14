@@ -7,7 +7,7 @@ import { BrowserRouter, Routes, Route, useNavigate } from "react-router";
 import Admin from "./admin";
 import { Session } from "@supabase/supabase-js";
 import { useEffect, useState } from "react";
-import { Invite, Membership, Organization } from "@/utils/types";
+import { Invite, Membership, Organization, Site } from "@/utils/types";
 import Members from "./Members";
 import Invites from "./Invites";
 import APIKeys from "./api-keys"
@@ -24,10 +24,10 @@ export const AUTHORIZED_IDS = [
 
 type MainProps = {
   userSession: Session;
-  organizations: any[];
-  sites: any[];
-  createSite: any;
-  updateSite: any;
+  organizations: Membership[];
+  sites: Site[];
+  createSite: (files: File | File[], subdomain: string) => Promise<void>;
+  updateSite: (files: File | File[], siteId: string, cid?: string) => Promise<void>;
   loading: boolean;
   deleteSite: (siteId: string) => Promise<void>;
   createSiteFromCid: (cid: string, subdomain: string) => Promise<void>;
@@ -36,14 +36,20 @@ type MainProps = {
   selectPlan: (priceId: string) => Promise<void>;
   loadSites: () => Promise<void>;
   selectedOrganization: Organization | null;
-  setSelectedOrganization: any;
+  setSelectedOrganization: (org: Organization | null) => void;
   loadMembers: () => Promise<void>;
   members: Membership[];
   invites: Invite[];
 };
 
-const ProtectedRoute = ({ userSession, children, fallbackPath = "/" }: any) => {
-  let navigate = useNavigate();
+type ProtectedRouteProps = {
+  userSession: Session;
+  children: React.ReactNode;
+  fallbackPath?: string;
+};
+
+const ProtectedRoute = ({ userSession, children, fallbackPath = "/" }: ProtectedRouteProps) => {
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!userSession?.user) {
