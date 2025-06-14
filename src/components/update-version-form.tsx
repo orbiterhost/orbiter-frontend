@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -15,8 +15,10 @@ type UpdateSiteProps = {
   updateSite: any;
   siteId: string;
   loading: boolean;
-  versions: SiteVersion[]
+  versions: SiteVersion[] | undefined;
   siteDomain: string;
+  onLoadVersions: () => Promise<void>;
+  versionsLoaded: boolean;
 };
 
 type SiteVersion = {
@@ -37,23 +39,31 @@ type VersionOption = {
   data: SiteVersion;
 };
 
-
 export function UpdateVersionForm({
   updateSite,
   siteId,
   loading,
   versions,
-  siteDomain
+  siteDomain,
+  onLoadVersions,
+  versionsLoaded
 }: UpdateSiteProps) {
   const [files, setFiles] = useState<File[]>([]);
   const [open, setOpen] = useState(false);
   const [selectedVersion, setSelectedVersion] = useState<VersionOption | undefined>();
 
-  const versionOptions: VersionOption[] = versions.map((version) => ({
+  const versionOptions: VersionOption[] = versions ? versions.map((version) => ({
     value: version.id,
     label: version.version_number.toString(),
     data: version
-  }));
+  })) : [];
+
+  // Load versions when dialog opens
+  useEffect(() => {
+    if (open && !versionsLoaded) {
+      onLoadVersions();
+    }
+  }, [open, versionsLoaded, onLoadVersions]);
 
   async function submit() {
     try {
@@ -70,19 +80,18 @@ export function UpdateVersionForm({
     }
   }
 
+  const handleOpenChange = (newOpen: boolean) => {
+    if (!loading) {
+      setOpen(newOpen);
+      if (!newOpen) {
+        setFiles([]);
+        setSelectedVersion(undefined);
+      }
+    }
+  };
+
   return (
-    <Dialog
-      onOpenChange={(open) => {
-        if (!loading) {
-          setOpen(open);
-          if (!open) {
-            setFiles([]);
-            setSelectedVersion(undefined);
-          }
-        }
-      }}
-      open={open}
-    >
+    <Dialog onOpenChange={handleOpenChange} open={open}>
       <DialogTrigger className="w-full">
         <Button variant="ghost" className="h-7 w-full justify-start">
           <History />
@@ -97,37 +106,50 @@ export function UpdateVersionForm({
         <DialogHeader>
           <DialogTitle>Update Site</DialogTitle>
           <DialogDescription>
-            Choose a file or a folder to upload, as well as a subdomain for the
-            site
+            Choose a version to deploy to your site
           </DialogDescription>
         </DialogHeader>
-        <VersionCombobox
-          versions={versionOptions}
-          value={selectedVersion?.value ?? ''}
-          onVersionSelect={setSelectedVersion}
-        />
-        {selectedVersion?.value && (
-          <a
-            target="_blank"
-            href={`https://${siteDomain}?orbiterVersionCid=${selectedVersion.data.cid}`}>
-            <Button variant="outline" className="w-full">
-              Preview
-              <ExternalLink />
+        
+        {!versionsLoaded ? (
+          <div className="flex items-center justify-center py-4">
+            <Loader2 className="animate-spin mr-2" />
+            <span>Loading versions...</span>
+          </div>
+        ) : versions && versions.length > 0 ? (
+          <>
+            <VersionCombobox
+              versions={versionOptions}
+              value={selectedVersion?.value ?? ''}
+              onVersionSelect={setSelectedVersion}
+            />
+            {selectedVersion?.value && (
+              <a
+                target="_blank"
+                href={`https://${siteDomain}?orbiterVersionCid=${selectedVersion.data.cid}`}>
+                <Button variant="outline" className="w-full">
+                  Preview
+                  <ExternalLink />
+                </Button>
+              </a>
+            )}
+            <Button
+              onClick={submit}
+              disabled={loading || !selectedVersion}
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="animate-spin" /> Updating Site...
+                </>
+              ) : (
+                'Update'
+              )}
             </Button>
-          </a>
+          </>
+        ) : (
+          <div className="text-center py-4 text-gray-500">
+            No versions found
+          </div>
         )}
-        <Button
-          onClick={submit}
-          disabled={loading || !selectedVersion}
-        >
-          {loading ? (
-            <>
-              <Loader2 className="animate-spin" /> Updating Site...
-            </>
-          ) : (
-            'Update'
-          )}
-        </Button>
       </DialogContent>
     </Dialog>
   );

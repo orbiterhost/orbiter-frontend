@@ -4,7 +4,7 @@ import { PlanDetails } from "@/App";
 import { useToast } from "@/hooks/use-toast";
 import { getAccessToken } from "@/utils/auth";
 import { Organization, Site } from "@/utils/types";
-import { useEffect, useState } from "react";
+import { useEffect, useState, ReactNode } from "react";
 import { Button } from "./ui/button";
 import { Check, Copy } from "lucide-react";
 import { UpsellModal } from "./upsell-modal";
@@ -20,10 +20,10 @@ import {
 import APIKeyCreator from "./api-key-creator";
 
 type DashboardProps = {
-  organization: any;
+  organization: Organization;
   sites: Site[];
-  createSite: any;
-  updateSite: any;
+  createSite: (files: File | File[], subdomain: string) => Promise<void>;
+  updateSite: (files: File | File[], siteId: string, cid?: string) => Promise<void>;
   loading: boolean;
   deleteSite: (siteId: string) => Promise<void>;
   createSiteFromCid: (cid: string, subdomain: string) => Promise<void>;
@@ -37,7 +37,7 @@ const Dashboard = (props: DashboardProps) => {
   const [selectedTemplateCid, setSelectedTemplateCid] = useState("");
   const [copiedField, setCopiedField] = useState<string>("");
 
-  let maxSites: any;
+  let maxSites: ReactNode;
 
   const handleCopy = (text: string, field: string) => {
     navigator.clipboard.writeText(text);
@@ -65,7 +65,7 @@ const Dashboard = (props: DashboardProps) => {
 
       const res = await fetch(`${import.meta.env.VITE_BASE_URL}/sites/${siteId}/custom_domain`, {
         method: "POST",
-        //  @ts-ignore
+        // @ts-expect-error Headers type mismatch
         headers: {
           "Content-Type": "application/json",
           "X-Orbiter-Token": accessToken,
@@ -92,7 +92,7 @@ const Dashboard = (props: DashboardProps) => {
 
       const res = await fetch(`${import.meta.env.VITE_BASE_URL}/sites/${siteId}/custom_domain`, {
         method: "DELETE",
-        //  @ts-ignore
+        // @ts-expect-error Headers type mismatch
         headers: {
           "Content-Type": "application/json",
           "X-Orbiter-Token": accessToken,
