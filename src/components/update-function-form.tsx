@@ -33,7 +33,11 @@ type FunctionDetails = {
 };
 
 type UpdateFunctionProps = {
-  updateFunction: (functionCode: string, envVars: Record<string, string>, siteId: string) => Promise<void>;
+  updateFunction: (
+    functionCode: string,
+    envVars: Record<string, string>,
+    siteId: string,
+  ) => Promise<void>;
   siteId: string;
   loading: boolean;
   functionDetails: FunctionDetails | null;
@@ -54,7 +58,7 @@ export function UpdateFunctionForm({
   loading,
   functionDetails,
   onLoadFunctionDetails,
-  functionLoaded
+  functionLoaded,
 }: UpdateFunctionProps) {
   const [open, setOpen] = useState(false);
   const [functionCode, setFunctionCode] = useState("");
@@ -75,33 +79,33 @@ export function UpdateFunctionForm({
   useEffect(() => {
     if (functionDetails) {
       setFunctionCode(functionDetails.script || "");
-      
+
       // Convert bindings to envVars format for the UI
       const initialEnvVars: EnvVar[] = [];
-      
+
       if (functionDetails.bindings && functionDetails.bindings.length > 0) {
-        functionDetails.bindings.forEach(binding => {
+        functionDetails.bindings.forEach((binding) => {
           initialEnvVars.push({
             id: `existing-${binding.name}`,
             key: binding.name,
             value: "", // We don't show the actual values for security
-            isExisting: true
+            isExisting: true,
           });
         });
       }
-      
+
       // Fallback to environment if bindings are not available (backward compatibility)
       if (functionDetails.environment && initialEnvVars.length === 0) {
-        Object.keys(functionDetails.environment).forEach(key => {
+        Object.keys(functionDetails.environment).forEach((key) => {
           initialEnvVars.push({
             id: `existing-${key}`,
             key: key,
             value: "",
-            isExisting: true
+            isExisting: true,
           });
         });
       }
-      
+
       setEnvVars(initialEnvVars);
     } else {
       // Reset to empty state if no function details (new function)
@@ -117,13 +121,16 @@ export function UpdateFunctionForm({
   async function submit() {
     try {
       // Convert EnvVar[] back to Record<string, string>
-      const envVarsObject = envVars.reduce((acc, envVar) => {
-        if (envVar.key.trim()) {
-          acc[envVar.key] = envVar.value;
-        }
-        return acc;
-      }, {} as Record<string, string>);
-      
+      const envVarsObject = envVars.reduce(
+        (acc, envVar) => {
+          if (envVar.key.trim()) {
+            acc[envVar.key] = envVar.value;
+          }
+          return acc;
+        },
+        {} as Record<string, string>,
+      );
+
       await updateFunction(functionCode, envVarsObject, siteId);
       setOpen(false);
     } catch (error) {
@@ -170,17 +177,17 @@ export function UpdateFunctionForm({
   };
 
   const parseEnvFile = (content: string) => {
-    const lines = content.split('\n');
+    const lines = content.split("\n");
     const newEnvVars: EnvVar[] = [...envVars];
-    
-    lines.forEach(line => {
+
+    lines.forEach((line) => {
       const trimmedLine = line.trim();
-      if (trimmedLine && !trimmedLine.startsWith('#')) {
-        const [key, ...valueParts] = trimmedLine.split('=');
+      if (trimmedLine && !trimmedLine.startsWith("#")) {
+        const [key, ...valueParts] = trimmedLine.split("=");
         if (key && valueParts.length > 0) {
-          const value = valueParts.join('=').replace(/^["']|["']$/g, ''); // Remove quotes
-          const existingIndex = newEnvVars.findIndex(env => env.key === key.trim());
-          
+          const value = valueParts.join("=").replace(/^["']|["']$/g, ""); // Remove quotes
+          const existingIndex = newEnvVars.findIndex((env) => env.key === key.trim());
+
           if (existingIndex >= 0) {
             // Update existing
             newEnvVars[existingIndex] = { ...newEnvVars[existingIndex], value };
@@ -190,26 +197,26 @@ export function UpdateFunctionForm({
               id: `parsed-${Date.now()}-${Math.random()}`,
               key: key.trim(),
               value,
-              isExisting: false
+              isExisting: false,
             });
           }
         }
       }
     });
-    
+
     setEnvVars(newEnvVars);
   };
 
   const handleEnvVarKeyChange = (id: string, newKey: string) => {
-    setEnvVars(prev => prev.map(envVar => 
-      envVar.id === id ? { ...envVar, key: newKey } : envVar
-    ));
+    setEnvVars((prev) =>
+      prev.map((envVar) => (envVar.id === id ? { ...envVar, key: newKey } : envVar)),
+    );
   };
 
   const handleEnvVarValueChange = (id: string, newValue: string) => {
-    setEnvVars(prev => prev.map(envVar => 
-      envVar.id === id ? { ...envVar, value: newValue } : envVar
-    ));
+    setEnvVars((prev) =>
+      prev.map((envVar) => (envVar.id === id ? { ...envVar, value: newValue } : envVar)),
+    );
   };
 
   const addEnvVar = () => {
@@ -217,15 +224,15 @@ export function UpdateFunctionForm({
       id: `new-${Date.now()}-${Math.random()}`,
       key: "",
       value: "",
-      isExisting: false
+      isExisting: false,
     };
-    setEnvVars(prev => [...prev, newEnvVar]);
+    setEnvVars((prev) => [...prev, newEnvVar]);
   };
 
   const removeEnvVar = (id: string) => {
-    setEnvVars(prev => prev.filter(envVar => envVar.id !== id));
-    
-    setShowSecrets(prev => {
+    setEnvVars((prev) => prev.filter((envVar) => envVar.id !== id));
+
+    setShowSecrets((prev) => {
       const newShowSecrets = { ...prev };
       delete newShowSecrets[id];
       return newShowSecrets;
@@ -233,9 +240,9 @@ export function UpdateFunctionForm({
   };
 
   const toggleSecretVisibility = (id: string) => {
-    setShowSecrets(prev => ({
+    setShowSecrets((prev) => ({
       ...prev,
-      [id]: !prev[id]
+      [id]: !prev[id],
     }));
   };
 
@@ -249,17 +256,14 @@ export function UpdateFunctionForm({
       </DialogTrigger>
       <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>
-            {functionDetails ? 'Update Function' : 'Create Function'}
-          </DialogTitle>
+          <DialogTitle>{functionDetails ? "Update Function" : "Create Function"}</DialogTitle>
           <DialogDescription>
-            {functionDetails 
-              ? 'Update your serverless function code and environment variables'
-              : 'Create a new serverless function for your site'
-            }
+            {functionDetails
+              ? "Update your serverless function code and environment variables"
+              : "Create a new serverless function for your site"}
           </DialogDescription>
         </DialogHeader>
-        
+
         {!functionLoaded ? (
           <div className="flex items-center justify-center py-8">
             <Loader2 className="animate-spin mr-2" />
@@ -269,25 +273,23 @@ export function UpdateFunctionForm({
           <div className="space-y-6">
             {/* Function Code Section */}
             <div>
-              <label className="block text-sm font-medium mb-3">
-                Function Code
-              </label>
-              
+              <label className="block text-sm font-medium mb-3">Function Code</label>
+
               <Tabs defaultValue="paste" className="w-full">
                 <TabsList className="grid w-full grid-cols-2">
                   <TabsTrigger value="paste">Paste Code</TabsTrigger>
                   <TabsTrigger value="upload">Upload File</TabsTrigger>
                 </TabsList>
-                
+
                 <TabsContent value="paste" className="mt-4">
                   <textarea
                     value={functionCode}
                     onChange={(e) => setFunctionCode(e.target.value)}
-                    className="w-full h-64 p-3 border rounded-md font-mono text-sm bg-gray-50 dark:bg-gray-900 resize-none"
+                    className="w-full h-64 p-3 border rounded-md font-mono text-sm bg-muted resize-none"
                     placeholder="Enter your function code here..."
                   />
                 </TabsContent>
-                
+
                 <TabsContent value="upload" className="mt-4">
                   <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
                     <input
@@ -298,7 +300,7 @@ export function UpdateFunctionForm({
                       className="hidden"
                     />
                     <Upload className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-                    <p className="text-sm text-gray-600 mb-2">
+                    <p className="text-sm text-muted-foreground mb-2">
                       Upload a JavaScript/TypeScript file
                     </p>
                     <Button
@@ -315,7 +317,7 @@ export function UpdateFunctionForm({
                       <textarea
                         value={functionCode}
                         onChange={(e) => setFunctionCode(e.target.value)}
-                        className="w-full h-32 p-3 border rounded-md font-mono text-sm bg-gray-50 dark:bg-gray-900 resize-none"
+                        className="w-full h-32 p-3 border rounded-md font-mono text-sm bg-muted resize-none"
                         placeholder="Function code will appear here..."
                       />
                     </div>
@@ -327,17 +329,15 @@ export function UpdateFunctionForm({
             {/* Environment Variables Section */}
             <div>
               <div className="flex items-center justify-between mb-3">
-                <label className="block text-sm font-medium">
-                  Environment Variables
-                </label>
+                <label className="block text-sm font-medium">Environment Variables</label>
               </div>
-              
+
               <Tabs defaultValue="individual" className="w-full">
                 <TabsList className="grid w-full grid-cols-2">
                   <TabsTrigger value="individual">Individual Variables</TabsTrigger>
                   <TabsTrigger value="file">Upload .env File</TabsTrigger>
                 </TabsList>
-                
+
                 <TabsContent value="individual" className="mt-4">
                   <div className="space-y-3">
                     {envVars.map((envVar) => (
@@ -346,7 +346,7 @@ export function UpdateFunctionForm({
                           type="text"
                           value={envVar.key}
                           onChange={(e) => handleEnvVarKeyChange(envVar.id, e.target.value)}
-                          className="flex-1 p-2 border rounded-md text-sm"
+                          className="flex-1 p-2 border bg-muted rounded-md text-sm"
                           placeholder="Variable name"
                           disabled={envVar.isExisting}
                         />
@@ -355,8 +355,12 @@ export function UpdateFunctionForm({
                             type={showSecrets[envVar.id] ? "text" : "password"}
                             value={envVar.value}
                             onChange={(e) => handleEnvVarValueChange(envVar.id, e.target.value)}
-                            className="w-full p-2 border rounded-md text-sm pr-10"
-                            placeholder={envVar.isExisting ? "Enter new value (current value hidden)" : "Variable value"}
+                            className="w-full p-2 border bg-muted rounded-md text-sm pr-10"
+                            placeholder={
+                              envVar.isExisting
+                                ? "Enter new value (current value hidden)"
+                                : "Variable value"
+                            }
                           />
                           <button
                             type="button"
@@ -376,24 +380,19 @@ export function UpdateFunctionForm({
                         </Button>
                       </div>
                     ))}
-                    
+
                     {envVars.length === 0 && (
-                      <p className="text-sm text-gray-500 text-center py-4">
+                      <p className="text-sm text-muted-foreground text-center py-4">
                         No environment variables configured
                       </p>
                     )}
-                    
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={addEnvVar}
-                      className="w-full"
-                    >
+
+                    <Button type="button" variant="outline" onClick={addEnvVar} className="w-full">
                       Add Variable
                     </Button>
                   </div>
                 </TabsContent>
-                
+
                 <TabsContent value="file" className="mt-4">
                   <div className="space-y-4">
                     <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
@@ -405,9 +404,7 @@ export function UpdateFunctionForm({
                         className="hidden"
                       />
                       <Upload className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-                      <p className="text-sm text-gray-600 mb-2">
-                        Upload a .env file
-                      </p>
+                      <p className="text-sm text-muted-foreground mb-2">Upload a .env file</p>
                       <Button
                         type="button"
                         variant="outline"
@@ -416,7 +413,7 @@ export function UpdateFunctionForm({
                         Choose .env File
                       </Button>
                     </div>
-                    
+
                     <div>
                       <label className="block text-sm font-medium mb-2">
                         Or paste .env content:
@@ -427,11 +424,11 @@ export function UpdateFunctionForm({
                           setEnvFileContent(e.target.value);
                           parseEnvFile(e.target.value);
                         }}
-                        className="w-full h-32 p-3 border rounded-md font-mono text-sm bg-gray-50 dark:bg-gray-900 resize-none"
+                        className="w-full h-32 p-3 border rounded-md font-mono text-sm bg-muted resize-none"
                         placeholder="KEY1=value1&#10;KEY2=value2&#10;# Comments are supported"
                       />
                     </div>
-                    
+
                     {envVars.length > 0 && (
                       <div className="text-sm text-green-600">
                         Parsed {envVars.length} environment variable(s)
@@ -441,19 +438,17 @@ export function UpdateFunctionForm({
                 </TabsContent>
               </Tabs>
             </div>
-            
-            <Button
-              onClick={submit}
-              disabled={loading || !functionCode.trim()}
-              className="w-full"
-            >
+
+            <Button onClick={submit} disabled={loading || !functionCode.trim()} className="w-full">
               {loading ? (
                 <>
                   <Loader2 className="animate-spin mr-2" />
-                  {functionDetails ? 'Updating Function...' : 'Creating Function...'}
+                  {functionDetails ? "Updating Function..." : "Creating Function..."}
                 </>
+              ) : functionDetails ? (
+                "Update Function"
               ) : (
-                functionDetails ? 'Update Function' : 'Create Function'
+                "Create Function"
               )}
             </Button>
           </div>
