@@ -8,7 +8,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "./ui/button";
-import { ChartAreaIcon, History, Plus, Signature } from "lucide-react";
+import { ChartAreaIcon, Code, History, Plus, Signature } from "lucide-react";
 
 type UpsellModalProps = {
   feature: string;
@@ -55,7 +55,12 @@ export function UpsellModal({ feature }: UpsellModalProps) {
             <Plus />
             Upload Site
           </Button>
-        ) :  (
+        ) : feature === "functions" ? (
+          <Button variant="ghost" className="h-7">
+            <Code />
+            Functions
+          </Button>
+        ) : (
           <Button variant="ghost" className="h-7">
             <History />
             Versions

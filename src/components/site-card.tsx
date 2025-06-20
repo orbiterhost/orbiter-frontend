@@ -338,11 +338,11 @@ const loadFunctionDetails = async () => {
   
       const response = await fetch(`${import.meta.env.VITE_BASE_URL}/functions/deploy/${siteId}`, {
         method: "POST",
-        headers: {
-          "X-Orbiter-Token": accessToken,
-          "Content-Type": "application/json", // Fixed casing
-          Source: "web-app",
-        },
+        headers: new Headers({
+          "X-Orbiter-Token": accessToken || "",
+          "Content-Type": "application/json",
+          "Source": "web-app",
+        }),
         body: JSON.stringify(payload),   
       });
   

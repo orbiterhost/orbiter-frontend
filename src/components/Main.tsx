@@ -104,7 +104,7 @@ const Main = (props: MainProps) => {
               element={
                 <Dashboard
                   updateSite={props.updateSite}
-                  organization={props.organizations[0]}
+                  organization={props.organizations[0].organizations}
                   sites={props.sites}
                   createSite={props.createSite}
                   loading={props.loading}

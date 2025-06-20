@@ -26,7 +26,7 @@ export type PlanDetails = {
 
 export default function App() {
   const [userSession, setSession] = useState<Session | null>(null);
-  const [organizations, setOrganizations] = useState<Organization[]>([]);
+  const [organizations, setOrganizations] = useState<Membership[]>([]);
   const [selectedOrganization, setSelectedOrganization] =
     useState<Organization | null>(null);
   const [sites, setSites] = useState<any[]>([]);

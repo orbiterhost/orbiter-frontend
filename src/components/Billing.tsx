@@ -32,18 +32,43 @@ type Plan = {
   priceId: string;
 };
 
+const freeFeatures: string[] = [
+  "2 Projects",
+  "1 Team Member",
+  "Free Subdomain",
+  "20,000 Requests/Month"
+]
+
+const launchFeatures: string[] = [
+  "Unlimited Projects",
+  "3 Team Members",
+  "Custom Domains",
+  "Custom Redirects",
+  "Custom 404 Pages",
+  "Serverless Functions",
+  "4 Million Requests/Month",
+  "5 Million ms CPU Time/Month"
+]
+
+const orbitFeatures: string[] = [
+  "Unlimited Projects",
+  "Unlimited Team Members",
+  "Custom Domains",
+  // "Analytics",
+  "Custom Redirects",
+  "Custom 404 Pages",
+  "Serverless Functions",
+  "10 Million Requests/Month",
+  "10 Million ms CPU Time/Month"
+]
+
 const ANNAUL_PLANS: Plan[] = [
   {
     id: "free",
     name: "free",
     displayName: "Free",
     price: 0,
-    features: [
-      "2 Projects",
-      "1 Team Member",
-      "Free Subdomain",
-      "20k Requests Per Month"
-    ],
+    features: freeFeatures,
     priceId: "",
   },
   {
@@ -51,14 +76,7 @@ const ANNAUL_PLANS: Plan[] = [
     name: "launch",
     displayName: "Launch",
     price: 84,
-    features: [
-      "Unlimited Projects",
-      "3 Team Members",
-      "Custom Domains",
-      "Custom Redirects",
-      "Custom 404 Pages",
-      "100k Requests Per Month",
-    ],
+    features: launchFeatures,
     priceId: import.meta.env.VITE_STRIPE_LAUNCH_MONTHLY,
   },
   {
@@ -66,15 +84,7 @@ const ANNAUL_PLANS: Plan[] = [
     name: "orbit",
     displayName: "Orbit",
     price: 192,
-    features: [
-      "Everything in Launch plan",
-      "Unlimited Team Members",
-      "Analytics",
-      "Custom Redirects",
-      "Custom 404 Pages",
-      "Serverless Functions (soon)",
-      "Unlimited Traffic",
-    ],
+    features: orbitFeatures,
     priceId: import.meta.env.VITE_STRIPE_ORBIT_MONTHLY,
   },
 ];
@@ -85,12 +95,7 @@ const PLANS: Plan[] = [
     name: "free",
     displayName: "Free",
     price: 0,
-    features: [
-      "2 Projects",
-      "1 Team Member",
-      "Free Subdomain",
-      "20k Requests Per Month"
-    ],
+    features: freeFeatures,
     priceId: "",
   },
   {
@@ -98,14 +103,7 @@ const PLANS: Plan[] = [
     name: "launch",
     displayName: "Launch",
     price: 9,
-    features: [
-      "Unlimited Projects",
-      "3 Team Members",
-      "Custom Domains",
-      "Custom Redirects",
-      "Custom 404 Pages",
-      "100k Requests Per Month",
-    ],
+    features: launchFeatures,
     priceId: import.meta.env.VITE_STRIPE_LAUNCH_YEARLY
   },
   {
@@ -113,15 +111,7 @@ const PLANS: Plan[] = [
     name: "orbit",
     displayName: "Orbit",
     price: 19,
-    features: [
-      "Everything in Launch plan",
-      "Unlimited Team Members",
-      "Analytics",
-      "Custom Redirects",
-      "Custom 404 Pages",
-      "Serverless Functions (soon)",
-      "Unlimited Traffic",
-    ],
+    features: orbitFeatures,
     priceId: import.meta.env.VITE_STRIPLE_ORBIT_YEARLY
   },
 ];
