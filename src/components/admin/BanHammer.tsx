@@ -20,9 +20,9 @@ const BanHammer = () => {
         headers: {
           "Content-Type": "application/json",
           "X-Orbiter-Token": accessToken,
-          "Source": "web-app"
+          Source: "web-app",
         },
-        body: JSON.stringify({ domain }),
+        body: JSON.stringify({ subdomain: domain }),
       });
 
       if (!res.ok) {
@@ -46,7 +46,6 @@ const BanHammer = () => {
     }
   };
 
-
   const banUser = async () => {
     try {
       const accessToken = await getAccessToken();
@@ -56,7 +55,7 @@ const BanHammer = () => {
         headers: {
           "Content-Type": "application/json",
           "X-Orbiter-Token": accessToken,
-          "Source": "web-app"
+          Source: "web-app",
         },
         body: JSON.stringify({ email }),
       });
@@ -83,39 +82,43 @@ const BanHammer = () => {
   };
   return (
     <div className="w-4/5 m-auto mt-8 mb-20">
-    <h3 className="text-2xl text-center">Block Sites & Users</h3>
-    <div className="w-full m-auto flex items-center justify-around">
-      <div>
+      <h3 className="text-2xl text-center">Block Sites & Users</h3>
+      <div className="w-full m-auto flex items-center justify-around">
         <div>
-          <Label htmlFor="domain">Domain</Label>
-          <Input
-            id="domain"
-            value={domain}
-            onChange={(e) => setDomain(e.target.value)}
-            type="text"
-            spellCheck={false}
-            className="w-full rounded"
-            placeholder="https://somebadsite.orbiter.website"
-          />
+          <div>
+            <Label htmlFor="domain">Domain</Label>
+            <Input
+              id="domain"
+              value={domain}
+              onChange={(e) => setDomain(e.target.value)}
+              type="text"
+              spellCheck={false}
+              className="w-full rounded"
+              placeholder="https://somebadsite.orbiter.website"
+            />
+          </div>
+          <Button className="mt-4" onClick={banSite}>
+            Block Site
+          </Button>
         </div>
-        <Button className="mt-4" onClick={banSite}>Block Site</Button>
-      </div>
-      <div>
         <div>
-          <Label htmlFor="email">Email</Label>
-          <Input
-            id="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            type="text"
-            spellCheck={false}
-            className="w-full rounded"
-            placeholder="baduser@email.com"
-          />
+          <div>
+            <Label htmlFor="email">Email</Label>
+            <Input
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              type="text"
+              spellCheck={false}
+              className="w-full rounded"
+              placeholder="baduser@email.com"
+            />
+          </div>
+          <Button className="mt-4" onClick={banUser}>
+            Block User
+          </Button>
         </div>
-        <Button className="mt-4" onClick={banUser}>Block User</Button>
       </div>
-    </div>
     </div>
   );
 };
