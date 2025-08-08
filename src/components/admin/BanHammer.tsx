@@ -12,6 +12,14 @@ const BanHammer = () => {
   const { toast } = useToast();
 
   const banSite = async () => {
+    if (domain.includes("https") || domain.includes("orbiter.website")) {
+      toast({
+        title: "Only use subdomain!",
+        variant: "destructive",
+      });
+      return;
+    }
+
     try {
       const accessToken = await getAccessToken();
       const res = await fetch(`${import.meta.env.VITE_BASE_URL}/admin/block_site`, {
@@ -25,7 +33,7 @@ const BanHammer = () => {
         body: JSON.stringify({ subdomain: domain }),
       });
 
-      if (!res.ok) {
+      if (res.status !== 200) {
         const data = await res.json();
         console.log(data);
         toast({
@@ -86,7 +94,7 @@ const BanHammer = () => {
       <div className="w-full m-auto flex items-center justify-around">
         <div>
           <div>
-            <Label htmlFor="domain">Domain</Label>
+            <Label htmlFor="domain">Subdomain</Label>
             <Input
               id="domain"
               value={domain}
@@ -94,7 +102,7 @@ const BanHammer = () => {
               type="text"
               spellCheck={false}
               className="w-full rounded"
-              placeholder="https://somebadsite.orbiter.website"
+              placeholder="sombadsite"
             />
           </div>
           <Button className="mt-4" onClick={banSite}>
