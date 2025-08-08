@@ -40,6 +40,7 @@ const BanHammer = () => {
           title: "Trouble banning site",
           variant: "destructive",
         });
+        return;
       }
 
       toast({
