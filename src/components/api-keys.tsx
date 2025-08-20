@@ -238,7 +238,7 @@ const APIKeys = () => {
                 <DialogDescription>This screen is only shown once!</DialogDescription>
               </DialogHeader>
               <Label>Secret Key</Label>
-              <div className="flex items-center justify-between p-2 bg-gray-100 rounded">
+              <div className="flex items-center justify-between p-2 bg-secondary rounded">
                 <code className="font-mono text-sm truncate max-w-[300px]">{tempKey?.apiKey}</code>
                 <Button
                   variant="ghost"
