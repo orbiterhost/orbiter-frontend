@@ -97,6 +97,14 @@ export function CustomDomainForm({
     }
   }
 
+  function formatDnsHost(domain: string): string {
+    const parts = domain.split(".");
+    if (parts.length === 2) {
+      return "@";
+    }
+    return parts.slice(0, -2).join(".");
+  }
+
   return (
     <Dialog
       onOpenChange={(open) => {
@@ -152,7 +160,7 @@ export function CustomDomainForm({
             <Label>DNS Record</Label>
             <pre className="relative rounded-lg border bg-muted p-3">
               <p>Type: {domainRecordInfo.recordType}</p>
-              <p>Host: {domainRecordInfo.recordHost}</p>
+              <p>Host: {formatDnsHost(domainRecordInfo.recordHost)}</p>
               <p>Value: {domainRecordInfo.recordValue}</p>
             </pre>
           </div>
