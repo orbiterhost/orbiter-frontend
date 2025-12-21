@@ -36,8 +36,8 @@ const freeFeatures: string[] = [
   "2 Projects",
   "1 Team Member",
   "Free Subdomain",
-  "20,000 Requests/Month"
-]
+  "20,000 Requests/Month",
+];
 
 const launchFeatures: string[] = [
   "Unlimited Projects",
@@ -47,8 +47,8 @@ const launchFeatures: string[] = [
   "Custom 404 Pages",
   "Serverless Functions",
   "4 Million Requests/Month",
-  "5 Million ms CPU Time/Month"
-]
+  "5 Million ms CPU Time/Month",
+];
 
 const orbitFeatures: string[] = [
   "Unlimited Projects",
@@ -59,8 +59,8 @@ const orbitFeatures: string[] = [
   "Custom 404 Pages",
   "Serverless Functions",
   "10 Million Requests/Month",
-  "10 Million ms CPU Time/Month"
-]
+  "10 Million ms CPU Time/Month",
+];
 
 const ANNAUL_PLANS: Plan[] = [
   {
@@ -104,7 +104,7 @@ const PLANS: Plan[] = [
     displayName: "Launch",
     price: 9,
     features: launchFeatures,
-    priceId: import.meta.env.VITE_STRIPE_LAUNCH_YEARLY
+    priceId: import.meta.env.VITE_STRIPE_LAUNCH_YEARLY,
   },
   {
     id: "orbit",
@@ -112,7 +112,7 @@ const PLANS: Plan[] = [
     displayName: "Orbit",
     price: 19,
     features: orbitFeatures,
-    priceId: import.meta.env.VITE_STRIPLE_ORBIT_YEARLY
+    priceId: import.meta.env.VITE_STRIPLE_ORBIT_YEARLY,
   },
 ];
 
@@ -168,27 +168,6 @@ const Billing = (props: BillingProps) => {
     );
   };
 
-  const buildLoopLink = (plan: Plan, type: string) => {
-    const user = props.userSession.user;
-    if (plan.name === "launch" && type === "monthly") {
-      return (window.location.href = `${import.meta.env.VITE_LOOP_LAUNCH_MONTHLY}?email=${encodeURI(
-        user?.email || ""
-      )}&refId=${props?.selectedOrganization?.id}`);
-    } else if (plan.name === "orbit" && type === "monthly") {
-      return (window.location.href = `${import.meta.env.VITE_LOOP_ORBIT_MONTHLY}?email=${encodeURI(
-        user?.email || ""
-      )}&refId=${props?.selectedOrganization?.id}`);
-    } else if(plan.name === "launch") {
-      return (window.location.href = `${import.meta.env.VITE_LOOP_LAUNCH_YEARLY}?email=${encodeURI(
-        user?.email || ""
-      )}&refId=${props?.selectedOrganization?.id}`);
-    } else if(plan.name === "orbit") {
-      return (window.location.href = `${import.meta.env.VITE_LOOP_ORBIT_YEARLY}?email=${encodeURI(
-        user?.email || ""
-      )}&refId=${props?.selectedOrganization?.id}`);
-    }
-  };
-
   return (
     <div className="sm:max-w-screen-lg max-w-screen-sm w-full mx-auto flex flex-col items-start justify-center gap-2">
       <div className="flex flex-col gap-12 items-center justify-start min-h-screen w-full max-w-screen-lg mx-auto p-4">
@@ -226,23 +205,6 @@ const Billing = (props: BillingProps) => {
                       ))}
                     </ul>
                     {getPlanButton(plan)}
-                    {plan.name !== "free" && (
-                      <Collapsible className="text-center">
-                        <CollapsibleTrigger>
-                          <p className="text-gray-500 text-sm text-center underline">
-                            More payment options
-                          </p>
-                        </CollapsibleTrigger>
-                        <CollapsibleContent>
-                          <Button
-                            variant="link"
-                            onClick={() => buildLoopLink(plan, "yearly")}
-                          >
-                            Pay with crypto
-                          </Button>
-                        </CollapsibleContent>
-                      </Collapsible>
-                    )}
                   </CardContent>
                 </Card>
               ))}
@@ -274,23 +236,6 @@ const Billing = (props: BillingProps) => {
                       ))}
                     </ul>
                     {getPlanButton(plan)}
-                    {plan.name !== "free" && (
-                      <Collapsible className="text-center">
-                        <CollapsibleTrigger>
-                          <p className="text-gray-500 text-sm text-center underline">
-                            More payment options
-                          </p>
-                        </CollapsibleTrigger>
-                        <CollapsibleContent>
-                          <Button
-                            variant="link"
-                            onClick={() => buildLoopLink(plan, "monthly")}
-                          >
-                            Pay with crypto
-                          </Button>
-                        </CollapsibleContent>
-                      </Collapsible>
-                    )}
                   </CardContent>
                 </Card>
               ))}
