@@ -7,11 +7,6 @@ import {
   CardTitle,
 } from "./ui/card";
 import { PlanDetails } from "@/App";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "./ui/collapsible";
 import { Session } from "@supabase/supabase-js";
 import { Organization } from "@/utils/types";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
