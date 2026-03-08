@@ -72,7 +72,7 @@ export function Nav({ organizations, session, selectedOrganization, setSelectedO
               API Keys
             </Button>
           </NavLink>
-          <NavLink target="_blank" to="https://docs.orbiter.host/cli" end className="w-full">
+          <NavLink target="_blank" to="https://orbiter.host/cli" end className="w-full">
             <Button variant="ghost" className="w-full justify-start">
               <TerminalIcon />
               CLI
@@ -92,7 +92,7 @@ export function Nav({ organizations, session, selectedOrganization, setSelectedO
               </Button>
             </NavLink>
           )}
-          <NavLink to="https://docs.orbiter.host" target="_blank" end className="w-full">
+          <NavLink to="https://orbiter.host" target="_blank" end className="w-full">
             <Button variant="ghost" className="w-full justify-start">
               <BookIcon />
               Docs

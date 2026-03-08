@@ -49,7 +49,7 @@ const orbitFeatures: string[] = [
   "Unlimited Projects",
   "Unlimited Team Members",
   "Custom Domains",
-  // "Analytics",
+  "Analytics",
   "Custom Redirects",
   "Custom 404 Pages",
   "Serverless Functions",
