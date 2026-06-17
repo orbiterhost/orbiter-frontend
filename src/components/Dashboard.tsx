@@ -127,7 +127,13 @@ const Dashboard = (props: DashboardProps) => {
             Sites: {props.sites.length} / {maxSites}
           </p>
         )}
-        {props.planDetails.planName === "free" && props.sites.length === 2 ? (
+        {/*
+          FREE SITE CREATION DISABLED — free plan always shows the upsell.
+          TO RE-ENABLE: restore the original condition that only blocked once
+          the free 2-site limit was reached:
+            props.planDetails.planName === "free" && props.sites.length === 2
+        */}
+        {props.planDetails.planName === "free" ? (
           <UpsellModal feature="sites" />
         ) : (
           <CreateSiteForm {...props} />
