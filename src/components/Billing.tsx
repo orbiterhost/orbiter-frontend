@@ -27,12 +27,16 @@ type Plan = {
   priceId: string;
 };
 
-const freeFeatures: string[] = [
-  "2 Projects",
-  "1 Team Member",
-  "Free Subdomain",
-  "20,000 Requests/Month",
-];
+// FREE SITE CREATION DISABLED — the free plan can no longer create sites, so
+// the free plan card is hidden from the billing page (see ANNAUL_PLANS and
+// PLANS below). TO RE-ENABLE free site creation: uncomment this array and the
+// free entries in both plan arrays.
+// const freeFeatures: string[] = [
+//   "2 Projects",
+//   "1 Team Member",
+//   "Free Subdomain",
+//   "20,000 Requests/Month",
+// ];
 
 const launchFeatures: string[] = [
   "Unlimited Projects",
@@ -58,14 +62,15 @@ const orbitFeatures: string[] = [
 ];
 
 const ANNAUL_PLANS: Plan[] = [
-  {
-    id: "free",
-    name: "free",
-    displayName: "Free",
-    price: 0,
-    features: freeFeatures,
-    priceId: "",
-  },
+  // FREE SITE CREATION DISABLED — free plan card hidden. TO RE-ENABLE: uncomment.
+  // {
+  //   id: "free",
+  //   name: "free",
+  //   displayName: "Free",
+  //   price: 0,
+  //   features: freeFeatures,
+  //   priceId: "",
+  // },
   {
     id: "launch",
     name: "launch",
@@ -85,14 +90,15 @@ const ANNAUL_PLANS: Plan[] = [
 ];
 
 const PLANS: Plan[] = [
-  {
-    id: "free",
-    name: "free",
-    displayName: "Free",
-    price: 0,
-    features: freeFeatures,
-    priceId: "",
-  },
+  // FREE SITE CREATION DISABLED — free plan card hidden. TO RE-ENABLE: uncomment.
+  // {
+  //   id: "free",
+  //   name: "free",
+  //   displayName: "Free",
+  //   price: 0,
+  //   features: freeFeatures,
+  //   priceId: "",
+  // },
   {
     id: "launch",
     name: "launch",

@@ -29,7 +29,12 @@ export function UpsellModal({ feature }: UpsellModalProps) {
   const getText = () => {
     switch(feature) {
       case "sites":
-        return "You've reached your site limit and will need to upgrade to add another."
+        // FREE SITE CREATION DISABLED — free plans can no longer create any
+        // site, so this message now tells the user a paid plan is required
+        // rather than referencing a "site limit" being reached.
+        // TO RE-ENABLE free site creation: restore the original limit message:
+        //   return "You've reached your site limit and will need to upgrade to add another."
+        return "Site creation is only available on paid plans. Upgrade to Launch or Orbit to deploy your site."
       case "analytics": 
         return "This feature is only available on the Orbit plan";
       default:
