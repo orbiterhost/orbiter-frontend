@@ -1,114 +1,74 @@
 import { zip } from "fflate";
+import { CarReader } from "@ipld/car";
+import { recursive, type UnixFSEntry } from "ipfs-unixfs-exporter";
+import { CID } from "multiformats/cid";
 import { Site } from "@/utils/types";
 
 // IPFS gateway used to serve Orbiter sites (matches template-card.tsx).
 const GATEWAY = "https://cdn.orbiter.host";
 
-// Max parallel gateway requests so we don't hammer the gateway.
-const CONCURRENCY = 6;
-
-type DagLink = {
-  Name?: string;
-  Hash: { "/": string };
-  Tsize?: number;
-};
-
-type DagNode = {
-  Links?: DagLink[];
-};
-
-// A node is a directory iff its dag-json has Links with at least one
-// non-empty Name. Raw leaves return bytes (no Links) and chunked files
-// return empty-Name links — both are treated as files.
-const namedLinks = (node: DagNode): DagLink[] =>
-  (node.Links ?? []).filter((l) => !!l.Name);
-
-const isDirNode = (node: DagNode): boolean => namedLinks(node).length > 0;
-
-// Raw-codec CIDs (bafkrei…) are always file leaves — skip the dag-json probe.
-const isRawLeafCid = (cid: string): boolean => cid.startsWith("bafkrei");
-
-async function fetchDagNode(cid: string): Promise<DagNode> {
-  const res = await fetch(`${GATEWAY}/ipfs/${cid}?format=dag-json`);
+// Pinata gateways don't expose kubo/trustless directory listing (a recursive
+// dag-json walk gets rate-limited to 403). Instead we ask the gateway for the
+// site's entire DAG as a single CAR file (`?format=car`) and unpack it locally.
+// One request per site, full recursive tree + file bytes included.
+async function fetchSiteCar(rootCid: string): Promise<Uint8Array> {
+  const res = await fetch(`${GATEWAY}/ipfs/${rootCid}?format=car`);
   if (!res.ok) {
-    throw new Error(`Failed to list ${cid}: ${res.status}`);
-  }
-  return (await res.json()) as DagNode;
-}
-
-// Walk a directory CID and collect every file's relative path.
-async function collectFilePaths(
-  rootCid: string,
-  cid: string = rootCid,
-  prefix = ""
-): Promise<string[]> {
-  const node = await fetchDagNode(cid);
-  const entries = namedLinks(node);
-  const paths: string[] = [];
-
-  for (const entry of entries) {
-    const childCid = entry.Hash["/"];
-    const childPath = prefix ? `${prefix}/${entry.Name}` : entry.Name!;
-
-    if (isRawLeafCid(childCid)) {
-      paths.push(childPath);
-      continue;
-    }
-
-    const childNode = await fetchDagNode(childCid);
-    if (isDirNode(childNode)) {
-      paths.push(...(await collectFilePaths(rootCid, childCid, childPath)));
-    } else {
-      paths.push(childPath);
-    }
-  }
-
-  return paths;
-}
-
-// Fetch a single file's bytes via path so the gateway reassembles chunks.
-async function fetchFile(rootCid: string, path: string): Promise<Uint8Array> {
-  const res = await fetch(`${GATEWAY}/ipfs/${rootCid}/${path}`);
-  if (!res.ok) {
-    throw new Error(`Failed to fetch ${path}: ${res.status}`);
+    throw new Error(`Failed to fetch CAR for ${rootCid}: ${res.status}`);
   }
   return new Uint8Array(await res.arrayBuffer());
 }
 
-// Run async tasks with a bounded concurrency.
-async function mapLimit<T, R>(
-  items: T[],
-  limit: number,
-  fn: (item: T) => Promise<R>
-): Promise<R[]> {
-  const results: R[] = new Array(items.length);
-  let cursor = 0;
-  const workers = Array.from({ length: Math.min(limit, items.length) }, async () => {
-    while (cursor < items.length) {
-      const index = cursor++;
-      results[index] = await fn(items[index]);
-    }
-  });
-  await Promise.all(workers);
-  return results;
+// Drain a UnixFS file/raw entry's content stream into a single Uint8Array.
+async function readEntryBytes(entry: UnixFSEntry): Promise<Uint8Array> {
+  const chunks: Uint8Array[] = [];
+  let total = 0;
+  for await (const chunk of entry.content()) {
+    chunks.push(chunk);
+    total += chunk.length;
+  }
+  const bytes = new Uint8Array(total);
+  let offset = 0;
+  for (const chunk of chunks) {
+    bytes.set(chunk, offset);
+    offset += chunk.length;
+  }
+  return bytes;
 }
 
-// Strip protocol/slashes so a domain is safe to use as a folder name.
-function sanitizeFolderName(name: string): string {
-  return name.replace(/^https?:\/\//, "").replace(/\/+$/, "").replace(/[/\\]/g, "_");
-}
-
-function folderForSite(site: Site): string {
-  return sanitizeFolderName(site.domain || site.custom_domain || site.cid);
-}
-
-// Build the file map ({ path: bytes }) for a single site's folder CID.
+// Build the file map ({ path: bytes }) for a single site by unpacking its CAR.
+// The exporter prefixes every path with the root CID; we strip it so paths are
+// relative to the site root. A single-file (raw leaf) site has no directory, so
+// its lone entry's path is the bare CID — we name that index.html.
 async function buildSiteFiles(site: Site): Promise<Record<string, Uint8Array>> {
-  const paths = await collectFilePaths(site.cid);
+  const carBytes = await fetchSiteCar(site.cid);
+  const reader = await CarReader.fromBytes(carBytes);
+  const roots = await reader.getRoots();
+  const rootCid = roots[0] ?? CID.parse(site.cid);
+
+  const blockstore = {
+    async get(cid: CID): Promise<Uint8Array> {
+      const block = await reader.get(cid);
+      if (!block) {
+        throw new Error(`Missing block ${cid.toString()} in CAR for ${site.cid}`);
+      }
+      return block.bytes;
+    },
+  };
+
   const files: Record<string, Uint8Array> = {};
-  await mapLimit(paths, CONCURRENCY, async (path) => {
-    files[path] = await fetchFile(site.cid, path);
-  });
+  for await (const entry of recursive(rootCid, blockstore)) {
+    if (entry.type !== "file" && entry.type !== "raw") {
+      continue; // skip directories
+    }
+    let path = entry.path;
+    if (path === rootCid.toString()) {
+      path = "index.html"; // single-file site
+    } else {
+      path = path.replace(`${rootCid.toString()}/`, "");
+    }
+    files[path] = await readEntryBytes(entry);
+  }
   return files;
 }
 
@@ -123,6 +83,15 @@ function zipToBlob(files: Record<string, Uint8Array>): Promise<Blob> {
       resolve(new Blob([data.slice()], { type: "application/zip" }));
     });
   });
+}
+
+// Strip protocol/slashes so a domain is safe to use as a folder name.
+function sanitizeFolderName(name: string): string {
+  return name.replace(/^https?:\/\//, "").replace(/\/+$/, "").replace(/[/\\]/g, "_");
+}
+
+function folderForSite(site: Site): string {
+  return sanitizeFolderName(site.domain || site.custom_domain || site.cid);
 }
 
 function triggerDownload(blob: Blob, filename: string) {
