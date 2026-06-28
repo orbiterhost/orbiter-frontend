@@ -6,8 +6,16 @@ import { getAccessToken } from "@/utils/auth";
 import { Organization, Site } from "@/utils/types";
 import { useEffect, useState, ReactNode } from "react";
 import { Button } from "./ui/button";
-import { Check, Copy } from "lucide-react";
+import { Check, Copy, Download, Loader2 } from "lucide-react";
 import { UpsellModal } from "./upsell-modal";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "./ui/dialog";
+import { exportSites, type ExportProgress } from "@/utils/export";
 import {
   Stepper,
   StepperDescription,
@@ -36,6 +44,8 @@ type DashboardProps = {
 const Dashboard = (props: DashboardProps) => {
   const [selectedTemplateCid, setSelectedTemplateCid] = useState("");
   const [copiedField, setCopiedField] = useState<string>("");
+  const [exporting, setExporting] = useState(false);
+  const [exportProgress, setExportProgress] = useState<ExportProgress | null>(null);
 
   let maxSites: ReactNode;
 
@@ -115,6 +125,45 @@ const Dashboard = (props: DashboardProps) => {
     }
   };
 
+  const handleExportAll = async () => {
+    if (exporting || props.sites.length === 0) {
+      return;
+    }
+    setExporting(true);
+    setExportProgress(null);
+    try {
+      const { failed } = await exportSites(props.sites, setExportProgress);
+      if (failed.length === 0) {
+        toast({
+          title: "Export complete",
+          description: `Downloaded ${props.sites.length} site${
+            props.sites.length === 1 ? "" : "s"
+          }.`,
+        });
+      } else {
+        toast({
+          title: `Exported with ${failed.length} failure${
+            failed.length === 1 ? "" : "s"
+          }`,
+          description: `Could not export: ${failed
+            .map((f) => f.domain)
+            .join(", ")}`,
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.log(error);
+      toast({
+        title: "Export failed",
+        description: error instanceof Error ? error.message : undefined,
+        variant: "destructive",
+      });
+    } finally {
+      setExporting(false);
+      setExportProgress(null);
+    }
+  };
+
   // const useTemplate = (t: Template) => {
   //   setSelectedTemplateCid(t.cid);
   // }
@@ -126,6 +175,16 @@ const Dashboard = (props: DashboardProps) => {
           <p className="font-bold">
             Sites: {props.sites.length} / {maxSites}
           </p>
+        )}
+        {props.sites.length > 0 && (
+          <Button variant="outline" onClick={handleExportAll} disabled={exporting}>
+            {exporting ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Download className="h-4 w-4" />
+            )}
+            <span className="ml-2">Export all</span>
+          </Button>
         )}
         {/*
           FREE SITE CREATION DISABLED — free plan always shows the upsell.
@@ -139,6 +198,29 @@ const Dashboard = (props: DashboardProps) => {
           <CreateSiteForm {...props} />
         )}
       </div>
+      <Dialog open={exporting}>
+        <DialogContent
+          className="sm:max-w-[425px]"
+          onPointerDownOutside={(e) => e.preventDefault()}
+          onEscapeKeyDown={(e) => e.preventDefault()}
+        >
+          <DialogHeader>
+            <DialogTitle>Exporting sites</DialogTitle>
+            <DialogDescription>
+              Downloading your sites from the gateway and building a zip. This may
+              take a moment for large sites.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex items-center gap-3 py-2">
+            <Loader2 className="h-5 w-5 animate-spin" />
+            <p className="text-sm">
+              {exportProgress
+                ? `Exporting ${exportProgress.domain} (${exportProgress.current} / ${exportProgress.total})…`
+                : "Preparing…"}
+            </p>
+          </div>
+        </DialogContent>
+      </Dialog>
       {!props.initialLoading && props.sites.length === 0 && (
         <>
           <div className="w-3/4 md:w-4/5 lg:w-full m-auto flex flex-col items-center gap-4">

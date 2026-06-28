@@ -4,6 +4,7 @@ import { UpdateSiteForm } from "./update-site-form";
 import {
   ChartAreaIcon,
   CircleCheck,
+  Download,
   Loader2,
   Settings,
   Trash,
@@ -19,6 +20,7 @@ import { CustomDomainForm } from "./custom-domain-form";
 import { useToast } from "@/hooks/use-toast";
 import { Site } from "@/utils/types";
 import { getAccessToken } from "@/utils/auth";
+import { exportSite } from "@/utils/export";
 import { PlanDetails } from "@/App";
 import {
   Dialog,
@@ -94,6 +96,7 @@ export const SiteCard = ({
 }: SiteCardProps) => {
   const [isSiteReady, setIsSiteReady] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [exporting, setExporting] = useState(false);
   const [customDomain, setCustomDomain] = useState("");
   
   // Lazy loading states
@@ -286,6 +289,29 @@ const loadFunctionDetails = async () => {
     } catch (error) {
       console.log(error);
       setDeleting(false);
+    }
+  };
+
+  const handleExport = async () => {
+    if (exporting) {
+      return;
+    }
+    try {
+      setExporting(true);
+      await exportSite(site);
+      toast({
+        title: "Export ready",
+        description: "Your site has been downloaded as a zip.",
+      });
+    } catch (error) {
+      console.log(error);
+      toast({
+        title: "Export failed",
+        description: error instanceof Error ? error.message : undefined,
+        variant: "destructive",
+      });
+    } finally {
+      setExporting(false);
     }
   };
 
@@ -528,6 +554,19 @@ const loadFunctionDetails = async () => {
                   <AddEnsForm loading={loading} siteId={site.id} />
                 )}
                 <SiteInfoModal {...site} />
+                <Button
+                  className="h-7 w-full justify-start"
+                  variant="ghost"
+                  onClick={handleExport}
+                  disabled={exporting}
+                >
+                  {exporting ? (
+                    <Loader2 className="animate-spin" />
+                  ) : (
+                    <Download />
+                  )}
+                  {exporting ? "Exporting..." : "Export"}
+                </Button>
                 <DialogTrigger asChild>
                   <Button className="h-7 w-full justify-start" variant="ghost">
                     <Trash /> {deleting ? "Deleting..." : "Delete"}
