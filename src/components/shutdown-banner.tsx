@@ -1,6 +1,6 @@
 //  Service shutdown notice. Shown on login screen and across the app.
 //  TODO: replace ANNOUNCEMENT_URL with the blog announcement link.
-const ANNOUNCEMENT_URL = "#";
+const ANNOUNCEMENT_URL = "https://orbiter.host/blog/orbiter-shutting-down";
 
 export function ShutdownBanner() {
 	return (
