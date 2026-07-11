@@ -2,6 +2,7 @@ import { PlanDetails } from "@/App";
 import Billing from "./Billing";
 import Dashboard from "./Dashboard";
 import { Nav } from "./nav";
+import { ShutdownBanner } from "./shutdown-banner";
 import { Separator } from "@/components/ui/separator";
 import { BrowserRouter, Routes, Route, useNavigate } from "react-router";
 import Admin from "./admin";
@@ -93,6 +94,7 @@ const Main = (props: MainProps) => {
 	return (
 		<div className="min-h-screen w-full flex flex-col gap-2">
 			<BrowserRouter>
+				<ShutdownBanner />
 				<Nav
 					organizations={props.organizations}
 					session={props.userSession}
